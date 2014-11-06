@@ -1,0 +1,62 @@
+<div class="status-pane">
+  <div style="width: 45%; float: left;">
+    <resource-indicator current-state="interpolateState(t)"></resource-indicator>
+  </div>
+  <div style="float: right;">
+    <select>
+      <option ng-repeat="civilization in civilizations">
+        {{civilization.name}}
+      </option>
+    </select>
+    <label>
+      <input type="checkbox" ng-model="isAllTechs" disabled="true">
+      All Techs
+    </label>
+  </div>
+  <age-indicator age="age">
+  </age-indicator>
+</div>
+
+<div class="main-pane">
+  <timeline time="t" time-scale="timeScale">
+  </timeline>
+  <div class="time-indicator" style="left: {{35 + t * timeScale}}px">
+    {{ t|duration }}
+  </div>
+  <div class="build-order">
+    <div ng-repeat="queue in queues|orderBy:'start'" ng-show="queue.items.length>0" style="position:relative; left: {{queue.start*timeScale}}px;">
+      <div class="icon-{{queue.buildingId}} icon"></div>
+      <div class="items">
+        <build-order-item ng-repeat="item in queue.items" 
+                          item="item" 
+                          time-scale="timeScale" 
+                          style="left: {{item.offset * timeScale}}px;">
+        </build-order-item>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="build-pane">
+  <div class="palettes-container">
+    <div class="palette">
+     <input ng-repeat="building in buildings"
+          ng-show="building.age <= age.index" 
+          class="icon-{{ building.id }} button"
+          ng-click="build(building)"></input>
+    </div>
+    <div class="palette"> 
+     <input ng-repeat="unit in units"
+          ng-show="unit.age <= age.index" 
+          class="icon-{{ unit.id }} button"
+          ng-click="train(unit)"
+          ng-disabled="!hasBuildings[unit.building]"></input>
+    </div>
+    <div class="palette"> 
+     <input ng-repeat="tech in technologies"
+          ng-show="tech.age <= age.index && !tech.researched" 
+          class="icon-{{ tech.id }} button"
+          ng-click="research(tech)"
+          ng-disabled="!hasBuildings[tech.building]"></input>
+    </div>
+  </div>
+</div>
