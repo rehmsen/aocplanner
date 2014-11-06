@@ -1,0 +1,350 @@
+%YAML 1.2
+---
+civilizations: 
+- name: Aztecs
+- name: Brits
+- name: Byzantines
+- name: Celts
+- name: Chinese
+- name: Franks
+- name: Goths
+- name: Huns
+- name: Japanese
+- name: Koreans
+- name: Mayan
+- name: Mongols
+- name: Persians
+- name: Saracenes
+- name: Spaniards
+- name: Turks
+- name: Viking
+
+ages:
+- name: Dark Age
+- name: Feudal Age
+- name: Castle Age
+- name: Imperial Age
+
+startResources:
+  low: 
+    wood: 200
+    food: 200
+    gold: 100
+    stone: 200
+
+buildings:
+- id: barracks
+  age: 0
+  buildDuration: 50
+  cost: 
+    wood: 175
+- id: dock
+  age: 0
+  buildDuration: 35
+  cost:
+    wood: 150
+- id: house
+  age: 0
+  room: 5
+  buildDuration: 25
+  cost:
+    wood: 30
+- id: lumber_camp
+  age: 0
+  buildDuration: 35
+  cost:
+    wood: 100
+- id: mill
+  age: 0
+  buildDuration: 35
+  cost:
+    wood: 100
+- id: mining_camp
+  age: 0
+  buildDuration: 35
+  cost:
+    wood: 100
+- id: outpost
+  age: 0
+  cost:
+    wood: 25
+    stone: 10
+- id: palisade
+  age: 0
+  cost:
+    wood: 2
+- id: town_center
+  age: 0
+  room: 5
+  buildDuration: 150
+  cost:
+    wood: 275
+    stone: 100
+
+technologies:
+- id: arbalest
+  age: 3
+- id: architecture
+  age: 3
+- id: atonement
+  age: 2
+- id: ballistics
+  age: 2
+- id: banking
+  age: 3
+- id: blast_furnace
+  age: 3
+- id: block_printing
+  age: 3
+- id: blood_lines
+  age: 1
+- id: bodkin_arrow
+  age: 2
+- id: bow_saw
+  age: 2
+- id: bracer
+  age: 3
+- id: canon_galleone
+  age: 3
+- id: canon_tower
+  age: 3
+- id: capped_ram
+  age: 3
+- id: caravan
+  age: 2
+- id: careening
+  age: 2
+- id: carthography
+  age: 1
+- id: castle_age
+  age: 1
+- id: chain_barding_armor
+  age: 2
+- id: chain_mail_armor
+  age: 2
+- id: champion
+  age: 3
+- id: chemistry
+  age: 3
+- id: chevalier
+  age: 3
+- id: coinage
+  age: 1
+- id: conscription
+  age: 3
+- id: crop_rotation
+  age: 3
+- id: cross_bow
+  age: 2
+- id: double_bit_axe
+  age: 1
+- id: dry_dock
+  age: 3
+- id: elite_eagle_warrior
+  age: 3
+- id: elite_unique_unit
+  age: 3
+- id: faith
+  age: 3
+- id: fast_fire_ship
+  age: 3
+- id: fervor
+  age: 2
+- id: feudal_age
+  age: 0
+  building: town_center
+- id: fletching
+  age: 1
+- id: forging
+  age: 1
+- id: fortified_wall
+  age: 3
+- id: galleone
+  age: 3
+- id: gold_mining
+  age: 1
+- id: gold_shaft_mining
+  age: 2
+- id: guard_tower
+  age: 2
+- id: guilds
+  age: 3
+- id: hand_cart
+  age: 2
+- id: heated_shot
+  age: 2
+- id: heavy_camels
+  age: 3
+- id: heavy_cannon_galleone
+  age: 3
+- id: heavy_cavalry_archer
+  age: 3
+- id: heavy_demolition_ship
+  age: 3
+- id: heavy_plow
+  age: 2
+- id: heavy_scorpion
+  age: 3
+- id: heavy_skirmisher
+  age: 2
+- id: hellebardier
+  age: 3
+- id: herbal_medicine
+  age: 2
+- id: hoardings
+  age: 3
+- id: horse_collar
+  age: 1
+- id: husbandry
+  age: 2
+- id: illumination
+  age: 3
+- id: imperial_age
+  age: 2
+- id: iron_casting
+  age: 2
+- id: keep
+  age: 3
+- id: leather_archer_armor
+  age: 2
+- id: light_cavalary
+  age: 2
+- id: long_sword_man
+  age: 3
+- id: loom
+  age: 0
+  building: town_center
+  buildDuration: 25
+  cost:
+    gold: 50
+- id: man_at_arms
+  age: 1
+- id: masonry
+  age: 2
+- id: murder_holes
+  age: 2
+- id: onager
+  age: 3
+- id: padded_archer_armor
+  age: 1
+- id: paladin
+  age: 3
+- id: parthian_tactics
+  age: 3
+- id: pikeman
+  age: 2
+- id: pioneers
+  age: 5
+- id: plate_barding_armor
+  age: 3
+- id: plate_mail_amor
+  age: 3
+- id: redemption
+  age: 2
+- id: ring_archer_armor
+  age: 3
+- id: sanctity
+  age: 2
+- id: scale_barding_amor
+  age: 1
+- id: scale_mail_amor
+  age: 1
+- id: ship_wright
+  age: 3
+- id: siege_engineers
+  age: 3
+- id: siege_onager
+  age: 3
+- id: siege_ram
+  age: 3
+- id: spies
+  age: 3
+- id: stone_mining
+  age: 1
+- id: stone_shaft_mining
+  age: 2
+- id: thumb_ring
+  age: 2
+- id: town_patrol
+  age: 1
+- id: town_watch
+  age: 2
+- id: tracking
+  age: 1
+- id: treadmill_crane
+  age: 2
+- id: two_handed_swortman
+  age: 3
+- id: two_man_saw
+  age: 3
+- id: unique_technology
+  age: 3
+- id: war_galley
+  age: 2
+- id: wheel_barro
+  age: 1
+
+units:
+- id: archer
+  age: 1
+  building: archery_range
+  buildDuration: 35
+  cost:
+    wood: 25
+    gold: 45
+- id: fishing_ship
+  age: 0
+  building: dock
+  cost:
+    wood: 75
+- id: galley
+  age: 1
+  building: dock
+  buildDuration: 60
+  cost:
+    wood: 90
+    gold: 30
+- id: militia
+  age: 0
+  building: barracks
+  buildDuration: 21 # TODO(olrehm): lookup
+  cost: 
+    food: 60
+    gold: 20
+- id: scout_cavalry
+  age: 1
+  building: stable
+  buildDuration: 30
+  cost:
+    food: 80
+- id: skirmisher
+  age: 1
+  building: archery_range
+  buildDuration: 22
+  cost:
+    wood: 35
+    food: 25
+- id: spearman
+  age: 1
+  building: barracks
+  buildDuration: 22
+  cost:
+    wood: 25
+    food: 35
+- id: tradecard
+  age: 1
+  building: market
+- id: tradecog
+  age: 1
+  building: dock
+- id: transport_ship
+  age: 1
+  building: dock
+  cost:
+    wood: 100
+- id: villager
+  age: 0
+  building: town_center
+  buildDuration: 25
+  cost: 
+    food: 50

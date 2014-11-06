@@ -1,4 +1,5 @@
 /// <reference path="../../../../typings/angularjs/angular.d.ts" />
+/// <reference path="../../../../typings/js-yaml/js-yaml.d.ts" />
 
 // interface IMainControllerScope extends ng.IScope {
 //   buildOrder: 
@@ -7,20 +8,20 @@
 class MainController {
   constructor($scope, $http: ng.IHttpService) {
     $http.get('assets/rules/aoc.yaml').
-        success(function(data, status, headers, config) {
-          // var rules = jsyaml.safeLoad(data);
-          // $scope.civilizations = rules.civilizations;
-          // $scope.ages = [];
-          // rules.ages.forEach(function(age, index) {
-          //   age.index = index;
-          //   $scope.ages.push(age);
-          // });
-          // $scope.age = $scope.ages[0];
-          // $scope.buildings = rules.buildings;
-          // $scope.technologies = rules.technologies;
-          // $scope.units = rules.units;
-          // $scope.startResources = rules.startResources;
-          // $scope.loaded = true;
+        success(function(data:string, status, headers, config) {
+          var rules = jsyaml.safeLoad(data);
+          $scope.civilizations = rules.civilizations;
+          $scope.ages = [];
+          rules.ages.forEach(function(age, index) {
+            age.index = index;
+            $scope.ages.push(age);
+          });
+          $scope.age = $scope.ages[0];
+          $scope.buildings = rules.buildings;
+          $scope.technologies = rules.technologies;
+          $scope.units = rules.units;
+          $scope.startResources = rules.startResources;
+          $scope.loaded = true;
         }).
         error(function(data, status, headers, config) {
           console.log(data);

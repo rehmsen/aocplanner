@@ -1,6 +1,7 @@
 /// <reference path="../../../typings/angularjs/angular.d.ts" />
 
 import MainController = require('./main/main-controller');
+import durationFilter = require('../components/duration/duration-filter');
 
 var app = angular.module('aocPlannerApp', [ 
 	'ngRoute']);
@@ -18,7 +19,7 @@ app.config(function ($routeProvider) {
 
 app.controller('MainCtrl', MainController);
 
-// app.filter('duration', durationFilter);
+app.filter('duration', durationFilter);
 
 
 
