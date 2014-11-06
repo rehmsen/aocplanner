@@ -1,0 +1,16 @@
+{
+  "name": "aocplanner",
+  "version": "0.0.2",
+  "description": "Plan Age of Empire 2 strategies.",
+  "main": "src/app/app.ts",
+  "keywords": [],
+  "author": "Ole Rehmsen <ole@rehmsen.de>",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "gulp": "^3.8.8",
+    "rimraf": "^2.2.8",
+    "gulp-typescript": "~2.2.0",
+    "gulp-webserver": "~0.8.7"
+  }
+}
