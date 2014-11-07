@@ -5,6 +5,7 @@ var rimraf = require('rimraf');
 var sass = require('gulp-ruby-sass');
 var size = require('gulp-size');
 var source = require('vinyl-source-stream');
+var spritesmith = require('gulp.spritesmith');
 var ts = require('gulp-typescript');
 var webserver = require('gulp-webserver');
 
@@ -25,11 +26,11 @@ gulp.task('clean', ['clean:dist', 'clean:tmp']);
 
 gulp.task('build:ts', ['clean'], function() {
     var tsResult = gulp.src(['src/client/{app,components}/**/*.ts', 
-    						 'typings/**/*.ts']).pipe(
-    	ts({
-    		noExternalResolve: true,
-    		module: 'commonjs'
-    	})).on('error', handleError);
+                 'typings/**/*.ts']).pipe(
+      ts({
+        noExternalResolve: true,
+        module: 'commonjs'
+      })).on('error', handleError);
     return tsResult.js.pipe(gulp.dest('.tmp/client'));
 });
 
@@ -52,6 +53,16 @@ gulp.task('build:scss', ['clean'],  function () {
     .pipe(size());
 });
 
+gulp.task('build:sprite', function () {
+  return gulp.src('src/client/assets/images/icons/**/*.png')
+    .pipe(spritesmith({
+      imgName: 'sprite.png',
+      cssName: 'sprite.css'
+    }))
+    .pipe(gulp.dest('dist/client'));
+});
+
+
 gulp.task('copy:html', ['clean'], function() {
   return gulp.src('src/client/**/*.html')
     .pipe(gulp.dest('./dist/client'));
@@ -59,10 +70,15 @@ gulp.task('copy:html', ['clean'], function() {
 
 gulp.task('copy:assets', ['clean'], function() {
   return gulp.src('src/client/assets/**/*.yaml')
-    .pipe(gulp.dest('./dist/client/assets'));	
+    .pipe(gulp.dest('./dist/client/assets')); 
 });
 
-gulp.task('dist', ['browserify', 'build:scss', 'copy:html', 'copy:assets']);
+gulp.task('dist', [
+  'browserify', 
+  'build:scss', 
+  'build:sprite',
+  'copy:html', 
+  'copy:assets']);
 
 gulp.task('serve', ['dist'], function() {
   return gulp.src(['dist/client', 'bower_components']).pipe(webserver());

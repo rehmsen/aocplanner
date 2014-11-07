@@ -13,6 +13,7 @@
     "gulp-autoprefixer": "^0.0.6",
     "gulp-ruby-sass": "~0.7.1",
     "gulp-size": "^1.1.0",
+    "gulp.spritesmith": "~1.4.0",
     "gulp-typescript": "~2.2.0",
     "gulp-webserver": "~0.8.7",
     "rimraf": "^2.2.8",
