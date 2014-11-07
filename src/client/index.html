@@ -3,12 +3,19 @@
   <head>
     <meta charset="utf-8">
     <title>AoC Planner</title>
-    <script src="angular/angular.js"></script>
-    <script src="angular-route/angular-route.js"></script>
-    <script src="js-yaml/dist/js-yaml.js"></script>
+    <link rel="stylesheet" href="app/index.css">
+    <link rel="stylesheet" href="app/main/main.css">
+    <link rel="stylesheet" href="components/age-indicator/age-indicator.css">
+    <link rel="stylesheet" href="components/build-order/build-order-item.css">
+    <link rel="stylesheet" href="components/resource-indicator/resource-indicator.css">
+    <link rel="stylesheet" href="components/timeline/timeline.css">
   </head>
   <body>
     <div ng-view></div>
-    <script src="bundle.js"></script>
+    <script type="text/javascript" src="angular/angular.js"></script>
+    <script type="text/javascript" src="angular-route/angular-route.js"></script>
+    <script type="text/javascript" src="js-yaml/dist/js-yaml.js"></script>
+
+    <script type="text/javascript" src="bundle.js"></script>
   </body>
 </html>

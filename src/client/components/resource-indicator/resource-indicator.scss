@@ -1,0 +1,20 @@
+resource-indicator {
+  .panel {
+    display: inline-block;
+    box-shadow: inset -1px -1px 1px rgba(0,0,0,0.5), 
+                inset 1px 1px 1px rgba(255,255,255,0.8); 
+    background: gray;
+    border-radius: 4px;
+    padding: 1px;
+  }
+
+  .resource {
+    display: block;
+    float: left;
+    width: 75px;
+    margin: 3px;
+    font: 11pt Georgia;
+    text-align: right;
+  }
+
+} 

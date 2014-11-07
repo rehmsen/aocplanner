@@ -1,0 +1,111 @@
+$icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/bootstrap/";
+// bower:scss
+// endbower
+
+$build-pane-height: 175px;
+$icon-size: 35px;
+
+body {
+  overflow: hidden;
+  font-family: Georgia;
+}
+
+.status-pane { 
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 32px;
+  background: url('/assets/images/background/top_tile.png') repeat-x;
+  color: white;
+  box-shadow: 0px 3px 2px #333333;
+  z-index: 2;
+}
+
+age-indicator {
+  display: block;
+  margin-top: 6px;
+}
+
+resource-indicator {
+  display: block;
+  margin-top: 2px;
+}
+
+.main-pane {
+  position: absolute;
+  top: 30px;
+  bottom: $build-pane-height;
+  left: 0;
+  right: 0;
+  background: url('/assets/images/background/center.png') repeat;
+  overflow: auto;
+}
+
+timeline {
+  position: relative;
+  left: 35px;
+}
+
+.time-indicator {
+  position: absolute;
+  top: 0;
+  border-left: thin solid red;
+  height: 100%;
+  vertical-align: bottom;
+  pointer-events:none;
+}
+
+.items {
+  display: inline-block;
+}
+
+.build-pane {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding-top: 15px;
+  height: $build-pane-height;
+  background: url('/assets/images/background/bottom_center_tile.png') repeat-x; 
+}
+
+.palette {
+  display: inline-block;
+  width: 300px;
+  height: $build-pane-height;
+  overflow-y: auto;
+  padding: 5px;
+}
+
+.icon {
+  width: $icon-size;
+  height: $icon-size;
+  display: inline-block;
+  z-index: 3;
+}
+
+.palette input {
+  border: none;
+}
+
+.palette .button {
+  @extend .icon;
+  cursor: pointer;
+  margin: 2px;
+  overflow: hidden;
+  box-shadow: inset -2px -2px 2px rgba(0,0,0,0.5), 
+              inset 2px 2px 2px rgba(255,255,255,0.8); 
+  user-select: none;
+}
+
+.palette .button:active {
+  box-shadow: inset -2px -2px 2px rgba(255,255,255,0.8), 
+              inset 2px 2px 2px rgba(0,0,0,0.5);   
+}
+
+.palette .button:disabled {
+  filter: grayscale(100%);
+  box-shadow: inset -2px -2px 2px rgba(255,255,255,0.8), 
+            inset 2px 2px 2px rgba(0,0,0,0.5);  
+}

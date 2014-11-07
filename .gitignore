@@ -4,3 +4,4 @@ node_modules/
 typings/
 .sublime-*
 .tmp/
+.sass-cache/

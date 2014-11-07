@@ -1,0 +1,5 @@
+  <div class="panel">
+    <div ng-repeat="(resource, quantity) in currentState().resources"
+         class="resource icon-{{resource}}">{{ quantity }}</div>
+    <div class="resource icon-population">{{ currentState().pop }}/{{ currentState().popCap }}</div>
+  </div>

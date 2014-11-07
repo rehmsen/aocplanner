@@ -1,5 +1,6 @@
+/// <reference path="../../../../typings/angularjs/angular.d.ts" />
 
-function durationFilter() {
+function createDurationFilter() {
   return function (seconds) {
     var minutes = Math.floor(seconds / 60);
     var hours = Math.floor(minutes / 60);
@@ -10,4 +11,4 @@ function durationFilter() {
   };
 }
 
-export = durationFilter;
+export = createDurationFilter;
