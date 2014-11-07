@@ -57,7 +57,8 @@ gulp.task('build:sprite', function () {
   return gulp.src('src/client/assets/images/icons/**/*.png')
     .pipe(spritesmith({
       imgName: 'sprite.png',
-      cssName: 'sprite.css'
+      cssName: 'sprite.css',
+      algorithm: 'binary-tree'
     }))
     .pipe(gulp.dest('dist/client'));
 });
@@ -73,12 +74,18 @@ gulp.task('copy:assets', ['clean'], function() {
     .pipe(gulp.dest('./dist/client/assets')); 
 });
 
+gulp.task('copy:images', ['clean'], function() {
+  return gulp.src('src/client/assets/images/!(icons)/**/*.{gif,jpg,png}')
+    .pipe(gulp.dest('./dist/client/assets/images/')); 
+});
+
 gulp.task('dist', [
   'browserify', 
   'build:scss', 
   'build:sprite',
   'copy:html', 
-  'copy:assets']);
+  'copy:assets',
+  'copy:images']);
 
 gulp.task('serve', ['dist'], function() {
   return gulp.src(['dist/client', 'bower_components']).pipe(webserver());
