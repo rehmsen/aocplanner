@@ -1,7 +1,7 @@
 /// <reference path="../../../../typings/angularjs/angular.d.ts" />
 
-function createDurationFilter() {
-  return function (seconds) {
+function createDurationFilter(): Function {
+  return function (seconds: number): string {
     var minutes = Math.floor(seconds / 60);
     var hours = Math.floor(minutes / 60);
     var minutesRest = minutes % 60;
