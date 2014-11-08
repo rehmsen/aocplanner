@@ -15,14 +15,15 @@ app.config(function ($routeProvider) {
     $routeProvider
       .when('/', {
         templateUrl: 'app/main/main.html',
-        controller: 'MainCtrl'
+        controller: 'MainController',
+        controllerAs: 'mainCtrl'
       })
       .otherwise({
         redirectTo: '/'
       });
   });
 
-app.controller('MainCtrl', MainController);
+app.controller('MainController', MainController);
 
 app.directive('ageIndicator', createAgeIndicatorDirective);
 app.directive('buildOrderItem', createBuildOrderItemDirective);
