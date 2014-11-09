@@ -26,7 +26,7 @@ gulp.task('clean:tmp', function(callback) {
 
 gulp.task('clean', ['clean:dist', 'clean:tmp']);
 
-gulp.task('build:ts', ['clean'], function() {
+gulp.task('build:ts', function() {
     var tsResult = gulp.src([
         'src/client/{app,components}/**/*.ts', 'typings/**/*.ts'])
         .pipe(sourcemaps.init())
@@ -44,7 +44,7 @@ gulp.task('browserify', ['build:ts'], function() {
       .pipe(gulp.dest('./dist/client/'));
 });
 
-gulp.task('build:scss', ['clean'],  function () {
+gulp.task('build:scss', function () {
   return gulp.src('src/client/{app,components}/**/*.scss')
     .pipe(sass({
       style: 'expanded',
@@ -67,17 +67,17 @@ gulp.task('build:sprite', function () {
 });
 
 
-gulp.task('copy:html', ['clean'], function() {
+gulp.task('copy:html', function() {
   return gulp.src('src/client/**/*.html')
     .pipe(gulp.dest('./dist/client'));
 });
 
-gulp.task('copy:assets', ['clean'], function() {
+gulp.task('copy:assets', function() {
   return gulp.src('src/client/assets/**/*.yaml')
     .pipe(gulp.dest('./dist/client/assets')); 
 });
 
-gulp.task('copy:images', ['clean'], function() {
+gulp.task('copy:images', function() {
   return gulp.src('src/client/assets/images/!(icons)/**/*.{gif,jpg,png}')
     .pipe(gulp.dest('./dist/client/assets/images/')); 
 });
