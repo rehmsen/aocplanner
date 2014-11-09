@@ -39,20 +39,23 @@
 <div class="build-pane">
   <div class="palettes-container">
     <div class="palette">
-     <input ng-repeat="building in mainCtrl.buildings"
+     <input type="button" 
+          ng-repeat="building in mainCtrl.buildings"
           ng-show="building.age <= mainCtrl.age.index" 
           class="icon-{{ building.id }} button"
           ng-click="mainCtrl.build(building)"></input>
     </div>
     <div class="palette"> 
-     <input ng-repeat="unit in mainCtrl.units"
+     <input type="button" 
+           ng-repeat="unit in mainCtrl.units"
           ng-show="unit.age <= mainCtrl.age.index" 
           class="icon-{{ unit.id }} button"
           ng-click="mainCtrl.train(unit)"
           ng-disabled="!mainCtrl.hasBuilding[unit.source]"></input>
     </div>
     <div class="palette"> 
-     <input ng-repeat="tech in mainCtrl.technologies"
+     <input type="button" 
+          ng-repeat="tech in mainCtrl.technologies"
           ng-show="tech.age <= mainCtrl.age.index && !mainCtrl.hasTechnology[tech.id]" 
           class="icon-{{ tech.id }} button"
           ng-click="mainCtrl.research(tech)"

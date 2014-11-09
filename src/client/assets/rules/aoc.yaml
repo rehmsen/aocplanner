@@ -27,10 +27,47 @@ ages:
 
 startResources:
   low: 
-    wood: 200
+    lumber: 200
     food: 200
     gold: 100
     stone: 200
+
+resourceSources:
+- id: sheep
+  resource: food
+  rate: 0.33
+- id: boar
+  resource: food  
+  rate: 0.36
+- id: deer
+  resource: food  
+  rate: 0.59
+- id: berries
+  resource: food
+  rate: 0.30
+- id: farm
+  resource: food
+  rate: 0.29
+- id: coastal_fish
+  resource: food  
+- id: deep_sea_fish
+  resource: food  
+- id: wood
+  resource: lumber  
+- id: straggler
+  resource: lumber  
+- id: goldmine
+  resource: gold  
+  rate: 0.4
+- id: land_trade
+  resource: gold 
+- id: sea_trade
+  resource: gold  
+- id: relic
+  resource: gold  
+- id: stonemine
+  resource: stone  
+  rate: 0.38
 
 buildings:
 - id: barracks

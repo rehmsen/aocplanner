@@ -13,7 +13,7 @@ var ts = require('gulp-typescript');
 
 function handleError(err) {
   console.error(err.toString());
-  this.emit('end');
+  
 }
 
 gulp.task('clean:dist', function(callback) {

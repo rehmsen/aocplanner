@@ -6,11 +6,29 @@ interface IAge {
    index: number;
 }
 
-interface IResources {
-  wood: number;
-  food: number;
-  stone: number;
-  gold: number;
+enum Resource {
+  lumber,
+  food,
+  stone,
+  gold
+}
+
+class Resources {
+  constructor(
+      public lumber: number,
+      public food: number,
+      public stone: number,
+      public gold: number) {}
+
+  static create(object: any) {
+    return new Resources(object.lumber, object.food, object.stone, object.gold)
+  }
+
+  update(gathererDistribution: ResourceSourceAssignment[], delta: number) {
+    gathererDistribution.forEach(function(assignment: ResourceSourceAssignment) {
+       this[assignment.source.resource] += assignment.count * assignment.source.rate * delta;
+    }, this);
+  }
 }
 
 interface ICivilization {
@@ -18,9 +36,33 @@ interface ICivilization {
 }
 
 interface IState {
-  resources: IResources;
+  resources: Resources;
   pop: number;
   popCap: number;
+  gathererDistribution: ResourceSourceAssignment[];
+  idleVillagers: number;
+}
+
+interface ResourceSourceAssignment {
+  source: ResourceSource;
+  count: number;
+}
+
+
+class State implements IState {
+  constructor(
+      public resources: Resources,
+      public pop: number,
+      public popCap: number,
+      public gathererDistribution: ResourceSourceAssignment[],
+      public idleVillagers: number) {}
+}
+
+
+interface ResourceSource {
+  id: string;
+  resource: Resource;
+  rate: number;
 }
 
 class Buildable {
@@ -28,7 +70,7 @@ class Buildable {
       public id: string,
       public age: number,
       public buildDuration: number,
-      public cost: IResources,
+      public cost: Resources,
       public source: string) {
   }
 
@@ -44,7 +86,7 @@ class Building extends Buildable {
       id: string,
       age: number,
       buildDuration: number,
-      cost: IResources,
+      cost: Resources,
       source: string,
       public room: number) {
     super(id, age, buildDuration, cost, source);
@@ -67,7 +109,7 @@ class Technology extends Buildable {
       id: string,
       age: number,
       buildDuration: number,
-      cost: IResources,
+      cost: Resources,
       source: string) {
     super(id, age, buildDuration, cost, source);
   }
@@ -85,7 +127,7 @@ class Unit extends Buildable {
       id: string,
       age: number,
       buildDuration: number,
-      cost: IResources,
+      cost: Resources,
       source: string) {
     super(id, age, buildDuration, cost, source);
   }
@@ -136,7 +178,7 @@ interface IQueue {
 class MainController {
   ages: IAge[] = [];
   civilizations: ICivilization[];
-  startResources: {low: IResources};
+  startResources: {low: Resources};
 
   loaded = false;
   timeScale: number;
@@ -166,7 +208,10 @@ class MainController {
           this.buildings = rules.buildings.map(Building.create);
           this.technologies = rules.technologies.map(Technology.create);
           this.units = rules.units.map(Unit.create);
-          this.startResources = rules.startResources;
+          this.startResources = {};
+          angular.forEach(rules.startResources, function(resources, key) {
+            this.startResources[key] = Resources.create(resources);
+          }, this);
           this.loaded = true;
         }.bind(this)).
         error(function(data: string, status: number, 
@@ -208,7 +253,6 @@ class MainController {
         items: []
       },      
     ];
-    this.settings.allTechs = true;
     this.timeScale = 3;
     this.t = 0;
   }
@@ -218,12 +262,15 @@ class MainController {
       return;
     }
     time = time !== undefined ? time : Number.MAX_VALUE;
-    var state = {
-      resources: angular.copy(this.startResources[this.settings.resources]),
-      pop: 4, 
-      popCap: 5
-    };
+    var state = new State(
+      angular.copy(this.startResources[this.settings.resources]),
+      4, 5, [], 3);
+    var lastTime = 0;
     this.buildOrder.forEach(function(item) {
+      var delta = Math.min(item.start, time) - lastTime;
+      state.resources.update(state.gathererDistribution, delta);
+
+      lastTime += delta;
       if (item.start > time) {
         return;
       }
