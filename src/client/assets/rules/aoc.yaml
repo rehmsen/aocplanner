@@ -213,7 +213,7 @@ technologies:
   age: 3
 - id: loom
   age: 0
-  building: town_center
+  source: town_center
   buildDuration: 25
   cost:
     gold: 50
@@ -287,64 +287,64 @@ technologies:
 units:
 - id: archer
   age: 1
-  building: archery_range
+  source: archery_range
   buildDuration: 35
   cost:
     wood: 25
     gold: 45
 - id: fishing_ship
   age: 0
-  building: dock
+  source: dock
   cost:
     wood: 75
 - id: galley
   age: 1
-  building: dock
+  source: dock
   buildDuration: 60
   cost:
     wood: 90
     gold: 30
 - id: militia
   age: 0
-  building: barracks
+  source: barracks
   buildDuration: 21 # TODO(olrehm): lookup
   cost: 
     food: 60
     gold: 20
 - id: scout_cavalry
   age: 1
-  building: stable
+  source: stable
   buildDuration: 30
   cost:
     food: 80
 - id: skirmisher
   age: 1
-  building: archery_range
+  source: archery_range
   buildDuration: 22
   cost:
     wood: 35
     food: 25
 - id: spearman
   age: 1
-  building: barracks
+  source: barracks
   buildDuration: 22
   cost:
     wood: 25
     food: 35
 - id: tradecard
   age: 1
-  building: market
+  source: market
 - id: tradecog
   age: 1
-  building: dock
+  source: dock
 - id: transport_ship
   age: 1
-  building: dock
+  source: dock
   cost:
     wood: 100
 - id: villager
   age: 0
-  building: town_center
+  source: town_center
   buildDuration: 25
   cost: 
     food: 50

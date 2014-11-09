@@ -25,7 +25,7 @@
   </div>
   <div class="build-order">
     <div ng-repeat="queue in mainCtrl.queues|orderBy:'start'" ng-show="queue.items.length>0" style="position:relative; left: {{queue.start*mainCtrl.timeScale}}px;">
-      <div class="icon-{{queue.buildingId}} icon"></div>
+      <div class="icon-{{queue.source}} icon"></div>
       <div class="items">
         <build-order-item ng-repeat="item in queue.items" 
                           item="item" 
@@ -49,14 +49,14 @@
           ng-show="unit.age <= mainCtrl.age.index" 
           class="icon-{{ unit.id }} button"
           ng-click="mainCtrl.train(unit)"
-          ng-disabled="!mainCtrl.hasBuilding[unit.building]"></input>
+          ng-disabled="!mainCtrl.hasBuilding[unit.source]"></input>
     </div>
     <div class="palette"> 
      <input ng-repeat="tech in mainCtrl.technologies"
-          ng-show="tech.age <= mainCtrl.age.index && !tech.researched" 
+          ng-show="tech.age <= mainCtrl.age.index && !mainCtrl.hasTechnology[tech.id]" 
           class="icon-{{ tech.id }} button"
           ng-click="mainCtrl.research(tech)"
-          ng-disabled="!mainCtrl.hasBuilding[tech.building]"></input>
+          ng-disabled="!mainCtrl.hasBuilding[tech.source]"></input>
     </div>
   </div>
 </div>

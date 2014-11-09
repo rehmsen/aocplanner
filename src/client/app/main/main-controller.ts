@@ -17,36 +17,107 @@ interface ICivilization {
   name: string
 }
 
-interface IBuildable {
-  id: string;
-  age: number;
-  buildDuration: number;
-  cost: ICost;
+interface IState {
+  resources: ICost;
+  pop: number;
+  popCap: number;
 }
 
-interface IBuilding extends IBuildable {
-  room: number;
+class Buildable {
+  constructor(
+      public id: string,
+      public age: number,
+      public buildDuration: number,
+      public cost: ICost,
+      public source: string) {
+  }
+
+  build(state: IState) {
+    angular.forEach(this.cost, function(quantity, resource) {
+      state.resources[resource] -= quantity;
+    });    
+  }
 }
 
-interface ITechnology extends IBuildable {
-  building: string
+class Building extends Buildable {
+  constructor(
+      id: string,
+      age: number,
+      buildDuration: number,
+      cost: ICost,
+      source: string,
+      public room: number) {
+    super(id, age, buildDuration, cost, source);
+  }
+
+  static create(object: any):Building {
+    return new Building(
+        object.id, object.age, object.buildDuration, object.cost, 
+        object.source, object.room)
+  }
+
+  build(state: IState) {
+    super.build(state);
+    state.popCap += this.room;
+  }
 }
 
-interface IUnit extends IBuildable {
-  building: string;
+class Technology extends Buildable {
+  constructor(
+      id: string,
+      age: number,
+      buildDuration: number,
+      cost: ICost,
+      source: string) {
+    super(id, age, buildDuration, cost, source);
+  }
+
+  static create(object: any): Technology {
+    return new Technology(
+        object.id, object.age, object.buildDuration, object.cost, 
+        object.source)    
+  }
+
 }
 
-enum BuildableType {
-  unit,
-  building,
-  technology
+class Unit extends Buildable {
+  constructor(
+      id: string,
+      age: number,
+      buildDuration: number,
+      cost: ICost,
+      source: string) {
+    super(id, age, buildDuration, cost, source);
+  }
+
+  static create(object: any): Unit {
+    return new Unit(
+        object.id, object.age, object.buildDuration, object.cost, 
+        object.source)    
+  }
+
+  build(state: IState) {
+    state.pop++;
+  }
 }
 
 interface IBuildOrderItem {
-  type: BuildableType;
   offset: number;
   start: number;
-  subject: IBuildable;
+
+  apply(state: IState);
+}
+
+class BuildableItem implements IBuildOrderItem {
+  offset: number;
+  start: number;
+
+  constructor(public buildable: Buildable) {
+  }
+
+  apply(state: IState) {
+    this.buildable.build(state);
+  }
 }
 
 interface ISettings {
@@ -55,7 +126,7 @@ interface ISettings {
 }
 
 interface IQueue {
-  buildingId: string;
+  source: string;
   start: number;
   length: number;
   items: IBuildOrderItem[];
@@ -63,19 +134,22 @@ interface IQueue {
 
 
 class MainController {
-  loaded = false;
   ages: IAge[] = [];
-  age: IAge;
-  buildings: IBuilding[];
   civilizations: ICivilization[];
-  technologies: ITechnology[];
-  units: IUnit[];
   startResources: {low: ICost};
+
+  loaded = false;
+  timeScale: number;
+
+  age: IAge;
+  buildings: Building[];
+  technologies: Technology[];
+  units: Unit[];
   buildOrder: IBuildOrderItem[];
   hasBuilding;
+  hasTechnology;
   settings: ISettings;
   queues: IQueue[];
-  timeScale: number;
   t: number;
 
   constructor($scope, $http: ng.IHttpService) {
@@ -89,9 +163,9 @@ class MainController {
             this.ages.push(age);
           }.bind(this));
           this.age = this.ages[0];
-          this.buildings = rules.buildings;
-          this.technologies = rules.technologies;
-          this.units = rules.units;
+          this.buildings = rules.buildings.map(Building.create);
+          this.technologies = rules.technologies.map(Technology.create);
+          this.units = rules.units.map(Unit.create);
           this.startResources = rules.startResources;
           this.loaded = true;
         }.bind(this)).
@@ -103,31 +177,32 @@ class MainController {
     this.hasBuilding = {
       'town_center': true
     };
+    this.hasTechnology = {};
     this.settings = {
       resources: 'low',
       allTechs: true
     };
     this.queues = [
       {
-        buildingId: 'town_center',
+        source: 'town_center',
         start: 0,
         length: 0,
         items: []
       },
       {
-        buildingId: 'villager',
+        source: 'villager',
         start: 0,
         length: 0,
         items: []
       },
       {
-        buildingId: 'villager',
+        source: 'villager',
         start: 0,
         length: 0,
         items: []
       },
       {
-        buildingId: 'villager',
+        source: 'villager',
         start: 0,
         length: 0,
         items: []
@@ -152,30 +227,17 @@ class MainController {
       if (item.start > time) {
         return;
       }
-
-      if (item.type === BuildableType.building) {
-        var building = <IBuilding>item.subject;
-        state.popCap += building.room;
-      }
-      if (item.type === BuildableType.unit) {
-        state.pop++;
-      }
-      angular.forEach(item.subject.cost, function(quantity, resource) {
-        state.resources[resource] -= quantity;
-      });
+      item.apply(state);
     });
     return state;
   }
 
-  build(building): void {
-    building.building = 'villager';
-    var queue = this.enqueue_({
-      type: 'building',
-      subject: building
-    });
+  build(building: Building): void {
+    building.source = 'villager';
+    var queue = this.enqueueBuildableItem_(building);
     var completionTime = queue.length;
     this.queues.push({
-      buildingId: building.id,
+      source: building.id,
       start: completionTime, 
       length: 0,
       items: []
@@ -183,29 +245,24 @@ class MainController {
     this.hasBuilding[building.id] = true;
   }
 
-  research(tech): void {
-    tech.researched = true;
-    this.enqueue_({
-      type: 'tech',
-      subject: tech
-    });
+  research(tech: Technology): void {
+    this.hasTechnology[tech.id] = true;
+    this.enqueueBuildableItem_(tech);
   }
 
-  train(unit): void {
-    this.enqueue_({
-      type: 'unit',
-      subject: unit
-    });
+  train(unit: Unit): void {
+    this.enqueueBuildableItem_(unit);
   }
 
-  private enqueue_(item) {
+  private enqueueBuildableItem_(buildable: Buildable): IQueue {
+    var item = new BuildableItem(buildable);
     var queue = this.queues.filter(function(queue) { 
-      return queue.buildingId === item.subject.building;
+      return queue.source === item.buildable.source;
     })[0];
     item.offset = 0;
     item.start = queue.length + item.offset;
     queue.items.push(item);
-    queue.length += item.offset + item.subject.buildDuration;
+    queue.length += item.offset + buildable.buildDuration;
 
     // TODO(oler): Replace with binary search.
     var index = 0;
