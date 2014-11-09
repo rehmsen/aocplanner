@@ -6,7 +6,7 @@ interface IAge {
    index: number;
 }
 
-interface ICost {
+interface IResources {
   wood: number;
   food: number;
   stone: number;
@@ -18,7 +18,7 @@ interface ICivilization {
 }
 
 interface IState {
-  resources: ICost;
+  resources: IResources;
   pop: number;
   popCap: number;
 }
@@ -28,7 +28,7 @@ class Buildable {
       public id: string,
       public age: number,
       public buildDuration: number,
-      public cost: ICost,
+      public cost: IResources,
       public source: string) {
   }
 
@@ -44,7 +44,7 @@ class Building extends Buildable {
       id: string,
       age: number,
       buildDuration: number,
-      cost: ICost,
+      cost: IResources,
       source: string,
       public room: number) {
     super(id, age, buildDuration, cost, source);
@@ -67,7 +67,7 @@ class Technology extends Buildable {
       id: string,
       age: number,
       buildDuration: number,
-      cost: ICost,
+      cost: IResources,
       source: string) {
     super(id, age, buildDuration, cost, source);
   }
@@ -85,7 +85,7 @@ class Unit extends Buildable {
       id: string,
       age: number,
       buildDuration: number,
-      cost: ICost,
+      cost: IResources,
       source: string) {
     super(id, age, buildDuration, cost, source);
   }
@@ -136,7 +136,7 @@ interface IQueue {
 class MainController {
   ages: IAge[] = [];
   civilizations: ICivilization[];
-  startResources: {low: ICost};
+  startResources: {low: IResources};
 
   loaded = false;
   timeScale: number;
