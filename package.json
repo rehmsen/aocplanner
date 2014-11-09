@@ -17,6 +17,7 @@
     "gulp-typescript": "~2.2.0",
     "gulp-webserver": "~0.8.7",
     "rimraf": "^2.2.8",
-    "vinyl-source-stream": "^1.0.0"
+    "vinyl-source-stream": "^1.0.0",
+    "gulp-sourcemaps": "~1.2.8"
   }
 }

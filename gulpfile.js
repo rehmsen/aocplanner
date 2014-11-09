@@ -5,6 +5,7 @@ var rimraf = require('rimraf');
 var sass = require('gulp-ruby-sass');
 var size = require('gulp-size');
 var source = require('vinyl-source-stream');
+var sourcemaps = require('gulp-sourcemaps');
 var spritesmith = require('gulp.spritesmith');
 var ts = require('gulp-typescript');
 var webserver = require('gulp-webserver');
@@ -25,20 +26,21 @@ gulp.task('clean:tmp', function(callback) {
 gulp.task('clean', ['clean:dist', 'clean:tmp']);
 
 gulp.task('build:ts', ['clean'], function() {
-    var tsResult = gulp.src(['src/client/{app,components}/**/*.ts', 
-                 'typings/**/*.ts']).pipe(
-      ts({
-        noExternalResolve: true,
-        module: 'commonjs'
-      })).on('error', handleError);
-    return tsResult.js.pipe(gulp.dest('.tmp/client'));
+    var tsResult = gulp.src([
+        'src/client/{app,components}/**/*.ts', 'typings/**/*.ts'])
+        .pipe(sourcemaps.init())
+        .pipe(ts({noExternalResolve: true, module: 'commonjs'}))
+        .on('error', handleError);
+    return tsResult.js
+        .pipe(sourcemaps.write())
+        .pipe(gulp.dest('.tmp/client'));
 });
 
 gulp.task('browserify', ['build:ts'], function() {
-  return browserify('./.tmp/client/app/app.js')
-    .bundle()
-    .pipe(source('bundle.js'))
-    .pipe(gulp.dest('./dist/client/'));
+  return browserify('./.tmp/client/app/app.js', {debug: true, standalone: 'noscope'})
+      .bundle()
+      .pipe(source('bundle.js'))
+      .pipe(gulp.dest('./dist/client/'));
 });
 
 gulp.task('build:scss', ['clean'],  function () {

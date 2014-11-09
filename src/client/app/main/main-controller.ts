@@ -1,10 +1,6 @@
 /// <reference path="../../../../typings/angularjs/angular.d.ts" />
 /// <reference path="../../../../typings/js-yaml/js-yaml.d.ts" />
 
-// interface IMainControllerScope extends ng.IScope {
-//   buildOrder: 
-// }
-
 interface IAge {
    name: string;
    index: number;

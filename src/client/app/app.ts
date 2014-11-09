@@ -1,6 +1,7 @@
 /// <reference path="../../../typings/angularjs/angular.d.ts" />
 
 import MainController = require('./main/main-controller');
+import exceptionOverride = require('../components/exception/exception-override');
 
 import createAgeIndicatorDirective = require('../components/age-indicator/age-indicator-directive');
 import createBuildOrderItemDirective = require('../components/build-order/build-order-item-directive');
@@ -9,7 +10,7 @@ import createResourceIndicatorDirective = require('../components/resource-indica
 import createTimelineDirective = require('../components/timeline/timeline-directive');
 
 var app = angular.module('aocPlannerApp', [ 
-	'ngRoute']);
+	'ngRoute', exceptionOverride.name]);
 
 app.config(function ($routeProvider) {
     $routeProvider
@@ -31,6 +32,3 @@ app.directive('resourceIndicator', createResourceIndicatorDirective);
 app.directive('timeline', createTimelineDirective);
 
 app.filter('duration', createDurationFilter);
-
-
-
