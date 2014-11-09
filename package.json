@@ -18,6 +18,7 @@
     "gulp-webserver": "~0.8.7",
     "rimraf": "^2.2.8",
     "vinyl-source-stream": "^1.0.0",
-    "gulp-sourcemaps": "~1.2.8"
+    "gulp-sourcemaps": "~1.2.8",
+    "require-dir": "~0.1.0"
   }
 }
