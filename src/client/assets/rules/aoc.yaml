@@ -74,48 +74,48 @@ buildings:
   age: 0
   buildDuration: 50
   cost: 
-    wood: 175
+    lumber: 175
 - id: dock
   age: 0
   buildDuration: 35
   cost:
-    wood: 150
+    lumber: 150
 - id: house
   age: 0
   room: 5
   buildDuration: 25
   cost:
-    wood: 30
+    lumber: 30
 - id: lumber_camp
   age: 0
   buildDuration: 35
   cost:
-    wood: 100
+    lumber: 100
 - id: mill
   age: 0
   buildDuration: 35
   cost:
-    wood: 100
+    lumber: 100
 - id: mining_camp
   age: 0
   buildDuration: 35
   cost:
-    wood: 100
+    lumber: 100
 - id: outpost
   age: 0
   cost:
-    wood: 25
+    lumber: 25
     stone: 10
 - id: palisade
   age: 0
   cost:
-    wood: 2
+    lumber: 2
 - id: town_center
   age: 0
   room: 5
   buildDuration: 150
   cost:
-    wood: 275
+    lumber: 275
     stone: 100
 
 technologies:
@@ -327,19 +327,19 @@ units:
   source: archery_range
   buildDuration: 35
   cost:
-    wood: 25
+    lumber: 25
     gold: 45
 - id: fishing_ship
   age: 0
   source: dock
   cost:
-    wood: 75
+    lumber: 75
 - id: galley
   age: 1
   source: dock
   buildDuration: 60
   cost:
-    wood: 90
+    lumber: 90
     gold: 30
 - id: militia
   age: 0
@@ -359,14 +359,14 @@ units:
   source: archery_range
   buildDuration: 22
   cost:
-    wood: 35
+    lumber: 35
     food: 25
 - id: spearman
   age: 1
   source: barracks
   buildDuration: 22
   cost:
-    wood: 25
+    lumber: 25
     food: 35
 - id: tradecard
   age: 1
@@ -378,7 +378,7 @@ units:
   age: 1
   source: dock
   cost:
-    wood: 100
+    lumber: 100
 - id: villager
   age: 0
   source: town_center

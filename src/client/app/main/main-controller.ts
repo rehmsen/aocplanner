@@ -23,12 +23,6 @@ class Resources {
   static create(object: any) {
     return new Resources(object.lumber, object.food, object.stone, object.gold)
   }
-
-  update(gathererDistribution: ResourceSourceAssignment[], delta: number) {
-    gathererDistribution.forEach(function(assignment: ResourceSourceAssignment) {
-       this[assignment.source.resource] += assignment.count * assignment.source.rate * delta;
-    }, this);
-  }
 }
 
 interface ICivilization {
@@ -39,13 +33,57 @@ interface IState {
   resources: Resources;
   pop: number;
   popCap: number;
-  gathererDistribution: ResourceSourceAssignment[];
-  idleVillagers: number;
+  assignments: {[task: string]: IAssignment};
 }
 
-interface ResourceSourceAssignment {
-  source: ResourceSource;
+interface ResourceSource {
+  id: string;
+  resource: Resource;
+  rate: number;
+}
+
+interface IAssignment {
   count: number;
+  task: string;
+  apply(delta: number, state: State): void;  
+}
+
+class IdleAssignment implements IAssignment {
+  task = 'idle';
+  constructor(
+      public count: number) {}
+
+  apply(delta: number, state: State): void {}
+}
+
+class GatheringAssignment implements IAssignment {
+  task: string;
+  
+  constructor(
+      public count: number,
+      public source: ResourceSource) {
+    this.task = source.id;
+  }
+
+  apply(delta: number, state: State): void {
+     state.resources[this.source.resource] += 
+         this.count * this.source.rate * delta;
+  }
+}
+
+class AssignmentFactory {
+  sources: {[id: string]: ResourceSource}
+  constructor(sources: ResourceSource[]) {
+    sources.forEach(function(source){
+      this.sources[source.id] = source;
+    }, this);
+  }
+
+  create(task: string, count: number): IAssignment {
+    if (task == 'idle') return new IdleAssignment(count);
+    else if (task in this.sources) return new GatheringAssignment(count, this.sources[task]);
+    else throw new Error('Unknown task: ' + task);
+  }
 }
 
 
@@ -54,15 +92,7 @@ class State implements IState {
       public resources: Resources,
       public pop: number,
       public popCap: number,
-      public gathererDistribution: ResourceSourceAssignment[],
-      public idleVillagers: number) {}
-}
-
-
-interface ResourceSource {
-  id: string;
-  resource: Resource;
-  rate: number;
+      public assignments: {[task: string]: IAssignment}) {}
 }
 
 class Buildable {
@@ -95,7 +125,7 @@ class Building extends Buildable {
   static create(object: any):Building {
     return new Building(
         object.id, object.age, object.buildDuration, object.cost, 
-        object.source, object.room)
+        object.source, object.room || 0);
   }
 
   build(state: IState) {
@@ -150,11 +180,40 @@ interface IBuildOrderItem {
   apply(state: IState);
 }
 
-class BuildableItem implements IBuildOrderItem {
-  offset: number;
-  start: number;
 
-  constructor(public buildable: Buildable) {
+class ReassignmentItem implements IBuildOrderItem {
+  constructor(
+      public offset: number,
+      public start: number,
+      private count: number,
+      private fromTask: string,
+      private toTask: string,
+      private assignmentFactory: AssignmentFactory) {}
+
+  apply(state: IState) {
+    var fromAssignment = state.assignments[this.fromTask];
+    if (!fromAssignment || fromAssignment.count < this.count) {
+      throw new Error(
+          'Cannot reassign ' + this.count + ' workers from assignment ' + 
+          fromAssignment);
+    }
+    fromAssignment.count -= this.count;
+    var toAssignment = state.assignments[this.toTask];
+    if (toAssignment) {
+      toAssignment.count += this.count;
+    } else {
+      toAssignment = state.assignments[this.toTask] = 
+          this.assignmentFactory.create(this.toTask, this.count); 
+    }
+  }  
+}
+
+class BuildableItem implements IBuildOrderItem {
+
+  constructor(
+      public offset: number,
+      public start: number,
+      public buildable: Buildable) {
   }
 
   apply(state: IState) {
@@ -264,11 +323,13 @@ class MainController {
     time = time !== undefined ? time : Number.MAX_VALUE;
     var state = new State(
       angular.copy(this.startResources[this.settings.resources]),
-      4, 5, [], 3);
+      4, 5, {'idle': new IdleAssignment(3)});
     var lastTime = 0;
     this.buildOrder.forEach(function(item) {
       var delta = Math.min(item.start, time) - lastTime;
-      state.resources.update(state.gathererDistribution, delta);
+      angular.forEach(state.assignments, function(assignment: IAssignment) {
+        assignment.apply(delta, state);
+      }, this);
 
       lastTime += delta;
       if (item.start > time) {
@@ -302,12 +363,12 @@ class MainController {
   }
 
   private enqueueBuildableItem_(buildable: Buildable): IQueue {
-    var item = new BuildableItem(buildable);
     var queue = this.queues.filter(function(queue) { 
-      return queue.source === item.buildable.source;
+      return queue.source === buildable.source;
     })[0];
-    item.offset = 0;
-    item.start = queue.length + item.offset;
+    var offset = 0;
+    var item = new BuildableItem(
+        offset, queue.length + offset, buildable);
     queue.items.push(item);
     queue.length += item.offset + buildable.buildDuration;
 
