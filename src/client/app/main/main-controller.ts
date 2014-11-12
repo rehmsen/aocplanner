@@ -1,264 +1,31 @@
 /// <reference path="../../../../typings/angularjs/angular.d.ts" />
 /// <reference path="../../../../typings/js-yaml/js-yaml.d.ts" />
-
-interface IAge {
-   name: string;
-   index: number;
-}
-
-enum Resource {
-  lumber,
-  food,
-  stone,
-  gold
-}
-
-class Resources {
-  constructor(
-      public lumber: number,
-      public food: number,
-      public stone: number,
-      public gold: number) {}
-
-  static create(object: any) {
-    return new Resources(object.lumber, object.food, object.stone, object.gold)
-  }
-}
-
-interface ICivilization {
-  name: string
-}
-
-interface IState {
-  resources: Resources;
-  pop: number;
-  popCap: number;
-  assignments: {[task: string]: IAssignment};
-}
-
-interface IResourceSource {
-  id: string;
-  resource: Resource;
-  rate: number;
-}
-
-interface IAssignment {
-  count: number;
-  task: string;
-  apply(delta: number, state: State): void;  
-}
-
-class IdleAssignment implements IAssignment {
-  task = 'idle';
-  constructor(
-      public count: number) {}
-
-  apply(delta: number, state: State): void {}
-}
-
-class GatheringAssignment implements IAssignment {
-  task: string;
-  
-  constructor(
-      public count: number,
-      public source: IResourceSource) {
-    this.task = source.id;
-  }
-
-  apply(delta: number, state: State): void {
-     state.resources[this.source.resource] += 
-         this.count * this.source.rate * delta;
-  }
-}
-
-class AssignmentFactory {
-  sources: {[id: string]: IResourceSource} = {};
-  constructor(sources: IResourceSource[]) {
-    sources.forEach(function(source){
-      this.sources[source.id] = source;
-    }, this);
-  }
-
-  create(task: string, count: number): IAssignment {
-    if (task == 'idle') return new IdleAssignment(count);
-    else if (task in this.sources) return new GatheringAssignment(count, this.sources[task]);
-    else throw new Error('Unknown task: ' + task);
-  }
-}
-
-
-class State implements IState {
-  constructor(
-      public resources: Resources,
-      public pop: number,
-      public popCap: number,
-      public assignments: {[task: string]: IAssignment}) {}
-}
-
-class Buildable {
-  constructor(
-      public id: string,
-      public age: number,
-      public buildDuration: number,
-      public cost: Resources,
-      public source: string) {
-  }
-
-  build(state: IState) {
-    angular.forEach(this.cost, function(quantity, resource) {
-      state.resources[resource] -= quantity;
-    });    
-  }
-}
-
-class Building extends Buildable {
-  constructor(
-      id: string,
-      age: number,
-      buildDuration: number,
-      cost: Resources,
-      source: string,
-      public room: number) {
-    super(id, age, buildDuration, cost, source);
-  }
-
-  static create(object: any):Building {
-    return new Building(
-        object.id, object.age, object.buildDuration, object.cost, 
-        object.source, object.room || 0);
-  }
-
-  build(state: IState) {
-    super.build(state);
-    state.popCap += this.room;
-  }
-}
-
-class Technology extends Buildable {
-  constructor(
-      id: string,
-      age: number,
-      buildDuration: number,
-      cost: Resources,
-      source: string) {
-    super(id, age, buildDuration, cost, source);
-  }
-
-  static create(object: any): Technology {
-    return new Technology(
-        object.id, object.age, object.buildDuration, object.cost, 
-        object.source)    
-  }
-
-}
-
-class Unit extends Buildable {
-  constructor(
-      id: string,
-      age: number,
-      buildDuration: number,
-      cost: Resources,
-      source: string,
-      public tasks: string[]) {
-    super(id, age, buildDuration, cost, source);
-  }
-
-  static create(object: any): Unit {
-    return new Unit(
-        object.id, object.age, object.buildDuration, object.cost, 
-        object.source, object.tasks)    
-  }
-
-  build(state: IState) {
-    super.build(state);
-    state.pop++;
-  }
-}
-
-interface IBuildOrderItem {
-  start: number;
-
-  apply(state: IState);
-}
-
-
-class ReassignmentItem implements IBuildOrderItem {
-  constructor(
-      public start: number,
-      private count: number,
-      private fromTask: string,
-      private toTask: string,
-      private assignmentFactory: AssignmentFactory) {}
-
-  apply(state: IState) {
-    if (this.fromTask) {
-      var fromAssignment = state.assignments[this.fromTask];
-      if (!fromAssignment || fromAssignment.count < this.count) {
-        throw new Error(
-            'Cannot reassign ' + this.count + ' workers from assignment ' + 
-            fromAssignment);
-      }      
-      fromAssignment.count -= this.count;
-    }
-    var toAssignment = state.assignments[this.toTask];
-    if (toAssignment) {
-      toAssignment.count += this.count;
-    } else {
-      toAssignment = state.assignments[this.toTask] = 
-          this.assignmentFactory.create(this.toTask, this.count); 
-    }
-  }  
-}
-
-class BuildableItem implements IBuildOrderItem {
-  public initialTask: string;
-
-  constructor(
-      public offset: number,
-      public start: number,
-      public buildable: Buildable) {
-  }
-
-  apply(state: IState) {
-    this.buildable.build(state);
-  }
-}
-
-interface ISettings {
-  resources: string;
-  allTechs: boolean;
-}
-
-interface IQueue {
-  source: string;
-  start: number;
-  length: number;
-  items: IBuildOrderItem[];
-}
-
+import build = require('../../components/model/build');
+import core = require('../../components/model/core');
+import assignments = require('../../components/model/assignments');
 
 class MainController {
-  ages: IAge[] = [];
-  civilizations: ICivilization[];
-  startResources: {low: Resources};
+  ages: core.IAge[] = [];
+  civilizations: core.ICivilization[];
+  startResources: {low: core.Resources};
 
   loaded = false;
   timeScale: number;
 
-  age: IAge;
-  buildings: Building[];
-  technologies: Technology[];
-  units: Unit[];
-  resourceSources: IResourceSource[];
+  age: core.IAge;
+  buildings: build.Building[];
+  technologies: build.Technology[];
+  units: build.Unit[];
+  resourceSources: core.IResourceSource[];
   tasks: string[];
-  buildOrder: IBuildOrderItem[];
+  buildOrder: core.IBuildOrderItem[];
   hasBuilding;
   hasTechnology;
-  settings: ISettings;
-  queues: IQueue[];
+  settings: core.ISettings;
+  queues: core.IQueue[];
   t: number;
-  worker: Unit;
-  assignmentFactory: AssignmentFactory;
+  worker: build.Unit;
+  assignmentFactory: assignments.AssignmentFactory;
 
   constructor($scope, $http: ng.IHttpService) {
     $http.get('assets/rules/aoc.yaml').
@@ -271,11 +38,11 @@ class MainController {
             this.ages.push(age);
           }.bind(this));
           this.age = this.ages[0];
-          this.buildings = rules.buildings.map(Building.create);
-          this.technologies = rules.technologies.map(Technology.create);
-          this.units = rules.units.map(Unit.create);
+          this.buildings = rules.buildings.map(build.Building.create);
+          this.technologies = rules.technologies.map(build.Technology.create);
+          this.units = rules.units.map(build.Unit.create);
           this.resourceSources = rules.resourceSources;
-          this.assignmentFactory = new AssignmentFactory(this.resourceSources);
+          this.assignmentFactory = new assignments.AssignmentFactory(this.resourceSources);
           this.tasks = ['idle', 'build'];
           this.resourceSources.forEach(function(resourceSource) {
             this.tasks.push(resourceSource.id);
@@ -283,7 +50,7 @@ class MainController {
 
           this.startResources = {};
           angular.forEach(rules.startResources, function(resources, key) {
-            this.startResources[key] = Resources.create(resources);
+            this.startResources[key] = core.Resources.create(resources);
           }, this);
           this.loaded = true;
         }.bind(this)).
@@ -335,13 +102,13 @@ class MainController {
       return;
     }
     time = time !== undefined ? time : Number.MAX_VALUE;
-    var state = new State(
+    var state = new core.State(
       angular.copy(this.startResources[this.settings.resources]),
-      4, 5, {'idle': new IdleAssignment(3)});
+      4, 5, {'idle': new assignments.IdleAssignment(3)});
     var lastTime = 0;
     this.buildOrder.forEach(function(item) {
       var delta = Math.min(item.start, time) - lastTime;
-      angular.forEach(state.assignments, function(assignment: IAssignment) {
+      angular.forEach(state.assignments, function(assignment: core.IAssignment) {
         assignment.apply(delta, state);
       }, this);
 
@@ -352,14 +119,14 @@ class MainController {
       item.apply(state);
     });
     var delta = time - lastTime;
-    angular.forEach(state.assignments, function(assignment: IAssignment) {
+    angular.forEach(state.assignments, function(assignment: core.IAssignment) {
       assignment.apply(delta, state);
     }, this);
 
     return state;
   }
 
-  build(building: Building): void {
+  build(building: build.Building): void {
     building.source = 'villager';
     var queue = this.enqueueBuildableItem_(building);
     var completionTime = queue.length;
@@ -372,12 +139,12 @@ class MainController {
     this.hasBuilding[building.id] = true;
   }
 
-  research(tech: Technology): void {
+  research(tech: build.Technology): void {
     this.hasTechnology[tech.id] = true;
     this.enqueueBuildableItem_(tech);
   }
 
-  train(unit: Unit): void {
+  train(unit: build.Unit): void {
     if (unit.tasks) {
       this.worker = unit;
     } else {
@@ -387,33 +154,33 @@ class MainController {
 
   assign(task: string): void {
     var queue = this.enqueueBuildableItem_(this.worker);
-    var buildableItem = <BuildableItem>queue.items[queue.items.length-1];
+    var buildableItem = <build.BuildableItem>queue.items[queue.items.length-1];
     buildableItem.initialTask = task;
-    var reassignementItem = new ReassignmentItem(
+    var reassignementItem = new assignments.ReassignmentItem(
       queue.length,
       1,
       null,
       task,
       this.assignmentFactory);
     this.sortIntoBuildOrder_(reassignementItem);
-    this.worker = null;
+    this.worker = null;buildableItem
   }
 
-  private enqueueBuildableItem_(buildable: Buildable): IQueue {
+  private enqueueBuildableItem_(buildable: build.Buildable): core.IQueue {
     var queue = this.queues.filter(function(queue) { 
       return queue.source === buildable.source;
     })[0];
     var offset = 0;
-    var item = new BuildableItem(
+    var item = new build.BuildableItem(
         offset, queue.length + offset, buildable);
-    queue.items.push(item);
+    queue.items.push(item); 
     queue.length += item.offset + buildable.buildDuration;
     this.sortIntoBuildOrder_(item);
     this.t = queue.start + queue.length;
     return queue;
   }
 
-  private sortIntoBuildOrder_(item: IBuildOrderItem) {
+  private sortIntoBuildOrder_(item: core.IBuildOrderItem) {
     // TODO(oler): Replace with binary search.
     var index = 0;
     this.buildOrder.forEach(function(eachItem) {
