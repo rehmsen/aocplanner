@@ -64,10 +64,11 @@ resourceSources:
 - id: sea_trade
   resource: gold  
 - id: relic
-  resource: gold  
+  resource: gold
 - id: stonemine
   resource: stone  
   rate: 0.38
+
 
 buildings:
 - id: barracks
@@ -334,6 +335,9 @@ units:
   source: dock
   cost:
     lumber: 75
+  tasks:
+  - coastal_fish
+  - deep_sea_fish
 - id: galley
   age: 1
   source: dock
@@ -385,3 +389,13 @@ units:
   buildDuration: 25
   cost: 
     food: 50
+  tasks:
+  - berries
+  - sheep
+  - deer
+  - boar
+  - coastal_fish
+  - goldmine
+  - stonemine
+  - wood
+  - straggler

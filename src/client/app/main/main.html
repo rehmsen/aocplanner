@@ -45,14 +45,21 @@
           class="icon-{{ building.id }} button"
           ng-click="mainCtrl.build(building)"></input>
     </div>
-    <div class="palette"> 
+    <div class="palette" ng-show="!mainCtrl.worker"> 
      <input type="button" 
-           ng-repeat="unit in mainCtrl.units"
+          ng-repeat="unit in mainCtrl.units"
           ng-show="unit.age <= mainCtrl.age.index" 
           class="icon-{{ unit.id }} button"
           ng-click="mainCtrl.train(unit)"
           ng-disabled="!mainCtrl.hasBuilding[unit.source]"></input>
     </div>
+    <div class="palette" ng-show="mainCtrl.worker">
+     <input type="button" 
+          ng-repeat="task in mainCtrl.tasks"
+          ng-show="mainCtrl.worker.tasks.indexOf(task) >= 0" 
+          class="icon-{{ task }} button"
+          ng-click="mainCtrl.assign(task)"></input>
+    </div>    
     <div class="palette"> 
      <input type="button" 
           ng-repeat="tech in mainCtrl.technologies"
