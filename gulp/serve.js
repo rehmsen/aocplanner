@@ -1,9 +1,12 @@
 'use strict';
 
 var gulp = require('gulp');
-var webserver = require('gulp-webserver');
-var connect = require('gulp-connect');
+var shell = require('gulp-shell');
 
-gulp.task('serve', ['watch'], function() {
-  return gulp.src(['dist/client', 'bower_components']).pipe(webserver());
-});
+gulp.task('serve', ['watch'], shell.task([
+  'goapp serve dist'
+]));
+
+gulp.task('deploy', ['watch'], shell.task([
+  'goapp deploy dist'
+]));
