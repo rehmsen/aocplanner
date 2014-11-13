@@ -10,6 +10,9 @@ var source = require('vinyl-source-stream');
 var sourcemaps = require('gulp-sourcemaps');
 var spritesmith = require('gulp.spritesmith');
 var ts = require('gulp-typescript');
+var useref = require('gulp-useref');
+var wiredep = require('wiredep').stream;
+
 
 function handleError(err) {
   console.error(err.toString());
@@ -66,12 +69,6 @@ gulp.task('build:sprite', function () {
     .pipe(gulp.dest('dist/client'));
 });
 
-
-gulp.task('copy:html', function() {
-  return gulp.src('src/client/**/*.html')
-    .pipe(gulp.dest('./dist/client'));
-});
-
 gulp.task('copy:assets', function() {
   return gulp.src('src/client/assets/**/*.yaml')
     .pipe(gulp.dest('./dist/client/assets')); 
@@ -82,10 +79,22 @@ gulp.task('copy:images', function() {
     .pipe(gulp.dest('./dist/client/assets/images/')); 
 });
 
+gulp.task('build:dependencies', function () {
+  var assets = useref.assets();
+  return gulp.src('./src/client/**/*.html')
+      .pipe(wiredep({}))
+      .pipe(assets)
+      .pipe(assets.restore())
+      .pipe(useref())
+      .pipe(gulp.dest('dist/client'));
+});
+
+
+
 gulp.task('dist', [
   'browserify', 
   'build:scss', 
   'build:sprite',
-  'copy:html', 
   'copy:assets',
-  'copy:images']);
+  'copy:images',
+  'build:dependencies']);

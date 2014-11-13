@@ -19,6 +19,8 @@
     "rimraf": "^2.2.8",
     "vinyl-source-stream": "^1.0.0",
     "gulp-sourcemaps": "~1.2.8",
-    "require-dir": "~0.1.0"
+    "require-dir": "~0.1.0",
+    "wiredep": "~2.1.0",
+    "gulp-useref": "~1.0.2"
   }
 }
