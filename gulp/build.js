@@ -89,7 +89,15 @@ gulp.task('build:dependencies', function () {
       .pipe(gulp.dest('dist/client'));
 });
 
+gulp.task('copy:go', function() {
+  return gulp.src('src/**/*.go')
+    .pipe(gulp.dest('./dist/'));
+});
 
+gulp.task('copy:appyaml', function() {
+  return gulp.src('src/app.yaml')
+    .pipe(gulp.dest('./dist/'));
+});
 
 gulp.task('dist', [
   'browserify', 
@@ -97,4 +105,6 @@ gulp.task('dist', [
   'build:sprite',
   'copy:assets',
   'copy:images',
-  'build:dependencies']);
+  'build:dependencies',
+  'copy:go',
+  'copy:appyaml']);

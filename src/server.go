@@ -1,4 +1,4 @@
-package hello
+package aocplanner
 
 import (
   "net/http"
@@ -7,6 +7,6 @@ import (
 
 func init() {
   m := martini.Classic()
-  m.Use(martini.Static("dist"))
+  m.Use(martini.Static("client/"))
   http.Handle("/", m)
 }
