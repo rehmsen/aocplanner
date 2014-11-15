@@ -23,9 +23,10 @@ class MainController {
   hasTechnology;
   settings: core.ISettings;
   queues: core.IQueue[];
-  t: number;
   worker: build.Unit;
   assignmentFactory: assignments.AssignmentFactory;
+  currentState: IState;
+  private _time: number;
 
   constructor($scope, $http: ng.IHttpService) {
     $http.get('assets/rules/aoc.yaml').
@@ -53,6 +54,7 @@ class MainController {
             this.startResources[key] = core.Resources.create(resources);
           }, this);
           this.loaded = true;
+          this.time = 0;
         }.bind(this)).
         error(function(data: string, status: number, 
             headers: ng.IHttpHeadersGetter, config: ng.IRequestConfig) {
@@ -94,7 +96,15 @@ class MainController {
       },      
     ];
     this.timeScale = 3;
-    this.t = 0;
+  }
+
+  set time(time: number) {
+    this._time = time;
+    this.currentState = this.interpolateState(time);
+  }
+
+  get time(): number {
+    return this._time;
   }
 
   interpolateState(time: number) {
@@ -176,7 +186,7 @@ class MainController {
     queue.items.push(item); 
     queue.length += item.offset + buildable.buildDuration;
     this.sortIntoBuildOrder_(item);
-    this.t = queue.start + queue.length;
+    this.time = queue.start + queue.length;
     return queue;
   }
 

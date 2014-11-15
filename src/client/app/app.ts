@@ -2,15 +2,13 @@
 
 import MainController = require('./main/main-controller');
 import exceptionOverride = require('../components/exception/exception-override');
+import aoe2Ui = require('../components/aoe2-ui/aoe2-ui-module');
 
-import createAgeIndicatorDirective = require('../components/aoe2-ui/age-indicator-directive');
-import createBuildOrderItemDirective = require('../components/aoe2-ui/build-order-item-directive');
-import createResourceIndicatorDirective = require('../components/aoe2-ui/resource-indicator-directive');
 import createDurationFilter = require('../components/duration/duration-filter');
 import createTimelineDirective = require('../components/timeline/timeline-directive');
 
 var app = angular.module('aocPlannerApp', [ 
-	'ngRoute', exceptionOverride.name]);
+	'ngRoute', exceptionOverride.name, aoe2Ui.name]);
 
 app.config(function ($routeProvider) {
     $routeProvider
@@ -26,9 +24,6 @@ app.config(function ($routeProvider) {
 
 app.controller('MainController', MainController);
 
-app.directive('ageIndicator', createAgeIndicatorDirective);
-app.directive('buildOrderItem', createBuildOrderItemDirective);
-app.directive('resourceIndicator', createResourceIndicatorDirective);
 app.directive('timeline', createTimelineDirective);
 
 app.filter('duration', createDurationFilter);

@@ -1,6 +1,7 @@
 <div class="status-pane">
   <div style="width: 45%; float: left;">
-    <resource-indicator current-state="mainCtrl.interpolateState(mainCtrl.t)"></resource-indicator>
+    <resource-indicator current-state="mainCtrl.currentState">
+    </resource-indicator>
   </div>
   <div style="float: right;">
     <select>
@@ -18,10 +19,10 @@
 </div>
 
 <div class="main-pane">
-  <timeline time="mainCtrl.t" time-scale="mainCtrl.timeScale">
+  <timeline time="mainCtrl.time" time-scale="mainCtrl.timeScale">
   </timeline>
-  <div class="time-indicator" style="left: {{35 + mainCtrl.t * mainCtrl.timeScale}}px">
-    {{ mainCtrl.t|duration }}
+  <div class="time-indicator" style="left: {{35 + mainCtrl.time * mainCtrl.timeScale}}px">
+    {{ mainCtrl.time|duration }}
   </div>
   <div class="build-order">
     <div ng-repeat="queue in mainCtrl.queues|orderBy:'start'" ng-show="queue.items.length>0" style="position:relative; left: {{queue.start*mainCtrl.timeScale}}px;">
@@ -34,6 +35,12 @@
         </build-order-item>
       </div>
     </div>
+  </div>
+  <div class="task-distribution">
+    <task-assignment 
+        ng-repeat="assignment in mainCtrl.currentState.assignments"
+        assignment="assignment">
+    </task-assignment>
   </div>
 </div>
 <div class="build-pane">

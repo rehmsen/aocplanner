@@ -1,0 +1,26 @@
+.task-icon {
+  border-radius: 50%;
+}
+
+task-assignment {
+  div {
+    display: inline-block;
+    position:relative;
+  }
+
+  input[type="button"] {
+    outline: none;
+  }
+
+  .counter {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    background: black;
+    color: white;
+    font-size: 8pt;
+    padding: 0 4.5px 3px 4.5px;
+    border-radius: 3px;
+    user-select: none;
+  }
+}

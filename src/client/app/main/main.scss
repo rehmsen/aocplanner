@@ -109,3 +109,10 @@ timeline {
   box-shadow: inset -2px -2px 2px rgba(255,255,255,0.8), 
             inset 2px 2px 2px rgba(0,0,0,0.5);  
 }
+
+.task-distribution {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  padding: 2px;
+}
