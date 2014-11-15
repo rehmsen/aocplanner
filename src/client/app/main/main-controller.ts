@@ -10,22 +10,15 @@ import State = require('../../components/aoe2/model/state');
 class MainController {
   timeScale: number = 3;
 
-  age: core.IAge;
-
-  hasBuilding;
-  hasTechnology;
   settings: core.ISettings;
   worker: build.Unit;
   assignmentFactory: assignments.AssignmentFactory;
   currentState: State;
+  hasStartedTechnology: {[technologyId: string]: boolean} = {};
 
   constructor($scope, 
       public buildOrderService: BuildOrderService,
       public rulesService: RulesService) {
-    this.hasBuilding = {
-      'town_center': true
-    };
-    this.hasTechnology = {};
     this.settings = {
       resources: 'low',
       allTechs: true
@@ -34,7 +27,6 @@ class MainController {
         buildOrderService, rulesService, this.settings);
 
     this.rulesService.load('assets/rules/aoc.yaml').then(function() {
-      this.age = this.rulesService.ages[0];
       this.assignmentFactory = new assignments.AssignmentFactory(
           this.rulesService.resourceSources);
       this.currentState.time = 0;
@@ -52,13 +44,12 @@ class MainController {
       length: 0,
       items: []
     });
-    this.hasBuilding[building.id] = true;
   }
 
   research(tech: build.Technology): void {
-    this.hasTechnology[tech.id] = true;
     var queue = this.buildOrderService.enqueueBuildableItem(tech);
     this.currentState.time = queue.start + queue.length;
+    this.hasStartedTechnology[tech.id] = true;
   }
 
   train(unit: build.Unit): void {

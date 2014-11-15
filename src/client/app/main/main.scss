@@ -57,6 +57,11 @@ timeline {
   pointer-events:none;
 }
 
+.build-order {
+  position: absolute;
+  top: 30px;
+}
+
 .items {
   display: inline-block;
 }
