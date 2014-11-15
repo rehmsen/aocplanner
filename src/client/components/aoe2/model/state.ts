@@ -8,7 +8,8 @@ class State implements core.IState {
   pop: number;
   popCap: number;
   assignments: {[task: string]: core.IAssignment};
-  
+  age: core.IAge;
+
   constructor(
     public buildOrderService: BuildOrderService,
     public rulesService: RulesService,
@@ -32,6 +33,8 @@ class State implements core.IState {
     this.pop = 4;
     this.popCap = 5;
     this.assignments = {'idle': new assignments.IdleAssignment(3)};
+    this.age = this.rulesService.ages[0];
+
 
     var lastTime = 0;
     this.buildOrderService.buildOrder.forEach(function(item) {

@@ -19,7 +19,6 @@ class MainController {
   assignmentFactory: assignments.AssignmentFactory;
   currentState: State;
 
-
   constructor($scope, 
       public buildOrderService: BuildOrderService,
       public rulesService: RulesService) {

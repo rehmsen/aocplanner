@@ -14,7 +14,7 @@
       All Techs
     </label>
   </div>
-  <age-indicator age="mainCtrl.age">
+  <age-indicator age="mainCtrl.currentState.age">
   </age-indicator>
 </div>
 
@@ -48,14 +48,14 @@
     <div class="palette">
      <input type="button" 
           ng-repeat="building in mainCtrl.rulesService.buildings"
-          ng-show="building.age <= mainCtrl.age.index" 
+          ng-show="building.age <= mainCtrl.currentState.age.index" 
           class="icon-{{ building.id }} button"
           ng-click="mainCtrl.build(building)"></input>
     </div>
     <div class="palette" ng-show="!mainCtrl.worker"> 
      <input type="button" 
           ng-repeat="unit in mainCtrl.rulesService.units"
-          ng-show="unit.age <= mainCtrl.age.index" 
+          ng-show="unit.age <= mainCtrl.currentState.age.index" 
           class="icon-{{ unit.id }} button"
           ng-click="mainCtrl.train(unit)"
           ng-disabled="!mainCtrl.hasBuilding[unit.source]"></input>
@@ -70,7 +70,7 @@
     <div class="palette"> 
      <input type="button" 
           ng-repeat="tech in mainCtrl.rulesService.technologies"
-          ng-show="tech.age <= mainCtrl.age.index && !mainCtrl.hasTechnology[tech.id]" 
+          ng-show="tech.age <= mainCtrl.currentState.age.index && !mainCtrl.hasTechnology[tech.id]" 
           class="icon-{{ tech.id }} button"
           ng-click="mainCtrl.research(tech)"
           ng-disabled="!mainCtrl.hasBuilding[tech.source]"></input>
