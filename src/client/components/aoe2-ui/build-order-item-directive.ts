@@ -2,7 +2,7 @@
 
 function createBuildOrderItemDirective(): ng.IDirective {
   return {
-    templateUrl: '/components/build-order/build-order-item.html',
+    templateUrl: '/components/aoe2-ui/build-order-item.html',
     restrict: 'E',
     scope: {
       item: '=',

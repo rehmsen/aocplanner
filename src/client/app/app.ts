@@ -3,10 +3,10 @@
 import MainController = require('./main/main-controller');
 import exceptionOverride = require('../components/exception/exception-override');
 
-import createAgeIndicatorDirective = require('../components/age-indicator/age-indicator-directive');
-import createBuildOrderItemDirective = require('../components/build-order/build-order-item-directive');
+import createAgeIndicatorDirective = require('../components/aoe2-ui/age-indicator-directive');
+import createBuildOrderItemDirective = require('../components/aoe2-ui/build-order-item-directive');
+import createResourceIndicatorDirective = require('../components/aoe2-ui/resource-indicator-directive');
 import createDurationFilter = require('../components/duration/duration-filter');
-import createResourceIndicatorDirective = require('../components/resource-indicator/resource-indicator-directive');
 import createTimelineDirective = require('../components/timeline/timeline-directive');
 
 var app = angular.module('aocPlannerApp', [ 
