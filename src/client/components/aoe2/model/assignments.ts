@@ -5,7 +5,7 @@ export class IdleAssignment implements core.IAssignment {
   constructor(
       public count: number) {}
 
-  apply(delta: number, state: core.State): void {}
+  apply(delta: number, state: core.IState): void {}
 }
 
 export class GatheringAssignment implements core.IAssignment {
@@ -17,7 +17,7 @@ export class GatheringAssignment implements core.IAssignment {
     this.task = source.id;
   }
 
-  apply(delta: number, state: core.State): void {
+  apply(delta: number, state: core.IState): void {
      state.resources[this.source.resource] += 
          this.count * this.source.rate * delta;
   }

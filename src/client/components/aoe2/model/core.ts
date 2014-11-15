@@ -1,9 +1,3 @@
-export interface IAssignment {
-  count: number;
-  task: string;
-  apply(delta: number, state: State): void;  
-}
-
 export enum Resource {
   lumber,
   food,
@@ -30,18 +24,17 @@ export interface IResourceSource {
 }
 
 export interface IState {
+  time: number;
   resources: Resources;
   pop: number;
   popCap: number;
   assignments: {[task: string]: IAssignment};
 }
 
-export class State implements IState {
-  constructor(
-      public resources: Resources,
-      public pop: number,
-      public popCap: number,
-      public assignments: {[task: string]: IAssignment}) {}
+export interface IAssignment {
+  count: number;
+  task: string;
+  apply(delta: number, state: IState): void;  
 }
 
 export interface IBuildOrderItem {

@@ -36,6 +36,8 @@ export class Building extends Buildable {
   build(state: core.IState) {
     super.build(state);
     state.popCap += this.room;
+    // TODO(olrehm): This should not happen until the building is done.
+    state.hasBuilding[this.id] = true;
   }
 }
 
@@ -53,6 +55,12 @@ export class Technology extends Buildable {
     return new Technology(
         object.id, object.age, object.buildDuration, object.cost, 
         object.source)    
+  }
+
+  build(state: core.IState) {
+    super.build(state);
+    // TODO(olrehm): This should not happen until the technology is done.
+    state.hasTechnology[this.id] = true;
   }
 }
 
