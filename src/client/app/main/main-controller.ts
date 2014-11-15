@@ -1,23 +1,16 @@
 /// <reference path="../../../../typings/angularjs/angular.d.ts" />
-/// <reference path="../../../../typings/js-yaml/js-yaml.d.ts" />
-import build = require('../../components/model/build');
-import core = require('../../components/model/core');
-import assignments = require('../../components/model/assignments');
+
+import build = require('../../components/aoe2/model/build');
+import core = require('../../components/aoe2/model/core');
+import assignments = require('../../components/aoe2/model/assignments');
+import RulesService = require('../../components/aoe2/model/rules-service');
+
 
 class MainController {
-  ages: core.IAge[] = [];
-  civilizations: core.ICivilization[];
-  startResources: {low: core.Resources};
-
-  loaded = false;
   timeScale: number;
 
   age: core.IAge;
-  buildings: build.Building[];
-  technologies: build.Technology[];
-  units: build.Unit[];
-  resourceSources: core.IResourceSource[];
-  tasks: string[];
+
   buildOrder: core.IBuildOrderItem[];
   hasBuilding;
   hasTechnology;
@@ -25,41 +18,19 @@ class MainController {
   queues: core.IQueue[];
   worker: build.Unit;
   assignmentFactory: assignments.AssignmentFactory;
-  currentState: IState;
+  currentState: core.IState;
+
   private _time: number;
 
-  constructor($scope, $http: ng.IHttpService) {
-    $http.get('assets/rules/aoc.yaml').
-        success(function(data: string, status: number, 
-            headers: ng.IHttpHeadersGetter, config: ng.IRequestConfig) {
-          var rules = jsyaml.safeLoad(data);
-          this.civilizations = rules.civilizations;
-          rules.ages.forEach(function(age, index) {
-            age.index = index;
-            this.ages.push(age);
-          }.bind(this));
-          this.age = this.ages[0];
-          this.buildings = rules.buildings.map(build.Building.create);
-          this.technologies = rules.technologies.map(build.Technology.create);
-          this.units = rules.units.map(build.Unit.create);
-          this.resourceSources = rules.resourceSources;
-          this.assignmentFactory = new assignments.AssignmentFactory(this.resourceSources);
-          this.tasks = ['idle', 'build'];
-          this.resourceSources.forEach(function(resourceSource) {
-            this.tasks.push(resourceSource.id);
-          }, this);
 
-          this.startResources = {};
-          angular.forEach(rules.startResources, function(resources, key) {
-            this.startResources[key] = core.Resources.create(resources);
-          }, this);
-          this.loaded = true;
-          this.time = 0;
-        }.bind(this)).
-        error(function(data: string, status: number, 
-            headers: ng.IHttpHeadersGetter, config: ng.IRequestConfig) {
-          console.log(data);
-        });
+  constructor($scope, public rulesService: RulesService) {
+    this.rulesService.load('assets/rules/aoc.yaml').then(function() {
+      this.age = this.rulesService.ages[0];
+      this.assignmentFactory = new assignments.AssignmentFactory(
+          this.rulesService.resourceSources);
+      this.time = 0;
+    }.bind(this));
+
     this.buildOrder = [];
     this.hasBuilding = {
       'town_center': true
@@ -108,12 +79,12 @@ class MainController {
   }
 
   interpolateState(time: number) {
-    if (!this.loaded) {
+    if (!this.rulesService.loaded) {
       return;
     }
     time = time !== undefined ? time : Number.MAX_VALUE;
     var state = new core.State(
-      angular.copy(this.startResources[this.settings.resources]),
+      angular.copy(this.rulesService.startResources[this.settings.resources]),
       4, 5, {'idle': new assignments.IdleAssignment(3)});
     var lastTime = 0;
     this.buildOrder.forEach(function(item) {

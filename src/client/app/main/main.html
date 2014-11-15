@@ -5,7 +5,7 @@
   </div>
   <div style="float: right;">
     <select>
-      <option ng-repeat="civilization in mainCtrl.civilizations">
+      <option ng-repeat="civilization in mainCtrl.rulesService.civilizations">
         {{civilization.name}}
       </option>
     </select>
@@ -47,14 +47,14 @@
   <div class="palettes-container">
     <div class="palette">
      <input type="button" 
-          ng-repeat="building in mainCtrl.buildings"
+          ng-repeat="building in mainCtrl.rulesService.buildings"
           ng-show="building.age <= mainCtrl.age.index" 
           class="icon-{{ building.id }} button"
           ng-click="mainCtrl.build(building)"></input>
     </div>
     <div class="palette" ng-show="!mainCtrl.worker"> 
      <input type="button" 
-          ng-repeat="unit in mainCtrl.units"
+          ng-repeat="unit in mainCtrl.rulesService.units"
           ng-show="unit.age <= mainCtrl.age.index" 
           class="icon-{{ unit.id }} button"
           ng-click="mainCtrl.train(unit)"
@@ -62,14 +62,14 @@
     </div>
     <div class="palette" ng-show="mainCtrl.worker">
      <input type="button" 
-          ng-repeat="task in mainCtrl.tasks"
+          ng-repeat="task in mainCtrl.rulesService.tasks"
           ng-show="mainCtrl.worker.tasks.indexOf(task) >= 0" 
           class="icon-{{ task }} button"
           ng-click="mainCtrl.assign(task)"></input>
     </div>    
     <div class="palette"> 
      <input type="button" 
-          ng-repeat="tech in mainCtrl.technologies"
+          ng-repeat="tech in mainCtrl.rulesService.technologies"
           ng-show="tech.age <= mainCtrl.age.index && !mainCtrl.hasTechnology[tech.id]" 
           class="icon-{{ tech.id }} button"
           ng-click="mainCtrl.research(tech)"
