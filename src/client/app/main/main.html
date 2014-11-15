@@ -19,10 +19,10 @@
 </div>
 
 <div class="main-pane">
-  <timeline time="mainCtrl.time" time-scale="mainCtrl.timeScale">
+  <timeline time="mainCtrl.currentState.time" time-scale="mainCtrl.timeScale">
   </timeline>
-  <div class="time-indicator" style="left: {{35 + mainCtrl.time * mainCtrl.timeScale}}px">
-    {{ mainCtrl.time|duration }}
+  <div class="time-indicator" style="left: {{35 + mainCtrl.currentState.time * mainCtrl.timeScale}}px">
+    {{ mainCtrl.currentState.time|duration }}
   </div>
   <div class="build-order">
     <div ng-repeat="queue in mainCtrl.buildOrderService.queues|orderBy:'start'" ng-show="queue.items.length>0" style="position:relative; left: {{queue.start*mainCtrl.timeScale}}px;">
