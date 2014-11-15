@@ -5,3 +5,4 @@ typings/
 .sublime-*
 .tmp/
 .sass-cache/
+*.sublime-*
