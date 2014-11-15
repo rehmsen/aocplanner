@@ -43,8 +43,9 @@ resource-indicator {
 }
 
 timeline {
-  position: relative;
+  position: absolute;
   left: 35px;
+  right: 0;
 }
 
 .time-indicator {
@@ -66,7 +67,7 @@ timeline {
   left: 0;
   right: 0;
   padding-top: 15px;
-  height: $build-pane-height;
+  height: $build-pane-height - 15px;
   background: url('/assets/images/background/bottom_center_tile.png') repeat-x; 
 }
 
