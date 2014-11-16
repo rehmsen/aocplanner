@@ -68,7 +68,6 @@ class BuildPaneDirectiveController {
 
   assign(task: string): void {
     var queue = this.buildOrderService.enqueueBuildableItem(this.worker);
-    this.currentState.time = queue.start + queue.length;
     var buildableItem = <build.BuildableItem>queue.items[queue.items.length-1];
     buildableItem.initialTask = task;
     var reassignementItem = new assignments.ReassignmentItem(
@@ -78,7 +77,8 @@ class BuildPaneDirectiveController {
       task,
       this.assignmentFactory);
     this.buildOrderService.sortInItem(reassignementItem);
-    this.worker = null;buildableItem
+    this.currentState.time = queue.start + queue.length;
+    this.worker = null;
   }
 
 }
