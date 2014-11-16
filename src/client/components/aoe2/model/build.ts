@@ -84,6 +84,9 @@ export class Unit extends Buildable {
   build(state: core.IState) {
     super.build(state);
     state.pop++;
+    if (this.tasks) {
+      state.assignments['idle'].count++;
+    }
   }
 }
 
@@ -98,5 +101,39 @@ export class BuildableItem implements core.IBuildOrderItem {
 
   apply(state: core.IState) {
     this.buildable.build(state);
+  }
+}
+
+export class Selection {
+  unit: Unit;
+  taskCounts: {[task: string]: number};
+  toBeTrained: boolean; 
+
+  constructor() {
+    this.reset();
+  }
+
+  reset() {
+    this.unit = null;
+    this.taskCounts = {};
+    this.toBeTrained = false;
+  }
+
+  add(unit: Unit, task: string): boolean {
+    if (this.unit && this.unit.id != unit.id || this.toBeTrained) {
+      return false;
+    }
+    this.unit = unit;
+    this.taskCounts[task] = (this.taskCounts[task] || 0) + 1; 
+    return true;
+  }
+
+  set(unit: Unit, task: string, toBeTrained: boolean = false) {
+    if (task != 'idle' && toBeTrained) {
+      throw new Error('Newly trained workers must initially be idle');
+    }
+    this.reset();
+    this.add(unit, task);
+    this.toBeTrained = toBeTrained;
   }
 }

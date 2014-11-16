@@ -11,10 +11,8 @@ function createBuildPaneDirective(): ng.IDirective {
     templateUrl: '/components/aoe2/ui/build-pane.html',
     restrict: 'E',
     scope: {
-      currentState: '='
-    },
-    link: function postLink(
-      scope: ng.IScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes): void {
+      currentState: '=',
+      selection: '='
     },
     controller: BuildPaneDirectiveController,
     controllerAs: 'ctrl',
@@ -25,14 +23,14 @@ function createBuildPaneDirective(): ng.IDirective {
 class BuildPaneDirectiveController {
   currentState: State;
   hasStartedTechnology: {[technologyId: string]: boolean} = {};
-  worker: build.Unit;
-  assignmentFactory: assignments.AssignmentFactory;
+  selection: build.Selection;
+  private assignmentFactory_: assignments.AssignmentFactory;
 
   constructor(
       public buildOrderService: BuildOrderService,
       public rulesService: RulesService) {
     this.rulesService.loadingPromise.then(function() {
-      this.assignmentFactory = new assignments.AssignmentFactory(
+      this.assignmentFactory_ = new assignments.AssignmentFactory(
           this.rulesService.resourceSources);
     }.bind(this));
   }
@@ -58,26 +56,31 @@ class BuildPaneDirectiveController {
 
   train(unit: build.Unit): void {
     if (unit.tasks) {
-      this.worker = unit;
+      this.selection.set(unit, 'idle', true);
     } else {
       var queue = this.buildOrderService.enqueueBuildableItem(unit);
       this.currentState.time = queue.start + queue.length;
     }
   }
 
-  assign(task: string): void {
-    var queue = this.buildOrderService.enqueueBuildableItem(this.worker);
-    var buildableItem = <build.BuildableItem>queue.items[queue.items.length-1];
-    buildableItem.initialTask = task;
-    var reassignementItem = new assignments.ReassignmentItem(
-      queue.length,
-      1,
-      null,
-      task,
-      this.assignmentFactory);
-    this.buildOrderService.sortInItem(reassignementItem);
+  assign(toTask: string): void {
+    if (this.selection.toBeTrained) {
+      var queue = this.buildOrderService.enqueueBuildableItem(this.selection.unit);
+      var buildableItem = <build.BuildableItem>queue.items[queue.items.length-1];
+      buildableItem.initialTask = toTask;
+    }
+
+    angular.forEach(this.selection.taskCounts, function(count, fromTask) {
+      var reassignementItem = new assignments.ReassignmentItem(
+        queue.length,
+        count,
+        fromTask,
+        toTask,
+        this.assignmentFactory_);
+      this.buildOrderService.sortInItem(reassignementItem);
+    }, this);
     this.currentState.time = queue.start + queue.length;
-    this.worker = null;
+    this.selection.reset();
   }
 
 }

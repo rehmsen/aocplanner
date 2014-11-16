@@ -1,5 +1,6 @@
 /// <reference path="../../../../typings/angularjs/angular.d.ts" />
 
+import build = require('../../components/aoe2/model/build');
 import core = require('../../components/aoe2/model/core');
 import assignments = require('../../components/aoe2/model/assignments');
 import BuildOrderService = require('../../components/aoe2/model/build-order-service');
@@ -11,6 +12,7 @@ class MainController {
 
   settings: core.ISettings;
   currentState: State;
+  selection: build.Selection;
 
   constructor($scope, 
       public buildOrderService: BuildOrderService,
@@ -25,6 +27,8 @@ class MainController {
     this.rulesService.load('assets/rules/aoc.yaml').then(function() {
       this.currentState.time = 0;
     }.bind(this));
+
+    this.selection = new build.Selection();
   }
 
 }

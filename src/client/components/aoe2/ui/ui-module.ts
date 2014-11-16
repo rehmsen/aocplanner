@@ -2,7 +2,7 @@
 
 import createAgeIndicatorDirective = require('./age-indicator-directive');
 import createBuildOrderItemDirective = require('./build-order-item-directive');
-import createBuildPaneDirective = require('./build-pane');
+import createBuildPaneDirective = require('./build-pane-directive');
 import createResourceIndicatorDirective = require('./resource-indicator-directive');
 import createTaskAssignmentDirective = require('./task-assignment-directive');
 
