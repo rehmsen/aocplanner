@@ -2,7 +2,7 @@
 
 function createTaskAssignmentDirective(): ng.IDirective {
   return {
-    templateUrl: '/components/aoe2-ui/task-assignment.html',
+    templateUrl: '/components/aoe2/ui/task-assignment.html',
     restrict: 'E',
     scope: {
       assignment: '&'
