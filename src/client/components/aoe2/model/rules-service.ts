@@ -6,6 +6,7 @@ import build = require('./build');
 
 class RulesService {
   loaded: boolean = false;
+  loadingPromise: ng.IPromise<{}>;
 
   ages: core.IAge[] = [];
   civilizations: core.ICivilization[];
@@ -24,7 +25,7 @@ class RulesService {
   }
 
   load(uri: string): ng.IPromise<{}> {
-    return this._http.get(uri).
+    this.loadingPromise = this._http.get(uri).
         success(function(data: string, status: number, 
             headers: ng.IHttpHeadersGetter, config: ng.IRequestConfig) {
           var rules = jsyaml.safeLoad(data);
@@ -53,6 +54,7 @@ class RulesService {
             headers: ng.IHttpHeadersGetter, config: ng.IRequestConfig) {
           console.log(data);
         });
+    return this.loadingPromise;
   }
 }
 

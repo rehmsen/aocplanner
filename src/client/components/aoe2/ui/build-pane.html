@@ -1,0 +1,32 @@
+<div class="palettes-container">
+  <div class="palette">
+   <input type="button" 
+        ng-repeat="building in ctrl.rulesService.buildings"
+        ng-show="building.age <= ctrl.currentState.age.index" 
+        class="icon-{{ building.id }} button"
+        ng-click="ctrl.build(building)"></input>
+  </div>
+  <div class="palette" ng-show="!ctrl.worker"> 
+   <input type="button" 
+        ng-repeat="unit in ctrl.rulesService.units"
+        ng-show="unit.age <= ctrl.currentState.age.index" 
+        class="icon-{{ unit.id }} button"
+        ng-click="ctrl.train(unit)"
+        ng-disabled="!ctrl.currentState.hasBuilding[unit.source]"></input>
+  </div>
+  <div class="palette" ng-show="ctrl.worker">
+   <input type="button" 
+        ng-repeat="task in ctrl.rulesService.tasks"
+        ng-show="ctrl.worker.tasks.indexOf(task) >= 0" 
+        class="icon-{{ task }} button"
+        ng-click="ctrl.assign(task)"></input>
+  </div>    
+  <div class="palette"> 
+   <input type="button" 
+        ng-repeat="tech in ctrl.rulesService.technologies"
+        ng-show="tech.age <= ctrl.currentState.age.index && !ctrl.hasStartedTechnology[tech.id]" 
+        class="icon-{{ tech.id }} button"
+        ng-click="ctrl.research(tech)"
+        ng-disabled="!ctrl.currentState.hasBuilding[tech.source]"></input>
+  </div>
+</div>
