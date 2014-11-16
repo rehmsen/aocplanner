@@ -1,6 +1,6 @@
 import core = require('./core');
 
-export class idleAssignment implements core.IAssignment {
+export class IdleAssignment implements core.IAssignment {
   task = core.Task.createIdle();
   constructor(
       public count: number) {}
@@ -32,7 +32,7 @@ export class AssignmentFactory {
   }
 
   create(task: core.Task, count: number): core.IAssignment {
-    if (task.verb == core.TaskVerb.idle) return new idleAssignment(count);
+    if (task.verb == core.TaskVerb.idle) return new IdleAssignment(count);
     else if (task.verb == core.TaskVerb.harvest) return new GatheringAssignment(count, this.sources[task.object]);
     else throw new Error('Unknown task: ' + task);
   }
