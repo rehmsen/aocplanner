@@ -5,6 +5,7 @@ import RulesService = require('../model/rules-service');
 import State = require('../model/state');
 import assignments = require('../model/assignments');
 import build = require('../model/build');
+import core = require('../model/core');
 
 function createBuildPaneDirective(): ng.IDirective {
   return {
@@ -24,6 +25,7 @@ class BuildPaneDirectiveController {
   currentState: State;
   hasStartedTechnology: {[technologyId: string]: boolean} = {};
   selection: build.Selection;
+  taskVerb: string;
   private assignmentFactory_: assignments.AssignmentFactory;
 
   constructor(
@@ -33,6 +35,18 @@ class BuildPaneDirectiveController {
       this.assignmentFactory_ = new assignments.AssignmentFactory(
           this.rulesService.resourceSources);
     }.bind(this));
+  }
+
+  get taskObjects(): string[] {
+    switch (this.taskVerb) {
+      case 'harvest': 
+        return this.selection.unit.tasks['harvest'];
+      case 'construct':
+        return this.rulesService.buildings.map(function(building) { return building.id });
+      default:
+        return [];
+    }
+
   }
 
   build(building: build.Building): void {
@@ -56,31 +70,33 @@ class BuildPaneDirectiveController {
 
   train(unit: build.Unit): void {
     if (unit.tasks) {
-      this.selection.set(unit, 'idle', true);
+      this.selection.set(unit, core.Task.createIdle(), true);
     } else {
       var queue = this.buildOrderService.enqueueBuildableItem(unit);
       this.currentState.time = queue.start + queue.length;
     }
   }
 
-  assign(toTask: string): void {
+  assign(toTaskObject: string): void {
+    var toTask = new core.Task(core.TaskVerb[this.taskVerb], toTaskObject);
     if (this.selection.toBeTrained) {
       var queue = this.buildOrderService.enqueueBuildableItem(this.selection.unit);
       var buildableItem = <build.BuildableItem>queue.items[queue.items.length-1];
       buildableItem.initialTask = toTask;
     }
 
-    angular.forEach(this.selection.taskCounts, function(count, fromTask) {
+    angular.forEach(this.selection.taskCounts, function(fromTaskCount) {
       var reassignementItem = new assignments.ReassignmentItem(
         queue.length,
-        count,
-        fromTask,
+        fromTaskCount.count,
+        fromTaskCount.task,
         toTask,
         this.assignmentFactory_);
       this.buildOrderService.sortInItem(reassignementItem);
     }, this);
     this.currentState.time = queue.start + queue.length;
     this.selection.reset();
+    this.taskVerb = null;
   }
 
 }

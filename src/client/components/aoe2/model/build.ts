@@ -1,4 +1,4 @@
-import core = require('core');
+import core = require('./core');
 
 export class Buildable {
   constructor(
@@ -71,7 +71,7 @@ export class Unit extends Buildable {
       buildDuration: number,
       cost: core.Resources,
       source: string,
-      public tasks: string[]) {
+      public tasks: {[verb: string]: string[]}) {
     super(id, age, buildDuration, cost, source);
   }
 
@@ -91,7 +91,7 @@ export class Unit extends Buildable {
 }
 
 export class BuildableItem implements core.IBuildOrderItem {
-  public initialTask: string;
+  public initialTask: core.Task;
 
   constructor(
       public offset: number,
@@ -106,7 +106,7 @@ export class BuildableItem implements core.IBuildOrderItem {
 
 export class Selection {
   unit: Unit;
-  taskCounts: {[task: string]: number};
+  taskCounts: {[taskId: string]: core.ITaskCount};
   toBeTrained: boolean; 
 
   constructor() {
@@ -119,17 +119,21 @@ export class Selection {
     this.toBeTrained = false;
   }
 
-  add(unit: Unit, task: string): boolean {
+  add(unit: Unit, task: core.Task): boolean {
     if (this.unit && this.unit.id != unit.id || this.toBeTrained) {
       return false;
     }
     this.unit = unit;
-    this.taskCounts[task] = (this.taskCounts[task] || 0) + 1; 
+    if (!this.taskCounts[task.id]) {
+      this.taskCounts[task.id] = {task: task, count: 1};
+    } else {
+      this.taskCounts[task.id].count++;
+    }
     return true;
   }
 
-  set(unit: Unit, task: string, toBeTrained: boolean = false) {
-    if (task != 'idle' && toBeTrained) {
+  set(unit: Unit, task: core.Task, toBeTrained: boolean = false) {
+    if (task.verb != core.TaskVerb.idle && toBeTrained) {
       throw new Error('Newly trained workers must initially be idle');
     }
     this.reset();

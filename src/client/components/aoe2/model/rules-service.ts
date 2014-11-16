@@ -16,7 +16,7 @@ class RulesService {
   technologies: build.Technology[];
   units: build.Unit[];
   resourceSources: core.IResourceSource[];
-  tasks: string[];
+  tasks: core.Task[];
 
   private _http: ng.IHttpService;
 
@@ -39,10 +39,10 @@ class RulesService {
           this.units = rules.units.map(build.Unit.create);
           this.resourceSources = rules.resourceSources;
           this.tasks = this.resourceSources.map(function(resourceSource) {
-            return resourceSource.id;
+            return core.Task.createHarvest(resourceSource.id);
           });
-          this.tasks.push('idle');
-          this.tasks.push('build');
+          this.tasks.push(core.Task.createIdle());
+          //this.tasks.push(core.Task.create);
 
           this.startResources = {};
           angular.forEach(rules.startResources, function(resources, key) {

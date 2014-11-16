@@ -14,13 +14,18 @@
         ng-click="ctrl.train(unit)"
         ng-disabled="!ctrl.currentState.hasBuilding[unit.source]"></input>
   </div>
-  <div class="palette" ng-show="ctrl.selection.unit">
+  <div class="palette" ng-show="ctrl.selection.unit && !ctrl.taskVerb">
    <input type="button" 
-        ng-repeat="task in ctrl.rulesService.tasks"
-        ng-show="ctrl.selection.unit.tasks.indexOf(task) >= 0" 
-        class="icon-{{ task }} button"
-        ng-click="ctrl.assign(task)"></input>
+        ng-repeat="(taskVerb, taskObjects) in ctrl.selection.unit.tasks"
+        class="icon-{{ taskVerb }} button"
+        ng-click="ctrl.taskVerb = taskVerb"></input>
   </div>    
+  <div class="palette" ng-show="ctrl.taskVerb">
+     <input type="button" 
+        ng-repeat="taskObject in ctrl.taskObjects"
+        class="icon-{{ taskObject }} button"
+        ng-click="ctrl.assign(taskObject)"></input>
+  </div>
   <div class="palette"> 
    <input type="button" 
         ng-repeat="tech in ctrl.rulesService.technologies"

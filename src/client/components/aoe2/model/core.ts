@@ -33,9 +33,34 @@ export interface IState {
   hasTechnology: {[technologyId: string]: boolean};
 }
 
-export interface IAssignment {
+export enum TaskVerb {
+  idle,
+  harvest,
+  construct
+}
+
+export class Task {
+  constructor(public verb: TaskVerb, public object?: string) {
+  }
+
+  get id(): string {
+    return TaskVerb[this.verb] + (this.object ? ':' + this.object : '');
+  }
+
+  static createIdle(): Task {
+    return new Task(TaskVerb.idle);
+  }
+  static createHarvest(sourceId: string): Task {
+    return new Task(TaskVerb.harvest, sourceId);
+  }
+}
+
+export interface ITaskCount {
   count: number;
-  task: string;
+  task: Task;  
+}
+
+export interface IAssignment extends ITaskCount {
   apply(delta: number, state: IState): void;  
 }
 
@@ -65,3 +90,4 @@ export interface IQueue {
   length: number;
   items: IBuildOrderItem[];
 }
+

@@ -336,8 +336,9 @@ units:
   cost:
     lumber: 75
   tasks:
-  - coastal_fish
-  - deep_sea_fish
+    harvest:
+    - coastal_fish
+    - deep_sea_fish
 - id: galley
   age: 1
   source: dock
@@ -390,12 +391,14 @@ units:
   cost: 
     food: 50
   tasks:
-  - berries
-  - sheep
-  - deer
-  - boar
-  - coastal_fish
-  - goldmine
-  - stonemine
-  - wood
-  - straggler
+    harvest:
+    - berries
+    - sheep
+    - deer
+    - boar
+    - coastal_fish
+    - goldmine
+    - stonemine
+    - wood
+    - straggler
+    construct: null
