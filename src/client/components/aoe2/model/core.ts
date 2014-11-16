@@ -29,6 +29,8 @@ export interface IState {
   pop: number;
   popCap: number;
   assignments: {[task: string]: IAssignment};
+  hasBuilding: {[buildingId: string]: boolean};
+  hasTechnology: {[technologyId: string]: boolean};
 }
 
 export interface IAssignment {
