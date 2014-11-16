@@ -17,7 +17,8 @@ function createBuildPaneDirective(): ng.IDirective {
       scope: ng.IScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes): void {
     },
     controller: BuildPaneDirectiveController,
-    controllerAs: 'ctrl'
+    controllerAs: 'ctrl',
+    bindToController: true
   };
 }
 
@@ -28,10 +29,8 @@ class BuildPaneDirectiveController {
   assignmentFactory: assignments.AssignmentFactory;
 
   constructor(
-      $scope,
       public buildOrderService: BuildOrderService,
       public rulesService: RulesService) {
-    this.currentState = $scope.currentState;
     this.rulesService.loadingPromise.then(function() {
       this.assignmentFactory = new assignments.AssignmentFactory(
           this.rulesService.resourceSources);
