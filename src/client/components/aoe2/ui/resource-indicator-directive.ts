@@ -10,7 +10,7 @@ function createResourceIndicatorDirective(): ng.IDirective {
     scope: {
       currentState: '&'
     },
-    templateUrl: '/components/aoe2-ui/resource-indicator.html',
+    templateUrl: '/components/aoe2/ui/resource-indicator.html',
     link: function($scope: IResourceIndicatorScope) {
       $scope.Math = Math;
     }
