@@ -2,5 +2,5 @@
      style="width: {{item.buildable.buildDuration * timeScale}}px">
   <div class="duration-bar"></div>
   <div class="icon-{{item.buildable.id}} buildable-icon icon"></div>
-  <div ng-show="item.initialTask" class="icon-{{item.initialTask}} task-icon icon"></div>
+  <div ng-show="item.initialTask" class="icon-{{item.initialTask.object}} task-icon icon"></div>
 </div>
