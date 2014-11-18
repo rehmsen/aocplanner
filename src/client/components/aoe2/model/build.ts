@@ -1,4 +1,4 @@
-import core = require('core');
+import core = require('./core');
 
 export class Buildable {
   constructor(
@@ -71,7 +71,7 @@ export class Unit extends Buildable {
       buildDuration: number,
       cost: core.Resources,
       source: string,
-      public tasks: string[]) {
+      public tasks: {[verb: string]: string[]}) {
     super(id, age, buildDuration, cost, source);
   }
 
@@ -84,11 +84,14 @@ export class Unit extends Buildable {
   build(state: core.IState) {
     super.build(state);
     state.pop++;
+    if (this.tasks) {
+      state.assignments['idle'].count++;
+    }
   }
 }
 
 export class BuildableItem implements core.IBuildOrderItem {
-  public initialTask: string;
+  public initialTask: core.Task;
 
   constructor(
       public offset: number,
@@ -98,5 +101,43 @@ export class BuildableItem implements core.IBuildOrderItem {
 
   apply(state: core.IState) {
     this.buildable.build(state);
+  }
+}
+
+export class Selection {
+  unit: Unit;
+  taskCounts: {[taskId: string]: core.ITaskCount};
+  toBeTrained: boolean; 
+
+  constructor() {
+    this.reset();
+  }
+
+  reset() {
+    this.unit = null;
+    this.taskCounts = {};
+    this.toBeTrained = false;
+  }
+
+  add(unit: Unit, task: core.Task): boolean {
+    if (this.unit && this.unit.id != unit.id || this.toBeTrained) {
+      return false;
+    }
+    this.unit = unit;
+    if (!this.taskCounts[task.id]) {
+      this.taskCounts[task.id] = {task: task, count: 1};
+    } else {
+      this.taskCounts[task.id].count++;
+    }
+    return true;
+  }
+
+  set(unit: Unit, task: core.Task, toBeTrained: boolean = false) {
+    if (task.verb != core.TaskVerb.idle && toBeTrained) {
+      throw new Error('Newly trained workers must initially be idle');
+    }
+    this.reset();
+    this.add(unit, task);
+    this.toBeTrained = toBeTrained;
   }
 }

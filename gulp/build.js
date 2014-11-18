@@ -75,6 +75,11 @@ gulp.task('copy:assets', function() {
     .pipe(gulp.dest('./dist/client/assets')); 
 });
 
+gulp.task('copy:favicon', function() {
+  return gulp.src('src/client/favicon.ico')
+    .pipe(gulp.dest('./dist/client/')); 
+});
+
 gulp.task('copy:images', function() {
   return gulp.src('src/client/assets/images/!(icons)/**/*.{gif,jpg,png}')
     .pipe(gulp.dest('./dist/client/assets/images/')); 
@@ -108,4 +113,5 @@ gulp.task('dist', [
   'copy:images',
   'build:dependencies',
   'copy:go',
-  'copy:appyaml']);
+  'copy:appyaml',
+  'copy:favicon']);

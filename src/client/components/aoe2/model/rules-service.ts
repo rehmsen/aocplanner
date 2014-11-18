@@ -6,6 +6,7 @@ import build = require('./build');
 
 class RulesService {
   loaded: boolean = false;
+  loadingPromise: ng.IPromise<{}>;
 
   ages: core.IAge[] = [];
   civilizations: core.ICivilization[];
@@ -15,7 +16,7 @@ class RulesService {
   technologies: build.Technology[];
   units: build.Unit[];
   resourceSources: core.IResourceSource[];
-  tasks: string[];
+  tasks: core.Task[];
 
   private _http: ng.IHttpService;
 
@@ -24,7 +25,7 @@ class RulesService {
   }
 
   load(uri: string): ng.IPromise<{}> {
-    return this._http.get(uri).
+    this.loadingPromise = this._http.get(uri).
         success(function(data: string, status: number, 
             headers: ng.IHttpHeadersGetter, config: ng.IRequestConfig) {
           var rules = jsyaml.safeLoad(data);
@@ -38,10 +39,10 @@ class RulesService {
           this.units = rules.units.map(build.Unit.create);
           this.resourceSources = rules.resourceSources;
           this.tasks = this.resourceSources.map(function(resourceSource) {
-            return resourceSource.id;
+            return core.Task.createHarvest(resourceSource.id);
           });
-          this.tasks.push('idle');
-          this.tasks.push('build');
+          this.tasks.push(core.Task.createIdle());
+          //this.tasks.push(core.Task.create);
 
           this.startResources = {};
           angular.forEach(rules.startResources, function(resources, key) {
@@ -53,6 +54,7 @@ class RulesService {
             headers: ng.IHttpHeadersGetter, config: ng.IRequestConfig) {
           console.log(data);
         });
+    return this.loadingPromise;
   }
 }
 

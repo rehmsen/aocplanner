@@ -43,37 +43,9 @@
     </task-assignment>
   </div>
 </div>
-<div class="build-pane">
-  <div class="palettes-container">
-    <div class="palette">
-     <input type="button" 
-          ng-repeat="building in mainCtrl.rulesService.buildings"
-          ng-show="building.age <= mainCtrl.currentState.age.index" 
-          class="icon-{{ building.id }} button"
-          ng-click="mainCtrl.build(building)"></input>
-    </div>
-    <div class="palette" ng-show="!mainCtrl.worker"> 
-     <input type="button" 
-          ng-repeat="unit in mainCtrl.rulesService.units"
-          ng-show="unit.age <= mainCtrl.currentState.age.index" 
-          class="icon-{{ unit.id }} button"
-          ng-click="mainCtrl.train(unit)"
-          ng-disabled="!mainCtrl.currentState.hasBuilding[unit.source]"></input>
-    </div>
-    <div class="palette" ng-show="mainCtrl.worker">
-     <input type="button" 
-          ng-repeat="task in mainCtrl.rulesService.tasks"
-          ng-show="mainCtrl.worker.tasks.indexOf(task) >= 0" 
-          class="icon-{{ task }} button"
-          ng-click="mainCtrl.assign(task)"></input>
-    </div>    
-    <div class="palette"> 
-     <input type="button" 
-          ng-repeat="tech in mainCtrl.rulesService.technologies"
-          ng-show="tech.age <= mainCtrl.currentState.age.index && !mainCtrl.hasStartedTechnology[tech.id]" 
-          class="icon-{{ tech.id }} button"
-          ng-click="mainCtrl.research(tech)"
-          ng-disabled="!mainCtrl.currentState.hasBuilding[tech.source]"></input>
-    </div>
-  </div>
+<div class="bottom-pane">
+  <build-pane 
+      current-state="mainCtrl.currentState"
+      selection="mainCtrl.selection">
+  </build-pane>
 </div>
