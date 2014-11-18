@@ -14,7 +14,7 @@ class MainController {
   currentState: State;
   selection: build.Selection;
 
-  constructor($scope, 
+  constructor( 
       public buildOrderService: BuildOrderService,
       public rulesService: RulesService) {
     this.settings = {

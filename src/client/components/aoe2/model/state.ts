@@ -4,7 +4,7 @@ import BuildOrderService = require('./build-order-service');
 import RulesService = require('./rules-service');
 
 class State implements core.IState {
-  resources: core.Resources;
+  resources: core.IResources;
   pop: number;
   popCap: number;
   assignments: {[task: string]: core.IAssignment};

@@ -1,4 +1,5 @@
 /// <reference path="../../../typings/angularjs/angular.d.ts" />
+/// <reference path="../../../typings/angularjs/angular-route.d.ts" />
 
 import MainController = require('./main/main-controller');
 import exceptionOverride = require('../components/exception/exception-override');
@@ -14,7 +15,7 @@ var app = angular.module('aocPlannerApp', [
   aoe2UiModule.name, 
   aoe2ModelModule.name]);
 
-app.config(function ($routeProvider) {
+app.config(function ($routeProvider: ng.route.IRouteProvider) {
     $routeProvider
       .when('/', {
         templateUrl: 'app/main/main.html',

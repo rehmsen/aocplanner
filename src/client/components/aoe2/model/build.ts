@@ -5,7 +5,7 @@ export class Buildable {
       public id: string,
       public age: number,
       public buildDuration: number,
-      public cost: core.Resources,
+      public cost: core.IResources,
       public source: string) {
   }
 
@@ -21,7 +21,7 @@ export class Building extends Buildable {
       id: string,
       age: number,
       buildDuration: number,
-      cost: core.Resources,
+      cost: core.IResources,
       source: string,
       public room: number) {
     super(id, age, buildDuration, cost, source);
@@ -46,7 +46,7 @@ export class Technology extends Buildable {
       id: string,
       age: number,
       buildDuration: number,
-      cost: core.Resources,
+      cost: core.IResources,
       source: string) {
     super(id, age, buildDuration, cost, source);
   }
@@ -69,7 +69,7 @@ export class Unit extends Buildable {
       id: string,
       age: number,
       buildDuration: number,
-      cost: core.Resources,
+      cost: core.IResources,
       source: string,
       public tasks: {[verb: string]: string[]}) {
     super(id, age, buildDuration, cost, source);

@@ -5,16 +5,12 @@ export enum Resource {
   gold
 }
 
-export class Resources {
-  constructor(
-      public lumber: number,
-      public food: number,
-      public stone: number,
-      public gold: number) {}
-
-  static create(object: any) {
-    return new Resources(object.lumber, object.food, object.stone, object.gold)
-  }
+export interface IResources {
+  lumber: number;
+  food: number;
+  stone: number;
+  gold: number;
+  [resource: string]: number;
 }
 
 export interface IResourceSource {
@@ -25,7 +21,7 @@ export interface IResourceSource {
 
 export interface IState {
   time: number;
-  resources: Resources;
+  resources: IResources;
   pop: number;
   popCap: number;
   assignments: {[task: string]: IAssignment};
@@ -33,11 +29,13 @@ export interface IState {
   hasTechnology: {[technologyId: string]: boolean};
 }
 
+
 export enum TaskVerb {
   idle,
   harvest,
   construct
 }
+
 
 export class Task {
   constructor(public verb: TaskVerb, public object?: string) {
@@ -67,7 +65,7 @@ export interface IAssignment extends ITaskCount {
 export interface IBuildOrderItem {
   start: number;
 
-  apply(state: IState);
+  apply(state: IState): void;
 }
 
 export interface IAge {

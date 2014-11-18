@@ -34,8 +34,11 @@ gulp.task('build:ts', function() {
     var tsResult = gulp.src([
         'src/client/{app,components}/**/*.ts', 'typings/**/*.ts'])
         .pipe(sourcemaps.init())
-        .pipe(ts({noExternalResolve: true, module: 'commonjs'}))
-        .on('error', handleError);
+        .pipe(ts({
+          noExternalResolve: true, 
+          module: 'commonjs',
+          noImplicitAny: true
+        }));
     return tsResult.js
         .pipe(sourcemaps.write())
         .pipe(gulp.dest('.tmp/client'));

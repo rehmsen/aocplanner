@@ -10,7 +10,7 @@ class RulesService {
 
   ages: core.IAge[] = [];
   civilizations: core.ICivilization[];
-  startResources: {low: core.Resources};
+  startResources: {low: core.IResources; [key: string]: core.IResources};
 
   buildings: build.Building[];
   technologies: build.Technology[];
@@ -30,7 +30,7 @@ class RulesService {
             headers: ng.IHttpHeadersGetter, config: ng.IRequestConfig) {
           var rules = jsyaml.safeLoad(data);
           this.civilizations = rules.civilizations;
-          this.ages = rules.ages.map(function(age, index) {
+          this.ages = rules.ages.map(function(age: core.IAge, index: number) {
             age.index = index;
             return age;
           });
@@ -38,7 +38,7 @@ class RulesService {
           this.technologies = rules.technologies.map(build.Technology.create);
           this.units = rules.units.map(build.Unit.create);
           this.resourceSources = rules.resourceSources;
-          this.tasks = this.resourceSources.map(function(resourceSource) {
+          this.tasks = this.resourceSources.map(function(resourceSource: any) {
             return core.Task.createHarvest(resourceSource.id);
           });
           this.tasks.push(core.Task.createIdle());
@@ -46,7 +46,7 @@ class RulesService {
 
           this.startResources = {};
           angular.forEach(rules.startResources, function(resources, key) {
-            this.startResources[key] = core.Resources.create(resources);
+            this.startResources[key] = resources;
           }, this);
           this.loaded = true;
         }.bind(this)).
