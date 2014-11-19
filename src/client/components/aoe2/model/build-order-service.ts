@@ -53,11 +53,14 @@ class BuildOrderService {
       return queue.source === buildable.source;
     })[0];
     var offset = 0;
-    var item = new build.BuildableItem(
+    var item = new build.BuildableStartedItem(
         offset, queue.length + offset, buildable);
     queue.items.push(item); 
     queue.length += item.offset + buildable.buildDuration;
     this.sortInItem(item);
+    var finishedItem = new build.BuildableFinishedItem(
+        0, queue.length, buildable);
+    this.sortInItem(finishedItem);
     return queue;
   }
 

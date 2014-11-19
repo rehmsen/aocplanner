@@ -9,10 +9,14 @@ export class Buildable {
       public source: string) {
   }
 
-  build(state: core.IState) {
+  started(state: core.IState) {
     angular.forEach(this.cost, function(quantity, resource) {
       state.resources[resource] -= quantity;
     });    
+  }
+
+  finished(state: core.IState) {
+
   }
 }
 
@@ -33,11 +37,10 @@ export class Building extends Buildable {
         object.source, object.room || 0);
   }
 
-  build(state: core.IState) {
-    super.build(state);
-    state.popCap += this.room;
-    // TODO(olrehm): This should not happen until the building is done.
+  finished(state: core.IState) {
+    super.finished(state);
     state.hasBuilding[this.id] = true;
+    state.popCap += this.room;
   }
 }
 
@@ -57,9 +60,8 @@ export class Technology extends Buildable {
         object.source)    
   }
 
-  build(state: core.IState) {
-    super.build(state);
-    // TODO(olrehm): This should not happen until the technology is done.
+  finished(state: core.IState) {
+    super.finished(state);
     state.hasTechnology[this.id] = true;
   }
 }
@@ -81,16 +83,20 @@ export class Unit extends Buildable {
         object.source, object.tasks)    
   }
 
-  build(state: core.IState) {
-    super.build(state);
+  started(state: core.IState) {
+    super.started(state);
     state.pop++;
+  }
+
+  finished(state: core.IState) {
+    super.finished(state);
     if (this.tasks) {
       state.assignments['idle'].count++;
-    }
+    }    
   }
 }
 
-export class BuildableItem implements core.IBuildOrderItem {
+export class BuildableStartedItem implements core.IBuildOrderItem {
   public initialTask: core.Task;
 
   constructor(
@@ -100,7 +106,19 @@ export class BuildableItem implements core.IBuildOrderItem {
   }
 
   apply(state: core.IState) {
-    this.buildable.build(state);
+    this.buildable.started(state);
+  }
+}
+
+export class BuildableFinishedItem implements core.IBuildOrderItem {
+  constructor(
+      public offset: number,
+      public start: number,
+      public buildable: Buildable) {
+  }
+
+  apply(state: core.IState) {
+    this.buildable.finished(state);
   }
 }
 
