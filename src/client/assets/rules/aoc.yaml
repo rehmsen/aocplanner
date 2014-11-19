@@ -190,7 +190,13 @@ technologies:
   age: 2
 - id: feudal_age
   age: 0
-  building: town_center
+  source: town_center
+  buildDuration: 130
+  cost:
+    food: 500
+  effect: 
+    started: state.ageProgress = progress
+    finished: state.ageIndex += 1
 - id: fletching
   age: 1
 - id: forging

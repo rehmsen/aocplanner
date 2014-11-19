@@ -9,13 +9,25 @@ class State implements core.IState {
   popCap: number;
   assignments: {[task: string]: core.IAssignment};
   age: core.IAge;
+  ageProgress: number;
   hasBuilding: {[buildingId: string]: boolean};
   hasTechnology: {[technologyId: string]: boolean};
 
   constructor(
-    public buildOrderService: BuildOrderService,
-    public rulesService: RulesService,
-    public settings: core.ISettings) {
+    private buildOrderService: BuildOrderService,
+    private rulesService: RulesService,
+    private settings: core.ISettings) {
+  }
+
+  private ageIndex_: number;
+  get ageIndex(): number {
+    return this.ageIndex_;
+  }
+
+  set ageIndex(ageIndex: number) {
+    this.ageProgress = 0;
+    this.ageIndex_ = ageIndex;
+    this.age = this.rulesService.ages[ageIndex];
   }
 
   private time_: number;
@@ -34,7 +46,7 @@ class State implements core.IState {
     this.pop = 4;
     this.popCap = 5;
     this.assignments = {'idle': new assignments.IdleAssignment(3)};
-    this.age = this.rulesService.ages[0];
+    this.ageIndex = 0;
     this.hasBuilding = {
       'town_center': true
     };

@@ -9,10 +9,14 @@ export class Buildable {
       public source: string) {
   }
 
-  started(state: core.IState) {
+  started(state: core.IState, delta: number) {
     angular.forEach(this.cost, function(quantity, resource) {
       state.resources[resource] -= quantity;
     });    
+  }
+
+  progress(state: core.IState, delta: number) {
+
   }
 
   finished(state: core.IState) {
@@ -44,24 +48,39 @@ export class Building extends Buildable {
   }
 }
 
+export interface IEffect {
+  started: string;
+  finished: string;
+}
+
 export class Technology extends Buildable {
   constructor(
       id: string,
       age: number,
       buildDuration: number,
       cost: core.IResources,
-      source: string) {
+      source: string,
+      private effect_: IEffect) {
     super(id, age, buildDuration, cost, source);
   }
 
   static create(object: any): Technology {
     return new Technology(
         object.id, object.age, object.buildDuration, object.cost, 
-        object.source)    
+        object.source, object.effect);
+
+  }
+
+  started(state: core.IState, delta: number) {
+    var progress = delta / this.buildDuration;
+    if (progress < 1.0) {
+      eval(this.effect_.started);
+    }
   }
 
   finished(state: core.IState) {
     super.finished(state);
+    eval(this.effect_.finished);
     state.hasTechnology[this.id] = true;
   }
 }
@@ -106,7 +125,8 @@ export class BuildableStartedItem implements core.IBuildOrderItem {
   }
 
   apply(state: core.IState) {
-    this.buildable.started(state);
+    var delta = state.time - this.start;
+    this.buildable.started(state, delta);
   }
 }
 

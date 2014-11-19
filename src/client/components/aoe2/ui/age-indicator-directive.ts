@@ -5,10 +5,8 @@ function createAgeIndicatorDirective(): ng.IDirective {
     templateUrl: '/components/aoe2/ui/age-indicator.html',
     restrict: 'E',
     scope: {
-      age: '='
-    },
-    link: function postLink(
-      scope: ng.IScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes): void {
+      age: '=',
+      progress: '='
     }
   };
 }
