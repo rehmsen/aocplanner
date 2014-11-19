@@ -6,3 +6,4 @@ typings/
 .tmp/
 .sass-cache/
 *.sublime-*
+.sublimets
