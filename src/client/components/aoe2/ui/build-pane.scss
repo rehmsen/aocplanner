@@ -1,20 +1,27 @@
 @import 'common';
 
 build-pane {
-  .palette {
-    // display: inline-block;
-    float: left;
-    width: 300px;
-    overflow-y: auto;
-    padding: 5px;
+  // box-sizing: border-box;
+  .palettes-container {
+    height: 100%;
   }
 
-  .palette input {
+  .palette {
+    position: relative;
+    float: left;
+    width: 283px;
+    height: 100%;
+    overflow-y: auto;
+    padding: 5px;  
+    // box-sizing: border-box;
+  }
+
+  input {
     border: none;
     outline: none;
   }
 
-  .palette .button {
+  .button {
     @extend .icon;
     cursor: pointer;
     margin: 2px;
@@ -24,15 +31,21 @@ build-pane {
     user-select: none;
   }
 
-  .palette .button:active {
+  .button:active {
     box-shadow: inset -2px -2px 2px rgba(255,255,255,0.8), 
                 inset 2px 2px 2px rgba(0,0,0,0.5);   
   }
 
-  .palette .button:disabled {
+  .button:disabled {
     filter: grayscale(100%);
     box-shadow: inset -2px -2px 2px rgba(255,255,255,0.8), 
               inset 2px 2px 2px rgba(0,0,0,0.5);  
   }  
+
+  .cancel-button {
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
+  }
 }
 

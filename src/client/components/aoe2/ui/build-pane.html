@@ -19,12 +19,18 @@
         ng-repeat="(taskVerb, taskObjects) in ctrl.selection.unit.tasks"
         class="icon-{{ taskVerb }} button"
         ng-click="ctrl.taskVerb = taskVerb"></input>
+    <input type="button" 
+        class="icon-cancel button cancel-button"
+        ng-click="ctrl.selection.unit = null"></input>
   </div>    
   <div class="palette" ng-show="ctrl.taskVerb">
-     <input type="button" 
+    <input type="button" 
         ng-repeat="taskObject in ctrl.taskObjects"
         class="icon-{{ taskObject }} button"
         ng-click="ctrl.assign(taskObject)"></input>
+    <input type="button" 
+        class="icon-cancel button cancel-button"
+        ng-click="ctrl.taskVerb = null"></input>
   </div>
   <div class="palette"> 
    <input type="button" 

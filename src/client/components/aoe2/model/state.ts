@@ -63,6 +63,7 @@ class State implements core.IState {
       if (item.start > this.time_) {
         return;
       }
+      
       item.apply(this);
     }, this);
     var delta = this.time_ - lastTime;
