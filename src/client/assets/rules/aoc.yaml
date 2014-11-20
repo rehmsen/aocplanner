@@ -136,6 +136,7 @@ technologies:
   age: 3
 - id: blood_lines
   age: 1
+  source: stable
 - id: bodkin_arrow
   age: 2
 - id: bow_saw
@@ -154,8 +155,10 @@ technologies:
   age: 2
 - id: carthography
   age: 1
+  source: market
 - id: castle_age
   age: 1
+  source: town_center
 - id: chain_barding_armor
   age: 2
 - id: chain_mail_armor
@@ -168,6 +171,7 @@ technologies:
   age: 3
 - id: coinage
   age: 1
+  source: market
 - id: conscription
   age: 3
 - id: crop_rotation
@@ -176,6 +180,7 @@ technologies:
   age: 2
 - id: double_bit_axe
   age: 1
+  source: lumber_camp
 - id: dry_dock
   age: 3
 - id: elite_eagle_warrior
@@ -199,14 +204,17 @@ technologies:
     finished: state.ageIndex += 1
 - id: fletching
   age: 1
+  source: blacksmith
 - id: forging
   age: 1
+  source: blacksmith
 - id: fortified_wall
   age: 3
 - id: galleone
   age: 3
 - id: gold_mining
   age: 1
+  age: mining_camp
 - id: gold_shaft_mining
   age: 2
 - id: guard_tower
@@ -239,6 +247,7 @@ technologies:
   age: 3
 - id: horse_collar
   age: 1
+  source: mill
 - id: husbandry
   age: 2
 - id: illumination
@@ -263,6 +272,7 @@ technologies:
     gold: 50
 - id: man_at_arms
   age: 1
+  source: barracks
 - id: masonry
   age: 2
 - id: murder_holes
@@ -271,6 +281,7 @@ technologies:
   age: 3
 - id: padded_archer_armor
   age: 1
+  source: blacksmith
 - id: paladin
   age: 3
 - id: parthian_tactics
@@ -291,8 +302,10 @@ technologies:
   age: 2
 - id: scale_barding_amor
   age: 1
+  source: blacksmith
 - id: scale_mail_amor
   age: 1
+  source: blacksmith
 - id: ship_wright
   age: 3
 - id: siege_engineers
@@ -305,16 +318,19 @@ technologies:
   age: 3
 - id: stone_mining
   age: 1
+  source: mining_camp
 - id: stone_shaft_mining
   age: 2
 - id: thumb_ring
   age: 2
 - id: town_patrol
   age: 1
+  source: town_center
 - id: town_watch
   age: 2
 - id: tracking
   age: 1
+  source: barracks
 - id: treadmill_crane
   age: 2
 - id: two_handed_swortman
@@ -327,6 +343,7 @@ technologies:
   age: 2
 - id: wheel_barrow
   age: 1
+  source: town_center
 
 units:
 - id: archer
@@ -379,10 +396,10 @@ units:
   cost:
     lumber: 25
     food: 35
-- id: tradecard
+- id: trade_cart
   age: 1
   source: market
-- id: tradecog
+- id: trade_cog
   age: 1
   source: dock
 - id: transport_ship
