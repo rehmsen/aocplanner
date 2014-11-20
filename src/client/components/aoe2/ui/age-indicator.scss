@@ -7,5 +7,18 @@ age-indicator {
     border-radius: 3px;
     text-align: center;
     overflow: hidden;
+    position: relative;
+  }
+
+  .age-progress {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    background: red;
+  }
+
+  .age-name {
+    position: relative;
   }
 }

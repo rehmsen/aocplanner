@@ -1,0 +1,12 @@
+$icon-size: 35px;
+
+div {
+  box-sizing: border-box;
+}
+
+.icon {
+  width: $icon-size;
+  height: $icon-size;
+  display: inline-block;
+  z-index: 3;
+}

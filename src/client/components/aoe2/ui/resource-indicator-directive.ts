@@ -1,4 +1,4 @@
-/// <reference path="../../../../typings/angularjs/angular.d.ts" />
+/// <reference path="../../../../../typings/angularjs/angular.d.ts" />
 
 interface IResourceIndicatorScope extends ng.IScope {
   Math: Math;
@@ -10,7 +10,7 @@ function createResourceIndicatorDirective(): ng.IDirective {
     scope: {
       currentState: '&'
     },
-    templateUrl: '/components/aoe2-ui/resource-indicator.html',
+    templateUrl: '/components/aoe2/ui/resource-indicator.html',
     link: function($scope: IResourceIndicatorScope) {
       $scope.Math = Math;
     }

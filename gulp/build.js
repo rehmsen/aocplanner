@@ -34,8 +34,11 @@ gulp.task('build:ts', function() {
     var tsResult = gulp.src([
         'src/client/{app,components}/**/*.ts', 'typings/**/*.ts'])
         .pipe(sourcemaps.init())
-        .pipe(ts({noExternalResolve: true, module: 'commonjs'}))
-        .on('error', handleError);
+        .pipe(ts({
+          noExternalResolve: true, 
+          module: 'commonjs',
+          noImplicitAny: true
+        }));
     return tsResult.js
         .pipe(sourcemaps.write())
         .pipe(gulp.dest('.tmp/client'));
@@ -75,6 +78,11 @@ gulp.task('copy:assets', function() {
     .pipe(gulp.dest('./dist/client/assets')); 
 });
 
+gulp.task('copy:favicon', function() {
+  return gulp.src('src/client/favicon.ico')
+    .pipe(gulp.dest('./dist/client/')); 
+});
+
 gulp.task('copy:images', function() {
   return gulp.src('src/client/assets/images/!(icons)/**/*.{gif,jpg,png}')
     .pipe(gulp.dest('./dist/client/assets/images/')); 
@@ -108,4 +116,5 @@ gulp.task('dist', [
   'copy:images',
   'build:dependencies',
   'copy:go',
-  'copy:appyaml']);
+  'copy:appyaml',
+  'copy:favicon']);

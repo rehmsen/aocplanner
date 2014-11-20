@@ -5,7 +5,7 @@
   </div>
   <div style="float: right;">
     <select>
-      <option ng-repeat="civilization in mainCtrl.civilizations">
+      <option ng-repeat="civilization in mainCtrl.rulesService.civilizations">
         {{civilization.name}}
       </option>
     </select>
@@ -14,18 +14,18 @@
       All Techs
     </label>
   </div>
-  <age-indicator age="mainCtrl.age">
+  <age-indicator age="mainCtrl.currentState.age" progress="mainCtrl.currentState.ageProgress">
   </age-indicator>
 </div>
 
 <div class="main-pane">
-  <timeline time="mainCtrl.time" time-scale="mainCtrl.timeScale">
+  <timeline time="mainCtrl.currentState.time" time-scale="mainCtrl.timeScale">
   </timeline>
-  <div class="time-indicator" style="left: {{35 + mainCtrl.time * mainCtrl.timeScale}}px">
-    {{ mainCtrl.time|duration }}
+  <div class="time-indicator" style="left: {{35 + mainCtrl.currentState.time * mainCtrl.timeScale}}px">
+    {{ mainCtrl.currentState.time|duration }}
   </div>
   <div class="build-order">
-    <div ng-repeat="queue in mainCtrl.queues|orderBy:'start'" ng-show="queue.items.length>0" style="position:relative; left: {{queue.start*mainCtrl.timeScale}}px;">
+    <div ng-repeat="queue in mainCtrl.buildOrderService.queues|orderBy:'start'" ng-show="queue.items.length>0" style="position:relative; left: {{queue.start*mainCtrl.timeScale}}px;">
       <div class="icon-{{queue.source}} icon"></div>
       <div class="items">
         <build-order-item ng-repeat="item in queue.items" 
@@ -43,37 +43,9 @@
     </task-assignment>
   </div>
 </div>
-<div class="build-pane">
-  <div class="palettes-container">
-    <div class="palette">
-     <input type="button" 
-          ng-repeat="building in mainCtrl.buildings"
-          ng-show="building.age <= mainCtrl.age.index" 
-          class="icon-{{ building.id }} button"
-          ng-click="mainCtrl.build(building)"></input>
-    </div>
-    <div class="palette" ng-show="!mainCtrl.worker"> 
-     <input type="button" 
-          ng-repeat="unit in mainCtrl.units"
-          ng-show="unit.age <= mainCtrl.age.index" 
-          class="icon-{{ unit.id }} button"
-          ng-click="mainCtrl.train(unit)"
-          ng-disabled="!mainCtrl.hasBuilding[unit.source]"></input>
-    </div>
-    <div class="palette" ng-show="mainCtrl.worker">
-     <input type="button" 
-          ng-repeat="task in mainCtrl.tasks"
-          ng-show="mainCtrl.worker.tasks.indexOf(task) >= 0" 
-          class="icon-{{ task }} button"
-          ng-click="mainCtrl.assign(task)"></input>
-    </div>    
-    <div class="palette"> 
-     <input type="button" 
-          ng-repeat="tech in mainCtrl.technologies"
-          ng-show="tech.age <= mainCtrl.age.index && !mainCtrl.hasTechnology[tech.id]" 
-          class="icon-{{ tech.id }} button"
-          ng-click="mainCtrl.research(tech)"
-          ng-disabled="!mainCtrl.hasBuilding[tech.source]"></input>
-    </div>
-  </div>
+<div class="bottom-pane">
+  <build-pane 
+      current-state="mainCtrl.currentState"
+      selection="mainCtrl.selection">
+  </build-pane>
 </div>

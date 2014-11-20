@@ -1,8 +1,8 @@
-/// <reference path="../../../../typings/angularjs/angular.d.ts" />
+/// <reference path="../../../../../typings/angularjs/angular.d.ts" />
 
 function createBuildOrderItemDirective(): ng.IDirective {
   return {
-    templateUrl: '/components/aoe2-ui/build-order-item.html',
+    templateUrl: '/components/aoe2/ui/build-order-item.html',
     restrict: 'E',
     scope: {
       item: '=',
