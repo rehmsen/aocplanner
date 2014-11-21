@@ -48,13 +48,16 @@ class BuildOrderService {
     this.buildOrder.splice(index, 0, item);    
   }
 
-  enqueueBuildableItem(buildable: build.Buildable): core.IQueue {
+  enqueueBuildableItem(
+      buildable: build.Buildable, currentTime: number): core.IQueue {
     var queue = this.queues.filter(function(queue) { 
       return queue.source === buildable.source;
     })[0];
-    var offset = 0;
+    var queueEnd = queue.start + queue.length;
+    var startTime = Math.max(currentTime, queueEnd);
+    var offset = startTime - queueEnd;
     var item = new build.BuildableStartedItem(
-        offset, queue.length + offset, buildable);
+        offset, startTime, buildable);
     queue.items.push(item); 
     queue.length += item.offset + buildable.buildDuration;
     this.sortInItem(item);

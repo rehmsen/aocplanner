@@ -51,7 +51,8 @@ class BuildPaneDirectiveController {
 
   build(building: build.Building): void {
     building.source = 'villager';
-    var queue = this.buildOrderService.enqueueBuildableItem(building);
+    var queue = this.buildOrderService.enqueueBuildableItem(
+        building, this.currentState.time);
     this.currentState.time = queue.start + queue.length;
     var completionTime = queue.length;
     this.buildOrderService.queues.push({
@@ -63,7 +64,8 @@ class BuildPaneDirectiveController {
   }
 
   research(tech: build.Technology): void {
-    var queue = this.buildOrderService.enqueueBuildableItem(tech);
+    var queue = this.buildOrderService.enqueueBuildableItem(
+        tech, this.currentState.time);
     this.currentState.time = queue.start + queue.length;
     this.hasStartedTechnology[tech.id] = true;
   }
@@ -72,7 +74,8 @@ class BuildPaneDirectiveController {
     if (unit.tasks) {
       this.selection.set(unit, core.Task.createIdle(), true);
     } else {
-      var queue = this.buildOrderService.enqueueBuildableItem(unit);
+      var queue = this.buildOrderService.enqueueBuildableItem(
+        unit, this.currentState.time);
       this.currentState.time = queue.start + queue.length;
     }
   }
@@ -80,7 +83,8 @@ class BuildPaneDirectiveController {
   assign(toTaskObject: string): void {
     var toTask = new core.Task((<any>core.TaskVerb)[this.taskVerb], toTaskObject);
     if (this.selection.toBeTrained) {
-      var queue = this.buildOrderService.enqueueBuildableItem(this.selection.unit);
+      var queue = this.buildOrderService.enqueueBuildableItem(
+        this.selection.unit, this.currentState.time);
       var buildableItem = <build.BuildableStartedItem>queue.items[queue.items.length-1];
       buildableItem.initialTask = toTask;
     }
