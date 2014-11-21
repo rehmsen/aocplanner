@@ -31,7 +31,7 @@
         <build-order-item ng-repeat="item in queue.items" 
                           item="item" 
                           time-scale="mainCtrl.timeScale" 
-                          style="left: {{item.offset * mainCtrl.timeScale}}px;">
+                          style="left: {{item.start * mainCtrl.timeScale}}px;">
         </build-order-item>
       </div>
     </div>
