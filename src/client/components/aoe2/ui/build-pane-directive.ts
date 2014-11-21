@@ -49,7 +49,7 @@ class BuildPaneDirectiveController {
 
   }
 
-  build(building: build.Building): void {
+  construct(building: build.Building): void {
     building.source = 'villager';
     var queue = this.buildOrderService.enqueueBuildableItem(
         building, this.currentState.time);
