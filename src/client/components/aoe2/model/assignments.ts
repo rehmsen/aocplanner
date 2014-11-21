@@ -1,4 +1,5 @@
 import core = require('./core');
+import build = require('./build');
 
 export class IdleAssignment implements core.IAssignment {
   task = core.Task.createIdle();
@@ -23,6 +24,17 @@ export class GatheringAssignment implements core.IAssignment {
   }
 }
 
+export class ConstructionAssignment implements core.IAssignment {
+
+    constructor(
+        public count: number,
+        public task: core.Task) {
+    }
+
+  apply(delta: number, state: core.IState): void {
+  }
+}
+
 export class AssignmentFactory {
   sources: {[id: string]: core.IResourceSource} = {};
   constructor(sources: core.IResourceSource[]) {
@@ -32,9 +44,15 @@ export class AssignmentFactory {
   }
 
   create(task: core.Task, count: number): core.IAssignment {
-    if (task.verb == core.TaskVerb.idle) return new IdleAssignment(count);
-    else if (task.verb == core.TaskVerb.harvest) return new GatheringAssignment(count, this.sources[task.object]);
-    else throw new Error('Unknown task: ' + task);
+    if (task.verb == core.TaskVerb.idle) {
+      return new IdleAssignment(count);
+    } else if (task.verb == core.TaskVerb.harvest) {
+      return new GatheringAssignment(count, this.sources[task.object]);
+    } else if (task.verb == core.TaskVerb.construct) {
+      return new ConstructionAssignment(count, task);
+    } else {
+      throw new Error('Unknown task: ' + task);
+    }
   }
 }
 

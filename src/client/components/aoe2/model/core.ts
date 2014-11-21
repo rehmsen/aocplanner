@@ -53,6 +53,9 @@ export class Task {
   static createHarvest(sourceId: string): Task {
     return new Task(TaskVerb.harvest, sourceId);
   }
+  static createConstruct(buildingId: string): Task {
+    return new Task(TaskVerb.construct, buildingId);
+  }
 }
 
 export interface ITaskCount {
