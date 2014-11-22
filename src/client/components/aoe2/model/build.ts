@@ -194,3 +194,32 @@ export class Selection {
     this.toBeTrained = toBeTrained;
   }
 }
+
+export class Queue {
+  length: number =  0;
+  private items: BuildableStartedItem[] = [];
+
+  constructor(
+      public source: string,
+      public start: number = 0) {
+  }
+
+  push(item: BuildableStartedItem) {
+    this.items.push(item);
+    var offset = item.start - this.length
+    var itemEnd = item.start + item.buildable.buildDuration;
+    this.length = Math.max(this.length, itemEnd);
+  }
+
+  get end(): number {
+    return this.start + this.length;
+  }
+
+  get empty(): boolean {
+    return this.items.length == 0;
+  }
+
+  get last(): BuildableStartedItem {
+    return this.items[this.items.length-1];
+  }
+}

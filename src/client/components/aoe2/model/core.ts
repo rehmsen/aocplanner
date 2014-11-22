@@ -103,25 +103,4 @@ export interface ISettings {
   allTechs: boolean;
 }
 
-export class Queue {
-  length: number =  0;
-  items: IBuildOrderItem[] = [];
-
-  constructor(
-      public source: string,
-      public start: number = 0) {
-  }
-
-  get end(): number {
-    return this.start + this.length;
-  }
-
-  get empty(): boolean {
-    return this.items.length == 0;
-  }
-
-  get last(): IBuildOrderItem {
-    return this.items[this.items.length-1];
-  }
-}
 

@@ -5,15 +5,15 @@ import build = require('./build');
 
 class BuildOrderService {
   buildOrder: core.IBuildOrderItem[] = [];
-  queues: core.Queue[];
+  queues: build.Queue[];
 
   constructor() {
     // TODO(olrehm): Make this map dependent.
     this.queues = [
-      new core.Queue('town_center'),
-      new core.Queue('villager'),
-      new core.Queue('villager'),
-      new core.Queue('villager')
+      new build.Queue('town_center'),
+      new build.Queue('villager'),
+      new build.Queue('villager'),
+      new build.Queue('villager')
     ];    
   }
 
@@ -30,7 +30,7 @@ class BuildOrderService {
   }
 
   enqueueBuildableItem(
-      buildable: build.Buildable, currentTime: number): core.Queue {
+      buildable: build.Buildable, currentTime: number): build.Queue {
     var queue = this.queues.filter(function(queue) { 
       return queue.source === buildable.source;
     })[0];
@@ -38,8 +38,7 @@ class BuildOrderService {
     var offset = startTime - queue.end;
     var item = new build.BuildableStartedItem(
         offset, startTime, buildable);
-    queue.items.push(item); 
-    queue.length += item.offset + buildable.buildDuration;
+    queue.push(item); 
     this.sortInItem(item);
     var finishedItem = new build.BuildableFinishedItem(
         0, queue.length, buildable);

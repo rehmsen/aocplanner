@@ -50,7 +50,7 @@ class BuildPaneDirectiveController {
     this.currentState.time = queue.end;
     var completionTime = queue.length;
     this.buildOrderService.queues.push(
-        new core.Queue(building.id, completionTime));
+        new build.Queue(building.id, completionTime));
   }
 
   research(tech: build.Technology): void {
