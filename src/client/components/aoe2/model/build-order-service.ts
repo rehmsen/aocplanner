@@ -31,7 +31,7 @@ class BuildOrderService {
 
   enqueueBuildableItem(
       buildable: core.Buildable, currentTime: number, 
-      initialTask?: core.ITask): build.Queue {
+      initialTask?: core.ITask): number {
     var queue = this.queues.filter(function(queue) { 
       return queue.source === buildable.source;
     })[0];
@@ -47,7 +47,7 @@ class BuildOrderService {
       this.queues.push(new build.Queue(buildable.id, item.end));
     }
 
-    return queue;
+    return queue.end;
   }
 
 }

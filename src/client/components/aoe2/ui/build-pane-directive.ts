@@ -45,15 +45,15 @@ class BuildPaneDirectiveController {
   }
 
   construct(building: build.Building): void {
-    var queue = this.buildOrderService.enqueueBuildableItem(
+    var queueEnd = this.buildOrderService.enqueueBuildableItem(
         building, this.currentState.time);
-    this.currentState.time = queue.end;
+    this.currentState.time = queueEnd;
   }
 
   research(tech: build.Technology): void {
-    var queue = this.buildOrderService.enqueueBuildableItem(
+    var queueEnd = this.buildOrderService.enqueueBuildableItem(
         tech, this.currentState.time);
-    this.currentState.time = queue.end;
+    this.currentState.time = queueEnd;
     this.hasStartedTechnology[tech.id] = true;
   }
 
@@ -61,15 +61,15 @@ class BuildPaneDirectiveController {
     if (unit.tasks) {
       this.selection.set(unit, new core.IdleTask(), true);
     } else {
-      var queue = this.buildOrderService.enqueueBuildableItem(
+      var queueEnd = this.buildOrderService.enqueueBuildableItem(
         unit, this.currentState.time);
-      this.currentState.time = queue.end;
+      this.currentState.time = queueEnd;
     }
   }
 
   assign(toTask: core.ITask): void {
     if (this.selection.toBeTrained) {
-      var queue = this.buildOrderService.enqueueBuildableItem(
+      var queueEnd = this.buildOrderService.enqueueBuildableItem(
         this.selection.unit, this.currentState.time);
     }
 
@@ -81,7 +81,7 @@ class BuildPaneDirectiveController {
         toTask);
       this.buildOrderService.sortInItem(reassignementItem);
     }, this);
-    this.currentState.time = queue.end;
+    this.currentState.time = queueEnd;
     this.selection.reset();
     this.taskVerb = null;
   }
