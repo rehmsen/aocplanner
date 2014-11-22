@@ -3,7 +3,7 @@
 import core = require('./core');
 import build = require('./build');
 
-class BuildOrderService {
+class BuildOrderService implements core.IBuildOrderService {
   buildOrder: core.IBuildOrderItem[] = [];
   queues: build.Queue[];
 

@@ -35,8 +35,10 @@ export class ConstructionTask implements core.ITask {
   }
 
   updateState(state: core.IState, delta: number, count: number): void {}
-
-  enqueue() : void{}
+  updateBuildOrder(
+      buildOrderService: core.IBuildOrderService, currentTime: number): number {
+    return buildOrderService.enqueueBuildable(this.building, currentTime);
+  }
 }
 
 export interface IEffect {

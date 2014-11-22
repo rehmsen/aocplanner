@@ -43,8 +43,10 @@ export interface ITask {
   object?: string;
   id: string;
 
+
   updateState(state: IState, delta: number, count: number): void
-  enqueue(): void;
+  updateBuildOrder(
+      buildOrderService: IBuildOrderService, currentTime: number): number
 }
 
 export class IdleTask implements ITask {
@@ -53,7 +55,10 @@ export class IdleTask implements ITask {
 
   updateState(state: IState, delta: number, count: number): void {}
 
-  enqueue(): void {}
+  updateBuildOrder(
+      buildOrderService: IBuildOrderService, currentTime: number): number {
+    return currentTime;
+  }
 }
 
 export class HarvestTask implements ITask {
@@ -71,7 +76,10 @@ export class HarvestTask implements ITask {
         count * this.source.rate * delta;    
   }
 
-  enqueue() : void{}
+  updateBuildOrder(
+      buildOrderService: IBuildOrderService, currentTime: number): number {
+    return currentTime;
+  }
 }
 
 export interface ITaskCount {
@@ -126,5 +134,11 @@ export class Buildable {
   finished(state: IState) {
 
   }
+}
+
+export interface IBuildOrderService {
+  enqueueBuildable(
+      buildable: Buildable, currentTime: number, 
+      initialTask?: ITask): number
 }
 
