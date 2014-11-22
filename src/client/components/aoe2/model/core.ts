@@ -24,6 +24,38 @@ export interface IAssignable {
   tasks: {[verb: string]: string[]};
 }
 
+export class Selection {
+  assignable: IAssignable;
+  taskCounts: {[taskId: string]: ITaskCount};
+
+  constructor() {
+    this.reset();
+  }
+
+  reset() {
+    this.assignable = null;
+    this.taskCounts = {};
+  }
+
+  add(assignable: IAssignable, task: ITask): boolean {
+    if (this.assignable && this.assignable.id != assignable.id) {
+      return false;
+    }
+    this.assignable = assignable;
+    if (!this.taskCounts[task.id]) {
+      this.taskCounts[task.id] = {task: task, count: 1, assignable: assignable};
+    } else {
+      this.taskCounts[task.id].count++;
+    }
+    return true;
+  }
+
+  set(assignable: IAssignable, task: ITask) {
+    this.reset();
+    this.add(assignable, task);
+  }
+}
+
 export interface IState {
   time: number;
   resources: IResources;

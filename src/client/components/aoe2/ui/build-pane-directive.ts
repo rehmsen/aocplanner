@@ -24,7 +24,7 @@ function createBuildPaneDirective(): ng.IDirective {
 class BuildPaneDirectiveController {
   currentState: State;
   hasStartedTechnology: {[technologyId: string]: boolean} = {};
-  selection: build.Selection;
+  selection: core.Selection;
   toBeTrained: build.Unit;
   taskVerb: string;
 

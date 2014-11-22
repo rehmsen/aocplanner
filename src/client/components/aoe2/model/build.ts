@@ -137,38 +137,6 @@ export class BuildableFinishedItem implements core.IBuildOrderItem {
   }
 }
 
-export class Selection {
-  assignable: core.IAssignable;
-  taskCounts: {[taskId: string]: core.ITaskCount};
-
-  constructor() {
-    this.reset();
-  }
-
-  reset() {
-    this.assignable = null;
-    this.taskCounts = {};
-  }
-
-  add(assignable: core.IAssignable, task: core.ITask): boolean {
-    if (this.assignable && this.assignable.id != assignable.id) {
-      return false;
-    }
-    this.assignable = assignable;
-    if (!this.taskCounts[task.id]) {
-      this.taskCounts[task.id] = {task: task, count: 1, assignable: assignable};
-    } else {
-      this.taskCounts[task.id].count++;
-    }
-    return true;
-  }
-
-  set(assignable: core.IAssignable, task: core.ITask) {
-    this.reset();
-    this.add(assignable, task);
-  }
-}
-
 export class Queue {
   private duration: number =  0;
   private items: BuildableStartedItem[] = [];

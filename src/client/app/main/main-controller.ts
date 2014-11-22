@@ -12,7 +12,7 @@ class MainController {
 
   settings: core.ISettings;
   currentState: State;
-  selection: build.Selection;
+  selection: core.Selection;
 
   constructor( 
       public buildOrderService: BuildOrderService,
@@ -28,7 +28,7 @@ class MainController {
       this.currentState.time = 0;
     }.bind(this));
 
-    this.selection = new build.Selection();
+    this.selection = new core.Selection();
   }
 
 }
