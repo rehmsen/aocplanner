@@ -103,10 +103,14 @@ export interface ISettings {
   allTechs: boolean;
 }
 
-export interface IQueue {
-  source: string;
-  start: number;
-  length: number;
-  items: IBuildOrderItem[];
+export class Queue {
+  length: number =  0;
+  items: IBuildOrderItem[] = [];
+
+  constructor(
+      public source: string,
+      public start: number = 0) {
+
+  }
 }
 
