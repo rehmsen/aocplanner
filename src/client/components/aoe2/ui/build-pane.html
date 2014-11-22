@@ -4,7 +4,7 @@
         ng-repeat="building in ctrl.rulesService.buildings"
         ng-show="building.age <= ctrl.currentState.age.index" 
         class="icon-{{ building.id }} button"
-        ng-click="ctrl.build(building)"></input>
+        ng-click="ctrl.construct(building)"></input>
   </div>
   <div class="palette" ng-show="!ctrl.selection.unit"> 
    <input type="button" 
@@ -25,9 +25,9 @@
   </div>    
   <div class="palette" ng-show="ctrl.taskVerb">
     <input type="button" 
-        ng-repeat="taskObject in ctrl.taskObjects"
-        class="icon-{{ taskObject }} button"
-        ng-click="ctrl.assign(taskObject)"></input>
+        ng-repeat="task in ctrl.tasks"
+        class="icon-{{ task.object }} button"
+        ng-click="ctrl.assign(task)"></input>
     <input type="button" 
         class="icon-cancel button cancel-button"
         ng-click="ctrl.taskVerb = null"></input>

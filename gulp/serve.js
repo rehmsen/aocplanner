@@ -8,6 +8,6 @@ gulp.task('serve', ['watch'], shell.task([
   'goapp serve dist'
 ]));
 
-gulp.task('deploy', ['watch'], shell.task([
+gulp.task('deploy', ['dist'], shell.task([
   'goapp deploy dist'
 ]));

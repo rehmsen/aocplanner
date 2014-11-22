@@ -25,13 +25,15 @@
     {{ mainCtrl.currentState.time|duration }}
   </div>
   <div class="build-order">
-    <div ng-repeat="queue in mainCtrl.buildOrderService.queues|orderBy:'start'" ng-show="queue.items.length>0" style="position:relative; left: {{queue.start*mainCtrl.timeScale}}px;">
+    <div ng-repeat="queue in mainCtrl.buildOrderService.queues|orderBy:'start'" 
+         ng-show="!queue.empty" 
+         style="position:relative; left: {{queue.start*mainCtrl.timeScale}}px;">
       <div class="icon-{{queue.source}} icon"></div>
       <div class="items">
         <build-order-item ng-repeat="item in queue.items" 
                           item="item" 
                           time-scale="mainCtrl.timeScale" 
-                          style="left: {{item.offset * mainCtrl.timeScale}}px;">
+                          style="left: {{item.start * mainCtrl.timeScale}}px;">
         </build-order-item>
       </div>
     </div>

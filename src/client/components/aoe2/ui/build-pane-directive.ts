@@ -26,75 +26,66 @@ class BuildPaneDirectiveController {
   hasStartedTechnology: {[technologyId: string]: boolean} = {};
   selection: build.Selection;
   taskVerb: string;
-  private assignmentFactory_: assignments.AssignmentFactory;
 
   constructor(
       public buildOrderService: BuildOrderService,
       public rulesService: RulesService) {
-    this.rulesService.loadingPromise.then(function() {
-      this.assignmentFactory_ = new assignments.AssignmentFactory(
-          this.rulesService.resourceSources);
+  }
+
+  get tasks(): core.ITask[] {
+    if (!this.taskVerb || !this.rulesService.loaded) {
+      return [];
+    }
+
+    return this.rulesService.tasks[this.taskVerb].filter(function(task: core.ITask) {
+      var unitTasksObjects = this.selection.unit.tasks[this.taskVerb];
+      return unitTasksObjects !== undefined && 
+          (task.verb != core.TaskVerb.harvest || unitTasksObjects.indexOf(task.object) > -1);
     }.bind(this));
   }
 
-  get taskObjects(): string[] {
-    switch (this.taskVerb) {
-      case 'harvest': 
-        return this.selection.unit.tasks['harvest'];
-      case 'construct':
-        return this.rulesService.buildings.map(function(building) { return building.id });
-      default:
-        return [];
-    }
-
-  }
-
-  build(building: build.Building): void {
-    building.source = 'villager';
-    var queue = this.buildOrderService.enqueueBuildableItem(building);
-    this.currentState.time = queue.start + queue.length;
-    var completionTime = queue.length;
-    this.buildOrderService.queues.push({
-      source: building.id,
-      start: completionTime, 
-      length: 0,
-      items: []
-    });
+  construct(building: build.Building): void {
+    var queueEnd = this.buildOrderService.enqueueBuildable(
+        building, this.currentState.time);
+    this.currentState.time = queueEnd;
   }
 
   research(tech: build.Technology): void {
-    var queue = this.buildOrderService.enqueueBuildableItem(tech);
-    this.currentState.time = queue.start + queue.length;
+    var queueEnd = this.buildOrderService.enqueueBuildable(
+        tech, this.currentState.time);
+    this.currentState.time = queueEnd;
     this.hasStartedTechnology[tech.id] = true;
   }
 
   train(unit: build.Unit): void {
     if (unit.tasks) {
-      this.selection.set(unit, core.Task.createIdle(), true);
+      this.selection.set(unit, new core.IdleTask(), true);
     } else {
-      var queue = this.buildOrderService.enqueueBuildableItem(unit);
-      this.currentState.time = queue.start + queue.length;
+      var queueEnd = this.buildOrderService.enqueueBuildable(
+        unit, this.currentState.time);
+      this.currentState.time = queueEnd;
     }
   }
 
-  assign(toTaskObject: string): void {
-    var toTask = new core.Task((<any>core.TaskVerb)[this.taskVerb], toTaskObject);
+  assign(toTask: core.ITask): void {
     if (this.selection.toBeTrained) {
-      var queue = this.buildOrderService.enqueueBuildableItem(this.selection.unit);
-      var buildableItem = <build.BuildableStartedItem>queue.items[queue.items.length-1];
-      buildableItem.initialTask = toTask;
+      var queueEnd = this.buildOrderService.enqueueBuildable(
+        this.selection.unit, this.currentState.time);
     }
 
     angular.forEach(this.selection.taskCounts, function(fromTaskCount) {
       var reassignementItem = new assignments.ReassignmentItem(
-        queue.length,
+        this.currentState.time,
         fromTaskCount.count,
         fromTaskCount.task,
-        toTask,
-        this.assignmentFactory_);
+        toTask);
       this.buildOrderService.sortInItem(reassignementItem);
     }, this);
-    this.currentState.time = queue.start + queue.length;
+
+    var newTime = toTask.updateBuildOrder(
+        this.buildOrderService, queueEnd);
+    this.currentState.time = newTime;
+
     this.selection.reset();
     this.taskVerb = null;
   }

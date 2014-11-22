@@ -1,40 +1,14 @@
 import core = require('./core');
+import build = require('./build');
 
-export class IdleAssignment implements core.IAssignment {
-  task = core.Task.createIdle();
-  constructor(
-      public count: number) {}
-
-  apply(delta: number, state: core.IState): void {}
-}
-
-export class GatheringAssignment implements core.IAssignment {
-  task: core.Task;
-  
+export class TaskAssignment implements core.IAssignment {
   constructor(
       public count: number,
-      public source: core.IResourceSource) {
-    this.task = core.Task.createHarvest(source.id);
+      public task: core.ITask) {
   }
 
   apply(delta: number, state: core.IState): void {
-     state.resources[this.source.resource] += 
-         this.count * this.source.rate * delta;
-  }
-}
-
-export class AssignmentFactory {
-  sources: {[id: string]: core.IResourceSource} = {};
-  constructor(sources: core.IResourceSource[]) {
-    sources.forEach(function(source){
-      this.sources[source.id] = source;
-    }, this);
-  }
-
-  create(task: core.Task, count: number): core.IAssignment {
-    if (task.verb == core.TaskVerb.idle) return new IdleAssignment(count);
-    else if (task.verb == core.TaskVerb.harvest) return new GatheringAssignment(count, this.sources[task.object]);
-    else throw new Error('Unknown task: ' + task);
+    this.task.updateState(state, delta, this.count);
   }
 }
 
@@ -42,9 +16,8 @@ export class ReassignmentItem implements core.IBuildOrderItem {
   constructor(
       public start: number,
       private count: number,
-      private fromTask: core.Task,
-      private toTask: core.Task,
-      private assignmentFactory: AssignmentFactory) {}
+      private fromTask: core.ITask,
+      private toTask: core.ITask) {}
 
   apply(state: core.IState) {
     if (this.fromTask) {
@@ -61,7 +34,7 @@ export class ReassignmentItem implements core.IBuildOrderItem {
       toAssignment.count += this.count;
     } else {
       toAssignment = state.assignments[this.toTask.id] = 
-          this.assignmentFactory.create(this.toTask, this.count); 
+          new TaskAssignment(this.count, this.toTask);
     }
   }  
 }

@@ -38,26 +38,53 @@ export enum TaskVerb {
   construct
 }
 
+export interface ITask {
+  verb: TaskVerb;
+  object?: string;
+  id: string;
 
-export class Task {
-  constructor(public verb: TaskVerb, public object?: string) {
+
+  updateState(state: IState, delta: number, count: number): void
+  updateBuildOrder(
+      buildOrderService: IBuildOrderService, currentTime: number): number
+}
+
+export class IdleTask implements ITask {
+  verb = TaskVerb.idle;
+  id = TaskVerb[this.verb];
+
+  updateState(state: IState, delta: number, count: number): void {}
+
+  updateBuildOrder(
+      buildOrderService: IBuildOrderService, currentTime: number): number {
+    return currentTime;
+  }
+}
+
+export class HarvestTask implements ITask {
+  verb = TaskVerb.harvest;  
+  object: string;
+  id: string;
+
+  constructor(public source: IResourceSource) {
+    this.object = source.id;
+    this.id = TaskVerb[this.verb] + ':' + this.object; 
   }
 
-  get id(): string {
-    return TaskVerb[this.verb] + (this.object ? ':' + this.object : '');
+  updateState(state: IState, delta: number, count: number): void {
+     state.resources[this.source.resource] += 
+        count * this.source.rate * delta;    
   }
 
-  static createIdle(): Task {
-    return new Task(TaskVerb.idle);
-  }
-  static createHarvest(sourceId: string): Task {
-    return new Task(TaskVerb.harvest, sourceId);
+  updateBuildOrder(
+      buildOrderService: IBuildOrderService, currentTime: number): number {
+    return currentTime;
   }
 }
 
 export interface ITaskCount {
   count: number;
-  task: Task;  
+  task: ITask;  
 }
 
 export interface IAssignment extends ITaskCount {
@@ -84,10 +111,34 @@ export interface ISettings {
   allTechs: boolean;
 }
 
-export interface IQueue {
-  source: string;
-  start: number;
-  length: number;
-  items: IBuildOrderItem[];
+export class Buildable {
+  constructor(
+      public id: string,
+      public age: number,
+      public buildDuration: number,
+      public cost: IResources,
+      public source: string,
+      public hasQueue = false) {
+  }
+
+  started(state: IState, delta: number) {
+    angular.forEach(this.cost, function(quantity, resource) {
+      state.resources[resource] -= quantity;
+    });    
+  }
+
+  progress(state: IState, delta: number) {
+
+  }
+
+  finished(state: IState) {
+
+  }
+}
+
+export interface IBuildOrderService {
+  enqueueBuildable(
+      buildable: Buildable, currentTime: number, 
+      initialTask?: ITask): number
 }
 

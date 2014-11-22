@@ -424,4 +424,4 @@ units:
     - stonemine
     - wood
     - straggler
-    construct: null
+    construct: []

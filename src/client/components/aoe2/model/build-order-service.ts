@@ -3,36 +3,17 @@
 import core = require('./core');
 import build = require('./build');
 
-class BuildOrderService {
+class BuildOrderService implements core.IBuildOrderService {
   buildOrder: core.IBuildOrderItem[] = [];
-  queues: core.IQueue[];
+  queues: build.Queue[];
 
   constructor() {
+    // TODO(olrehm): Make this map dependent.
     this.queues = [
-      {
-        source: 'town_center',
-        start: 0,
-        length: 0,
-        items: []
-      },
-      {
-        source: 'villager',
-        start: 0,
-        length: 0,
-        items: []
-      },
-      {
-        source: 'villager',
-        start: 0,
-        length: 0,
-        items: []
-      },
-      {
-        source: 'villager',
-        start: 0,
-        length: 0,
-        items: []
-      },      
+      new build.Queue('town_center'),
+      new build.Queue('villager'),
+      new build.Queue('villager'),
+      new build.Queue('villager')
     ];    
   }
 
@@ -48,20 +29,25 @@ class BuildOrderService {
     this.buildOrder.splice(index, 0, item);    
   }
 
-  enqueueBuildableItem(buildable: build.Buildable): core.IQueue {
+  enqueueBuildable(
+      buildable: core.Buildable, currentTime: number, 
+      initialTask?: core.ITask): number {
     var queue = this.queues.filter(function(queue) { 
       return queue.source === buildable.source;
     })[0];
-    var offset = 0;
+    var startTime = Math.max(currentTime, queue.end);
     var item = new build.BuildableStartedItem(
-        offset, queue.length + offset, buildable);
-    queue.items.push(item); 
-    queue.length += item.offset + buildable.buildDuration;
+        startTime, buildable, initialTask);
+    queue.push(item); 
     this.sortInItem(item);
-    var finishedItem = new build.BuildableFinishedItem(
-        0, queue.length, buildable);
+    var finishedItem = new build.BuildableFinishedItem(item.end, buildable);
     this.sortInItem(finishedItem);
-    return queue;
+    
+    if (buildable.hasQueue) {
+      this.queues.push(new build.Queue(buildable.id, item.end));
+    }
+
+    return queue.end;
   }
 
 }

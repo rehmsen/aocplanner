@@ -1,44 +1,20 @@
 import core = require('./core');
 
-export class Buildable {
-  constructor(
-      public id: string,
-      public age: number,
-      public buildDuration: number,
-      public cost: core.IResources,
-      public source: string) {
+export class Building extends core.Buildable {
+  static create(object: any):Building {
+    return new Building(
+        object.id, object.age, object.buildDuration, object.cost, 
+        object.room || 0, !object.noQueue);
   }
 
-  started(state: core.IState, delta: number) {
-    angular.forEach(this.cost, function(quantity, resource) {
-      state.resources[resource] -= quantity;
-    });    
-  }
-
-  progress(state: core.IState, delta: number) {
-
-  }
-
-  finished(state: core.IState) {
-
-  }
-}
-
-export class Building extends Buildable {
   constructor(
       id: string,
       age: number,
       buildDuration: number,
       cost: core.IResources,
-      source: string,
-      public room: number) {
-    super(id, age, buildDuration, cost, source);
-  }
-
-  static create(object: any):Building {
-    return new Building(
-        object.id, object.age, object.buildDuration, object.cost, 
-        object.source, object.room || 0);
+      public room: number,
+      hasQueue: boolean) {
+    super(id, age, buildDuration, cost, 'villager', hasQueue);
   }
 
   finished(state: core.IState) {
@@ -48,12 +24,29 @@ export class Building extends Buildable {
   }
 }
 
+export class ConstructionTask implements core.ITask {
+  verb = core.TaskVerb.construct;  
+  object: string;
+  id: string;
+
+  constructor(public building: Building) {
+    this.object = building.id;
+    this.id = core.TaskVerb[this.verb] + ':' + this.object; 
+  }
+
+  updateState(state: core.IState, delta: number, count: number): void {}
+  updateBuildOrder(
+      buildOrderService: core.IBuildOrderService, currentTime: number): number {
+    return buildOrderService.enqueueBuildable(this.building, currentTime);
+  }
+}
+
 export interface IEffect {
   started: string;
   finished: string;
 }
 
-export class Technology extends Buildable {
+export class Technology extends core.Buildable {
   constructor(
       id: string,
       age: number,
@@ -72,6 +65,7 @@ export class Technology extends Buildable {
   }
 
   started(state: core.IState, delta: number) {
+    super.started(state, delta);
     var progress = delta / this.buildDuration;
     if (progress < 1.0) {
       eval(this.effect_.started);
@@ -85,7 +79,7 @@ export class Technology extends Buildable {
   }
 }
 
-export class Unit extends Buildable {
+export class Unit extends core.Buildable {
   constructor(
       id: string,
       age: number,
@@ -102,8 +96,8 @@ export class Unit extends Buildable {
         object.source, object.tasks)    
   }
 
-  started(state: core.IState) {
-    super.started(state);
+  started(state: core.IState, delta: number) {
+    super.started(state, delta);
     state.pop++;
   }
 
@@ -116,12 +110,14 @@ export class Unit extends Buildable {
 }
 
 export class BuildableStartedItem implements core.IBuildOrderItem {
-  public initialTask: core.Task;
-
   constructor(
-      public offset: number,
       public start: number,
-      public buildable: Buildable) {
+      public buildable: core.Buildable,
+      public initialTask: core.ITask) {
+  }
+
+  get end(): number {
+    return this.start + this.buildable.buildDuration;
   }
 
   apply(state: core.IState) {
@@ -132,9 +128,8 @@ export class BuildableStartedItem implements core.IBuildOrderItem {
 
 export class BuildableFinishedItem implements core.IBuildOrderItem {
   constructor(
-      public offset: number,
       public start: number,
-      public buildable: Buildable) {
+      public buildable: core.Buildable) {
   }
 
   apply(state: core.IState) {
@@ -157,7 +152,7 @@ export class Selection {
     this.toBeTrained = false;
   }
 
-  add(unit: Unit, task: core.Task): boolean {
+  add(unit: Unit, task: core.ITask): boolean {
     if (this.unit && this.unit.id != unit.id || this.toBeTrained) {
       return false;
     }
@@ -170,12 +165,39 @@ export class Selection {
     return true;
   }
 
-  set(unit: Unit, task: core.Task, toBeTrained: boolean = false) {
+  set(unit: Unit, task: core.ITask, toBeTrained: boolean = false) {
     if (task.verb != core.TaskVerb.idle && toBeTrained) {
       throw new Error('Newly trained workers must initially be idle');
     }
     this.reset();
     this.add(unit, task);
     this.toBeTrained = toBeTrained;
+  }
+}
+
+export class Queue {
+  private duration: number =  0;
+  private items: BuildableStartedItem[] = [];
+
+  constructor(
+      public source: string,
+      public start: number = 0) {
+  }
+
+  push(item: BuildableStartedItem) {
+    this.items.push(item);
+    this.duration = item.end - this.start;
+  }
+
+  get end(): number {
+    return this.start + this.duration;
+  }
+
+  get empty(): boolean {
+    return this.items.length == 0;
+  }
+
+  get last(): BuildableStartedItem {
+    return this.items[this.items.length-1];
   }
 }

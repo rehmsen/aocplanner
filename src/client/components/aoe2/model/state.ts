@@ -45,7 +45,9 @@ class State implements core.IState {
     // TODO(olrehm): Initialize from rules/settings.
     this.pop = 4;
     this.popCap = 5;
-    this.assignments = {'idle': new assignments.IdleAssignment(3)};
+    this.assignments = {
+      'idle': new assignments.TaskAssignment(3, new core.IdleTask())
+    };
     this.ageIndex = 0;
     this.hasBuilding = {
       'town_center': true
