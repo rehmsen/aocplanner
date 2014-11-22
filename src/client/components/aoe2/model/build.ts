@@ -67,14 +67,16 @@ export class Technology extends core.Buildable {
   started(state: core.IState, delta: number) {
     super.started(state, delta);
     var progress = delta / this.buildDuration;
-    if (progress < 1.0) {
+    if (progress < 1.0 && this.effect_ && this.effect_.started) {
       eval(this.effect_.started);
     }
   }
 
   finished(state: core.IState) {
     super.finished(state);
-    eval(this.effect_.finished);
+    if (this.effect_ && this.effect_.finished){
+      eval(this.effect_.finished);
+    }
     state.hasTechnology[this.id] = true;
   }
 }
