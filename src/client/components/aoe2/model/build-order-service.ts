@@ -35,13 +35,10 @@ class BuildOrderService {
       return queue.source === buildable.source;
     })[0];
     var startTime = Math.max(currentTime, queue.end);
-    var offset = startTime - queue.end;
-    var item = new build.BuildableStartedItem(
-        offset, startTime, buildable);
+    var item = new build.BuildableStartedItem(startTime, buildable);
     queue.push(item); 
     this.sortInItem(item);
-    var finishedItem = new build.BuildableFinishedItem(
-        0, item.end, buildable);
+    var finishedItem = new build.BuildableFinishedItem(item.end, buildable);
     this.sortInItem(finishedItem);
     return queue;
   }

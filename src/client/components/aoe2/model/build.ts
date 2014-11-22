@@ -134,7 +134,6 @@ export class BuildableStartedItem implements core.IBuildOrderItem {
   public initialTask: core.ITask;
 
   constructor(
-      public offset: number,
       public start: number,
       public buildable: Buildable) {
   }
@@ -151,7 +150,6 @@ export class BuildableStartedItem implements core.IBuildOrderItem {
 
 export class BuildableFinishedItem implements core.IBuildOrderItem {
   constructor(
-      public offset: number,
       public start: number,
       public buildable: Buildable) {
   }
@@ -210,8 +208,7 @@ export class Queue {
 
   push(item: BuildableStartedItem) {
     this.items.push(item);
-    var offset = item.start - this.duration
-    this.duration = Math.max(this.duration, item.end);
+    this.duration = item.end - this.start;
   }
 
   get end(): number {
