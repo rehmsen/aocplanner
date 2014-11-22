@@ -48,7 +48,7 @@ class BuildPaneDirectiveController {
     var queue = this.buildOrderService.enqueueBuildableItem(
         building, this.currentState.time);
     this.currentState.time = queue.end;
-    var completionTime = queue.length;
+    var completionTime = queue.last.end;
     this.buildOrderService.queues.push(
         new build.Queue(building.id, completionTime));
   }
@@ -80,7 +80,7 @@ class BuildPaneDirectiveController {
 
     angular.forEach(this.selection.taskCounts, function(fromTaskCount) {
       var reassignementItem = new assignments.ReassignmentItem(
-        queue.length,
+        this.currentState.time,
         fromTaskCount.count,
         fromTaskCount.task,
         toTask);

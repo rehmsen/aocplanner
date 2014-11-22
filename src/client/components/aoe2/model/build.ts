@@ -139,6 +139,10 @@ export class BuildableStartedItem implements core.IBuildOrderItem {
       public buildable: Buildable) {
   }
 
+  get end(): number {
+    return this.start + this.buildable.buildDuration;
+  }
+
   apply(state: core.IState) {
     var delta = state.time - this.start;
     this.buildable.started(state, delta);
@@ -196,7 +200,7 @@ export class Selection {
 }
 
 export class Queue {
-  length: number =  0;
+  private duration: number =  0;
   private items: BuildableStartedItem[] = [];
 
   constructor(
@@ -206,13 +210,12 @@ export class Queue {
 
   push(item: BuildableStartedItem) {
     this.items.push(item);
-    var offset = item.start - this.length
-    var itemEnd = item.start + item.buildable.buildDuration;
-    this.length = Math.max(this.length, itemEnd);
+    var offset = item.start - this.duration
+    this.duration = Math.max(this.duration, item.end);
   }
 
   get end(): number {
-    return this.start + this.length;
+    return this.start + this.duration;
   }
 
   get empty(): boolean {
