@@ -45,8 +45,11 @@ class State implements core.IState {
     // TODO(olrehm): Initialize from rules/settings.
     this.pop = 4;
     this.popCap = 5;
+    var villager = this.rulesService.workers.filter(function(unit) { 
+      return unit.id == 'villager'; 
+    })[0];
     this.assignments = {
-      'idle': new assignments.TaskAssignment(3, new core.IdleTask())
+      'idle': new assignments.TaskAssignment(3, new core.IdleTask(), villager)
     };
     this.ageIndex = 0;
     this.hasBuilding = {

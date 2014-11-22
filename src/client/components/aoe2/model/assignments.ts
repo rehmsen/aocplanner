@@ -4,7 +4,8 @@ import build = require('./build');
 export class TaskAssignment implements core.IAssignment {
   constructor(
       public count: number,
-      public task: core.ITask) {
+      public task: core.ITask,
+      public assignable: core.IAssignable) {
   }
 
   apply(delta: number, state: core.IState): void {
@@ -34,7 +35,7 @@ export class ReassignmentItem implements core.IBuildOrderItem {
       toAssignment.count += this.count;
     } else {
       toAssignment = state.assignments[this.toTask.id] = 
-          new TaskAssignment(this.count, this.toTask);
+          new TaskAssignment(this.count, this.toTask, fromAssignment.assignable);
     }
   }  
 }

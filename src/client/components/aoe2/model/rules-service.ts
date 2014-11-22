@@ -15,6 +15,7 @@ class RulesService {
   buildings: build.Building[];
   technologies: build.Technology[];
   units: build.Unit[];
+  workers: build.Unit[];
   resourceSources: core.IResourceSource[];
   tasks: {[verb: string]: core.ITask[]} = {};
 
@@ -39,6 +40,8 @@ class RulesService {
           this.buildings = rules.buildings.map(build.Building.create);
           this.technologies = rules.technologies.map(build.Technology.create);
           this.units = rules.units.map(build.Unit.create);
+
+          this.workers = this.units.filter(function(unit: build.Unit) { return unit.tasks; });
 
           this.tasks['idle'] = [new core.IdleTask()];
           this.tasks['harvest'] = this.resourceSources.map(function(resourceSource: any) {

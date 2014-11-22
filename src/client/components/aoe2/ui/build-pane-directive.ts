@@ -25,6 +25,7 @@ class BuildPaneDirectiveController {
   currentState: State;
   hasStartedTechnology: {[technologyId: string]: boolean} = {};
   selection: build.Selection;
+  toBeTrained: build.Unit;
   taskVerb: string;
 
   constructor(
@@ -59,7 +60,8 @@ class BuildPaneDirectiveController {
 
   train(unit: build.Unit): void {
     if (unit.tasks) {
-      this.selection.set(unit, new core.IdleTask(), true);
+      this.toBeTrained = unit;
+      this.selection.set(unit, new core.IdleTask());
     } else {
       var queueEnd = this.buildOrderService.enqueueBuildable(
         unit, this.currentState.time);
@@ -68,9 +70,10 @@ class BuildPaneDirectiveController {
   }
 
   assign(toTask: core.ITask): void {
-    if (this.selection.toBeTrained) {
-      var queueEnd = this.buildOrderService.enqueueBuildable(
-        this.selection.unit, this.currentState.time);
+    var newTime: number = this.currentState.time;
+    if (this.toBeTrained) {
+      newTime = this.buildOrderService.enqueueBuildable(
+        this.toBeTrained, this.currentState.time);
     }
 
     angular.forEach(this.selection.taskCounts, function(fromTaskCount) {
@@ -82,8 +85,7 @@ class BuildPaneDirectiveController {
       this.buildOrderService.sortInItem(reassignementItem);
     }, this);
 
-    var newTime = toTask.updateBuildOrder(
-        this.buildOrderService, queueEnd);
+    newTime = toTask.updateBuildOrder(this.buildOrderService, newTime);
     this.currentState.time = newTime;
 
     this.selection.reset();

@@ -79,7 +79,7 @@ export class Technology extends core.Buildable {
   }
 }
 
-export class Unit extends core.Buildable {
+export class Unit extends core.Buildable implements core.IAssignable {
   constructor(
       id: string,
       age: number,
@@ -138,9 +138,8 @@ export class BuildableFinishedItem implements core.IBuildOrderItem {
 }
 
 export class Selection {
-  unit: Unit;
+  unit: core.IAssignable;
   taskCounts: {[taskId: string]: core.ITaskCount};
-  toBeTrained: boolean; 
 
   constructor() {
     this.reset();
@@ -149,29 +148,24 @@ export class Selection {
   reset() {
     this.unit = null;
     this.taskCounts = {};
-    this.toBeTrained = false;
   }
 
-  add(unit: Unit, task: core.ITask): boolean {
-    if (this.unit && this.unit.id != unit.id || this.toBeTrained) {
+  add(unit: core.IAssignable, task: core.ITask): boolean {
+    if (this.unit && this.unit.id != unit.id) {
       return false;
     }
     this.unit = unit;
     if (!this.taskCounts[task.id]) {
-      this.taskCounts[task.id] = {task: task, count: 1};
+      this.taskCounts[task.id] = {task: task, count: 1, assignable: unit};
     } else {
       this.taskCounts[task.id].count++;
     }
     return true;
   }
 
-  set(unit: Unit, task: core.ITask, toBeTrained: boolean = false) {
-    if (task.verb != core.TaskVerb.idle && toBeTrained) {
-      throw new Error('Newly trained workers must initially be idle');
-    }
+  set(unit: core.IAssignable, task: core.ITask) {
     this.reset();
     this.add(unit, task);
-    this.toBeTrained = toBeTrained;
   }
 }
 

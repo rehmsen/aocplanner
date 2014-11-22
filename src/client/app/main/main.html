@@ -41,7 +41,9 @@
   <div class="task-distribution">
     <task-assignment 
         ng-repeat="assignment in mainCtrl.currentState.assignments"
-        assignment="assignment">
+        assignment="assignment"
+        selection="mainCtrl.selection"
+        assignable="assignment.assignable">
     </task-assignment>
   </div>
 </div>

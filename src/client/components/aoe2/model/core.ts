@@ -19,6 +19,11 @@ export interface IResourceSource {
   rate: number;
 }
 
+export interface IAssignable {
+  id: string;
+  tasks: {[verb: string]: string[]};
+}
+
 export interface IState {
   time: number;
   resources: IResources;
@@ -43,8 +48,8 @@ export interface ITask {
   object?: string;
   id: string;
 
-
   updateState(state: IState, delta: number, count: number): void
+
   updateBuildOrder(
       buildOrderService: IBuildOrderService, currentTime: number): number
 }
@@ -83,6 +88,7 @@ export class HarvestTask implements ITask {
 }
 
 export interface ITaskCount {
+  assignable: IAssignable;
   count: number;
   task: ITask;  
 }

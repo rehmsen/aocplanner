@@ -12,10 +12,14 @@ function createTaskAssignmentDirective(): ng.IDirective {
     templateUrl: '/components/aoe2/ui/task-assignment.html',
     restrict: 'E',
     scope: {
-      assignment: '&'
+      assignment: '&',
+      selection: '=',
+      assignable: '='
     },
     link: function postLink(
-      scope: ITaskAssignmentDirectiveScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes): void {
+      scope: ITaskAssignmentDirectiveScope, element: ng.IAugmentedJQuery, 
+      attrs: ng.IAttributes): void {
+
       scope.getTaskIconClass = function() {
         var task = scope.assignment().task;
         if (task.verb == core.TaskVerb.harvest) {
