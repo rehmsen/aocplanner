@@ -1,31 +1,6 @@
 import core = require('./core');
 
-export class Buildable {
-  constructor(
-      public id: string,
-      public age: number,
-      public buildDuration: number,
-      public cost: core.IResources,
-      public source: string,
-      public hasQueue = false) {
-  }
-
-  started(state: core.IState, delta: number) {
-    angular.forEach(this.cost, function(quantity, resource) {
-      state.resources[resource] -= quantity;
-    });    
-  }
-
-  progress(state: core.IState, delta: number) {
-
-  }
-
-  finished(state: core.IState) {
-
-  }
-}
-
-export class Building extends Buildable {
+export class Building extends core.Buildable {
   static create(object: any):Building {
     return new Building(
         object.id, object.age, object.buildDuration, object.cost, 
@@ -69,7 +44,7 @@ export interface IEffect {
   finished: string;
 }
 
-export class Technology extends Buildable {
+export class Technology extends core.Buildable {
   constructor(
       id: string,
       age: number,
@@ -102,7 +77,7 @@ export class Technology extends Buildable {
   }
 }
 
-export class Unit extends Buildable {
+export class Unit extends core.Buildable {
   constructor(
       id: string,
       age: number,
@@ -137,7 +112,7 @@ export class BuildableStartedItem implements core.IBuildOrderItem {
 
   constructor(
       public start: number,
-      public buildable: Buildable) {
+      public buildable: core.Buildable) {
   }
 
   get end(): number {
@@ -153,7 +128,7 @@ export class BuildableStartedItem implements core.IBuildOrderItem {
 export class BuildableFinishedItem implements core.IBuildOrderItem {
   constructor(
       public start: number,
-      public buildable: Buildable) {
+      public buildable: core.Buildable) {
   }
 
   apply(state: core.IState) {

@@ -103,4 +103,28 @@ export interface ISettings {
   allTechs: boolean;
 }
 
+export class Buildable {
+  constructor(
+      public id: string,
+      public age: number,
+      public buildDuration: number,
+      public cost: IResources,
+      public source: string,
+      public hasQueue = false) {
+  }
+
+  started(state: IState, delta: number) {
+    angular.forEach(this.cost, function(quantity, resource) {
+      state.resources[resource] -= quantity;
+    });    
+  }
+
+  progress(state: IState, delta: number) {
+
+  }
+
+  finished(state: IState) {
+
+  }
+}
 

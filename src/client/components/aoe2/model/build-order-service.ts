@@ -30,7 +30,7 @@ class BuildOrderService {
   }
 
   enqueueBuildableItem(
-      buildable: build.Buildable, currentTime: number): build.Queue {
+      buildable: core.Buildable, currentTime: number): build.Queue {
     var queue = this.queues.filter(function(queue) { 
       return queue.source === buildable.source;
     })[0];
