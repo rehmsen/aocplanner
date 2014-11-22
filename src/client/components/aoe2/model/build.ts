@@ -108,11 +108,10 @@ export class Unit extends core.Buildable {
 }
 
 export class BuildableStartedItem implements core.IBuildOrderItem {
-  public initialTask: core.ITask;
-
   constructor(
       public start: number,
-      public buildable: core.Buildable) {
+      public buildable: core.Buildable,
+      public initialTask: core.ITask) {
   }
 
   get end(): number {

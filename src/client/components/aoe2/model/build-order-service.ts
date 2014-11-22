@@ -30,12 +30,14 @@ class BuildOrderService {
   }
 
   enqueueBuildableItem(
-      buildable: core.Buildable, currentTime: number): build.Queue {
+      buildable: core.Buildable, currentTime: number, 
+      initialTask?: core.ITask): build.Queue {
     var queue = this.queues.filter(function(queue) { 
       return queue.source === buildable.source;
     })[0];
     var startTime = Math.max(currentTime, queue.end);
-    var item = new build.BuildableStartedItem(startTime, buildable);
+    var item = new build.BuildableStartedItem(
+        startTime, buildable, initialTask);
     queue.push(item); 
     this.sortInItem(item);
     var finishedItem = new build.BuildableFinishedItem(item.end, buildable);
