@@ -40,6 +40,11 @@ class BuildOrderService {
     this.sortInItem(item);
     var finishedItem = new build.BuildableFinishedItem(item.end, buildable);
     this.sortInItem(finishedItem);
+    
+    if (buildable.hasQueue) {
+      this.queues.push(new build.Queue(buildable.id, item.end));
+    }
+
     return queue;
   }
 

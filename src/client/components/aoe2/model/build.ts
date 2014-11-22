@@ -6,7 +6,8 @@ export class Buildable {
       public age: number,
       public buildDuration: number,
       public cost: core.IResources,
-      public source: string) {
+      public source: string,
+      public hasQueue = false) {
   }
 
   started(state: core.IState, delta: number) {
@@ -25,19 +26,20 @@ export class Buildable {
 }
 
 export class Building extends Buildable {
+  static create(object: any):Building {
+    return new Building(
+        object.id, object.age, object.buildDuration, object.cost, 
+        object.room || 0, !object.noQueue);
+  }
+
   constructor(
       id: string,
       age: number,
       buildDuration: number,
       cost: core.IResources,
-      public room: number) {
-    super(id, age, buildDuration, cost, 'villager');
-  }
-
-  static create(object: any):Building {
-    return new Building(
-        object.id, object.age, object.buildDuration, object.cost, 
-        object.room || 0);
+      public room: number,
+      hasQueue: boolean) {
+    super(id, age, buildDuration, cost, 'villager', hasQueue);
   }
 
   finished(state: core.IState) {

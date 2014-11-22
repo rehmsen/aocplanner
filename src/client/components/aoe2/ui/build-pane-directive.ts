@@ -48,9 +48,6 @@ class BuildPaneDirectiveController {
     var queue = this.buildOrderService.enqueueBuildableItem(
         building, this.currentState.time);
     this.currentState.time = queue.end;
-    var completionTime = queue.last.end;
-    this.buildOrderService.queues.push(
-        new build.Queue(building.id, completionTime));
   }
 
   research(tech: build.Technology): void {
