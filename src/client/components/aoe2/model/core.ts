@@ -119,5 +119,9 @@ export class Queue {
   get empty(): boolean {
     return this.items.length == 0;
   }
+
+  get last(): IBuildOrderItem {
+    return this.items[this.items.length-1];
+  }
 }
 

@@ -74,7 +74,7 @@ class BuildPaneDirectiveController {
     if (this.selection.toBeTrained) {
       var queue = this.buildOrderService.enqueueBuildableItem(
         this.selection.unit, this.currentState.time);
-      var buildableItem = <build.BuildableStartedItem>queue.items[queue.items.length-1];
+      var buildableItem = <build.BuildableStartedItem>queue.last;
       buildableItem.initialTask = toTask;
     }
 
