@@ -34,9 +34,8 @@ class BuildOrderService {
     var queue = this.queues.filter(function(queue) { 
       return queue.source === buildable.source;
     })[0];
-    var queueEnd = queue.start + queue.length;
-    var startTime = Math.max(currentTime, queueEnd);
-    var offset = startTime - queueEnd;
+    var startTime = Math.max(currentTime, queue.end);
+    var offset = startTime - queue.end;
     var item = new build.BuildableStartedItem(
         offset, startTime, buildable);
     queue.items.push(item); 

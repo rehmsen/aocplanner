@@ -110,7 +110,10 @@ export class Queue {
   constructor(
       public source: string,
       public start: number = 0) {
+  }
 
+  get end(): number {
+    return this.start + this.length;
   }
 }
 
