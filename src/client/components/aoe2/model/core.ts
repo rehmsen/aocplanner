@@ -115,5 +115,9 @@ export class Queue {
   get end(): number {
     return this.start + this.length;
   }
+
+  get empty(): boolean {
+    return this.items.length == 0;
+  }
 }
 
