@@ -2,7 +2,7 @@ import core = require('./core');
 import build = require('./build');
 
 export class IdleAssignment implements core.IAssignment {
-  task = core.Task.createIdle();
+  task = new core.IdleTask();
   constructor(
       public count: number) {}
 
@@ -10,12 +10,12 @@ export class IdleAssignment implements core.IAssignment {
 }
 
 export class GatheringAssignment implements core.IAssignment {
-  task: core.Task;
+  task: core.HarvestTask;
   
   constructor(
       public count: number,
       public source: core.IResourceSource) {
-    this.task = core.Task.createHarvest(source.id);
+    this.task = new core.HarvestTask(source);
   }
 
   apply(delta: number, state: core.IState): void {
@@ -28,7 +28,7 @@ export class ConstructionAssignment implements core.IAssignment {
 
     constructor(
         public count: number,
-        public task: core.Task) {
+        public task: build.ConstructionTask) {
     }
 
   apply(delta: number, state: core.IState): void {
@@ -43,13 +43,13 @@ export class AssignmentFactory {
     }, this);
   }
 
-  create(task: core.Task, count: number): core.IAssignment {
+  create(task: core.ITask, count: number): core.IAssignment {
     if (task.verb == core.TaskVerb.idle) {
       return new IdleAssignment(count);
     } else if (task.verb == core.TaskVerb.harvest) {
       return new GatheringAssignment(count, this.sources[task.object]);
     } else if (task.verb == core.TaskVerb.construct) {
-      return new ConstructionAssignment(count, task);
+      return new ConstructionAssignment(count, <build.ConstructionTask>task);
     } else {
       throw new Error('Unknown task: ' + task);
     }
@@ -60,8 +60,8 @@ export class ReassignmentItem implements core.IBuildOrderItem {
   constructor(
       public start: number,
       private count: number,
-      private fromTask: core.Task,
-      private toTask: core.Task,
+      private fromTask: core.ITask,
+      private toTask: core.ITask,
       private assignmentFactory: AssignmentFactory) {}
 
   apply(state: core.IState) {

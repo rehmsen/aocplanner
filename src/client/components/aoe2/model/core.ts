@@ -38,29 +38,37 @@ export enum TaskVerb {
   construct
 }
 
+export interface ITask {
+  verb: TaskVerb;
+  object?: string;
+  id: string;
 
-export class Task {
-  constructor(public verb: TaskVerb, public object?: string) {
+  enqueue(): void;
+}
+
+export class IdleTask implements ITask {
+  verb = TaskVerb.idle;
+  id = TaskVerb[this.verb];
+
+  enqueue(): void{}
+}
+
+export class HarvestTask implements ITask {
+  verb = TaskVerb.harvest;  
+  object: string;
+  id: string;
+
+  constructor(public source: IResourceSource) {
+    this.object = source.id;
+    this.id = TaskVerb[this.verb] + ':' + this.object; 
   }
 
-  get id(): string {
-    return TaskVerb[this.verb] + (this.object ? ':' + this.object : '');
-  }
-
-  static createIdle(): Task {
-    return new Task(TaskVerb.idle);
-  }
-  static createHarvest(sourceId: string): Task {
-    return new Task(TaskVerb.harvest, sourceId);
-  }
-  static createConstruct(buildingId: string): Task {
-    return new Task(TaskVerb.construct, buildingId);
-  }
+  enqueue() : void{}
 }
 
 export interface ITaskCount {
   count: number;
-  task: Task;  
+  task: ITask;  
 }
 
 export interface IAssignment extends ITaskCount {

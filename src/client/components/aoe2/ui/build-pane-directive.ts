@@ -37,16 +37,16 @@ class BuildPaneDirectiveController {
     }.bind(this));
   }
 
-  get taskObjects(): string[] {
-    switch (this.taskVerb) {
-      case 'harvest': 
-        return this.selection.unit.tasks['harvest'];
-      case 'construct':
-        return this.rulesService.buildings.map(function(building) { return building.id });
-      default:
-        return [];
+  get tasks(): core.ITask[] {
+    if (!this.taskVerb || !this.rulesService.loaded) {
+      return [];
     }
 
+    return this.rulesService.tasks[this.taskVerb].filter(function(task: core.ITask) {
+      var unitTasksObjects = this.selection.unit.tasks[this.taskVerb];
+      return unitTasksObjects !== undefined && 
+          (task.verb != core.TaskVerb.harvest || unitTasksObjects.indexOf(task.object) > -1);
+    }.bind(this));
   }
 
   construct(building: build.Building): void {
@@ -72,7 +72,7 @@ class BuildPaneDirectiveController {
 
   train(unit: build.Unit): void {
     if (unit.tasks) {
-      this.selection.set(unit, core.Task.createIdle(), true);
+      this.selection.set(unit, new core.IdleTask(), true);
     } else {
       var queue = this.buildOrderService.enqueueBuildableItem(
         unit, this.currentState.time);
@@ -80,8 +80,7 @@ class BuildPaneDirectiveController {
     }
   }
 
-  assign(toTaskObject: string): void {
-    var toTask = new core.Task((<any>core.TaskVerb)[this.taskVerb], toTaskObject);
+  assign(toTask: core.ITask): void {
     if (this.selection.toBeTrained) {
       var queue = this.buildOrderService.enqueueBuildableItem(
         this.selection.unit, this.currentState.time);

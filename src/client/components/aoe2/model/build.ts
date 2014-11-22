@@ -48,6 +48,19 @@ export class Building extends Buildable {
   }
 }
 
+export class ConstructionTask implements core.ITask {
+  verb = core.TaskVerb.construct;  
+  object: string;
+  id: string;
+
+  constructor(public building: Building) {
+    this.object = building.id;
+    this.id = core.TaskVerb[this.verb] + ':' + this.object; 
+  }
+
+  enqueue() : void{}
+}
+
 export interface IEffect {
   started: string;
   finished: string;
@@ -72,6 +85,7 @@ export class Technology extends Buildable {
   }
 
   started(state: core.IState, delta: number) {
+    super.started(state, delta);
     var progress = delta / this.buildDuration;
     if (progress < 1.0) {
       eval(this.effect_.started);
@@ -102,8 +116,8 @@ export class Unit extends Buildable {
         object.source, object.tasks)    
   }
 
-  started(state: core.IState) {
-    super.started(state);
+  started(state: core.IState, delta: number) {
+    super.started(state, delta);
     state.pop++;
   }
 
@@ -116,7 +130,7 @@ export class Unit extends Buildable {
 }
 
 export class BuildableStartedItem implements core.IBuildOrderItem {
-  public initialTask: core.Task;
+  public initialTask: core.ITask;
 
   constructor(
       public offset: number,
@@ -157,7 +171,7 @@ export class Selection {
     this.toBeTrained = false;
   }
 
-  add(unit: Unit, task: core.Task): boolean {
+  add(unit: Unit, task: core.ITask): boolean {
     if (this.unit && this.unit.id != unit.id || this.toBeTrained) {
       return false;
     }
@@ -170,7 +184,7 @@ export class Selection {
     return true;
   }
 
-  set(unit: Unit, task: core.Task, toBeTrained: boolean = false) {
+  set(unit: Unit, task: core.ITask, toBeTrained: boolean = false) {
     if (task.verb != core.TaskVerb.idle && toBeTrained) {
       throw new Error('Newly trained workers must initially be idle');
     }
