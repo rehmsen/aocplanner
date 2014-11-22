@@ -45,13 +45,13 @@ class BuildPaneDirectiveController {
   }
 
   construct(building: build.Building): void {
-    var queueEnd = this.buildOrderService.enqueueBuildableItem(
+    var queueEnd = this.buildOrderService.enqueueBuildable(
         building, this.currentState.time);
     this.currentState.time = queueEnd;
   }
 
   research(tech: build.Technology): void {
-    var queueEnd = this.buildOrderService.enqueueBuildableItem(
+    var queueEnd = this.buildOrderService.enqueueBuildable(
         tech, this.currentState.time);
     this.currentState.time = queueEnd;
     this.hasStartedTechnology[tech.id] = true;
@@ -61,7 +61,7 @@ class BuildPaneDirectiveController {
     if (unit.tasks) {
       this.selection.set(unit, new core.IdleTask(), true);
     } else {
-      var queueEnd = this.buildOrderService.enqueueBuildableItem(
+      var queueEnd = this.buildOrderService.enqueueBuildable(
         unit, this.currentState.time);
       this.currentState.time = queueEnd;
     }
@@ -69,7 +69,7 @@ class BuildPaneDirectiveController {
 
   assign(toTask: core.ITask): void {
     if (this.selection.toBeTrained) {
-      var queueEnd = this.buildOrderService.enqueueBuildableItem(
+      var queueEnd = this.buildOrderService.enqueueBuildable(
         this.selection.unit, this.currentState.time);
     }
 

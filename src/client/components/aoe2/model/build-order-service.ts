@@ -29,7 +29,7 @@ class BuildOrderService {
     this.buildOrder.splice(index, 0, item);    
   }
 
-  enqueueBuildableItem(
+  enqueueBuildable(
       buildable: core.Buildable, currentTime: number, 
       initialTask?: core.ITask): number {
     var queue = this.queues.filter(function(queue) { 
