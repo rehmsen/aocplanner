@@ -1,11 +1,21 @@
 <div class="palettes-container">
   <div class="palette" ng-show="!ctrl.selection.assignable"> 
-   <input type="button" 
-        ng-repeat="unit in ctrl.rulesService.units"
-        ng-show="unit.age <= ctrl.currentState.age.index" 
-        class="icon-{{ unit.id }} button"
-        ng-click="ctrl.train(unit)"
-        ng-disabled="!ctrl.currentState.hasBuilding[unit.source]"></input>
+    <div>
+      <input type="button" 
+             ng-repeat="unit in ctrl.rulesService.units"
+             ng-show="unit.age <= ctrl.currentState.age.index" 
+             class="icon-{{ unit.id }} button"
+             ng-click="ctrl.train(unit)"
+             ng-disabled="!ctrl.currentState.hasBuilding[unit.source]"></input>
+    </div>
+    <div>
+      <input type="button" 
+             ng-repeat="tech in ctrl.rulesService.technologies"
+             ng-show="tech.age <= ctrl.currentState.age.index && !ctrl.hasStartedTechnology[tech.id]" 
+             class="icon-{{ tech.id }} button"
+             ng-click="ctrl.research(tech)"
+             ng-disabled="!ctrl.currentState.hasBuilding[tech.source]"></input>
+    </div>
   </div>
   <div class="palette" ng-show="ctrl.selection.assignable && !ctrl.taskVerb">
    <input type="button" 
@@ -24,13 +34,5 @@
     <input type="button" 
         class="icon-cancel button cancel-button"
         ng-click="ctrl.taskVerb = null"></input>
-  </div>
-  <div class="palette"> 
-   <input type="button" 
-        ng-repeat="tech in ctrl.rulesService.technologies"
-        ng-show="tech.age <= ctrl.currentState.age.index && !ctrl.hasStartedTechnology[tech.id]" 
-        class="icon-{{ tech.id }} button"
-        ng-click="ctrl.research(tech)"
-        ng-disabled="!ctrl.currentState.hasBuilding[tech.source]"></input>
   </div>
 </div>

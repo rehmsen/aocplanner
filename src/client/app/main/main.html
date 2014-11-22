@@ -3,17 +3,6 @@
     <resource-indicator current-state="mainCtrl.currentState">
     </resource-indicator>
   </div>
-  <div style="float: right;">
-    <select>
-      <option ng-repeat="civilization in mainCtrl.rulesService.civilizations">
-        {{civilization.name}}
-      </option>
-    </select>
-    <label>
-      <input type="checkbox" ng-model="settings.allTechs" disabled="true">
-      All Techs
-    </label>
-  </div>
   <age-indicator age="mainCtrl.currentState.age" progress="mainCtrl.currentState.ageProgress">
   </age-indicator>
 </div>
@@ -48,6 +37,7 @@
   </div>
 </div>
 <div class="bottom-pane">
+  <div class="left-bottom"></div>
   <build-pane 
       current-state="mainCtrl.currentState"
       selection="mainCtrl.selection">

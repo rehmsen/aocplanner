@@ -75,6 +75,16 @@ timeline {
   background: url('/assets/images/background/bottom_center_tile.png') repeat-x; 
 }
 
+.left-bottom {
+  position: absolute; 
+  left: 0; 
+  top: 0; 
+  bottom: 0; 
+  width: 295px; 
+  background: url('/assets/images/background/bottom_left.png');
+  
+}
+
 .task-distribution {
   position: absolute;
   right: 0;
