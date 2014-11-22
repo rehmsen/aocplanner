@@ -58,6 +58,8 @@ export class ConstructionTask implements core.ITask {
     this.id = core.TaskVerb[this.verb] + ':' + this.object; 
   }
 
+  updateState(state: core.IState, delta: number, count: number): void {}
+
   enqueue() : void{}
 }
 

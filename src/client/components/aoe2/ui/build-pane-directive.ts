@@ -26,15 +26,10 @@ class BuildPaneDirectiveController {
   hasStartedTechnology: {[technologyId: string]: boolean} = {};
   selection: build.Selection;
   taskVerb: string;
-  private assignmentFactory_: assignments.AssignmentFactory;
 
   constructor(
       public buildOrderService: BuildOrderService,
       public rulesService: RulesService) {
-    this.rulesService.loadingPromise.then(function() {
-      this.assignmentFactory_ = new assignments.AssignmentFactory(
-          this.rulesService.resourceSources);
-    }.bind(this));
   }
 
   get tasks(): core.ITask[] {
@@ -93,8 +88,7 @@ class BuildPaneDirectiveController {
         queue.length,
         fromTaskCount.count,
         fromTaskCount.task,
-        toTask,
-        this.assignmentFactory_);
+        toTask);
       this.buildOrderService.sortInItem(reassignementItem);
     }, this);
     this.currentState.time = queue.start + queue.length;

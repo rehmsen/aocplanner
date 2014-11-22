@@ -43,6 +43,7 @@ export interface ITask {
   object?: string;
   id: string;
 
+  updateState(state: IState, delta: number, count: number): void
   enqueue(): void;
 }
 
@@ -50,7 +51,9 @@ export class IdleTask implements ITask {
   verb = TaskVerb.idle;
   id = TaskVerb[this.verb];
 
-  enqueue(): void{}
+  updateState(state: IState, delta: number, count: number): void {}
+
+  enqueue(): void {}
 }
 
 export class HarvestTask implements ITask {
@@ -61,6 +64,11 @@ export class HarvestTask implements ITask {
   constructor(public source: IResourceSource) {
     this.object = source.id;
     this.id = TaskVerb[this.verb] + ':' + this.object; 
+  }
+
+  updateState(state: IState, delta: number, count: number): void {
+     state.resources[this.source.resource] += 
+        count * this.source.rate * delta;    
   }
 
   enqueue() : void{}
