@@ -1,11 +1,4 @@
 <div class="palettes-container">
-  <div class="palette">
-   <input type="button" 
-        ng-repeat="building in ctrl.rulesService.buildings"
-        ng-show="building.age <= ctrl.currentState.age.index" 
-        class="icon-{{ building.id }} button"
-        ng-click="ctrl.construct(building)"></input>
-  </div>
   <div class="palette" ng-show="!ctrl.selection.assignable"> 
    <input type="button" 
         ng-repeat="unit in ctrl.rulesService.units"
