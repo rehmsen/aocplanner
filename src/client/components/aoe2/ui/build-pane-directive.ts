@@ -71,8 +71,7 @@ class BuildPaneDirectiveController {
     if (this.selection.toBeTrained) {
       var queue = this.buildOrderService.enqueueBuildableItem(
         this.selection.unit, this.currentState.time);
-      var buildableItem = <build.BuildableStartedItem>queue.last;
-      buildableItem.initialTask = toTask;
+      queue.last.initialTask = toTask;
     }
 
     angular.forEach(this.selection.taskCounts, function(fromTaskCount) {
