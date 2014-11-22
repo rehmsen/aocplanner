@@ -138,7 +138,7 @@ export class BuildableFinishedItem implements core.IBuildOrderItem {
 }
 
 export class Selection {
-  unit: core.IAssignable;
+  assignable: core.IAssignable;
   taskCounts: {[taskId: string]: core.ITaskCount};
 
   constructor() {
@@ -146,26 +146,26 @@ export class Selection {
   }
 
   reset() {
-    this.unit = null;
+    this.assignable = null;
     this.taskCounts = {};
   }
 
-  add(unit: core.IAssignable, task: core.ITask): boolean {
-    if (this.unit && this.unit.id != unit.id) {
+  add(assignable: core.IAssignable, task: core.ITask): boolean {
+    if (this.assignable && this.assignable.id != assignable.id) {
       return false;
     }
-    this.unit = unit;
+    this.assignable = assignable;
     if (!this.taskCounts[task.id]) {
-      this.taskCounts[task.id] = {task: task, count: 1, assignable: unit};
+      this.taskCounts[task.id] = {task: task, count: 1, assignable: assignable};
     } else {
       this.taskCounts[task.id].count++;
     }
     return true;
   }
 
-  set(unit: core.IAssignable, task: core.ITask) {
+  set(assignable: core.IAssignable, task: core.ITask) {
     this.reset();
-    this.add(unit, task);
+    this.add(assignable, task);
   }
 }
 

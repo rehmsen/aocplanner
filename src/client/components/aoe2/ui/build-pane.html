@@ -6,7 +6,7 @@
         class="icon-{{ building.id }} button"
         ng-click="ctrl.construct(building)"></input>
   </div>
-  <div class="palette" ng-show="!ctrl.selection.unit"> 
+  <div class="palette" ng-show="!ctrl.selection.assignable"> 
    <input type="button" 
         ng-repeat="unit in ctrl.rulesService.units"
         ng-show="unit.age <= ctrl.currentState.age.index" 
@@ -14,14 +14,14 @@
         ng-click="ctrl.train(unit)"
         ng-disabled="!ctrl.currentState.hasBuilding[unit.source]"></input>
   </div>
-  <div class="palette" ng-show="ctrl.selection.unit && !ctrl.taskVerb">
+  <div class="palette" ng-show="ctrl.selection.assignable && !ctrl.taskVerb">
    <input type="button" 
-        ng-repeat="(taskVerb, taskObjects) in ctrl.selection.unit.tasks"
+        ng-repeat="(taskVerb, taskObjects) in ctrl.selection.assignable.tasks"
         class="icon-{{ taskVerb }} button"
         ng-click="ctrl.taskVerb = taskVerb"></input>
     <input type="button" 
         class="icon-cancel button cancel-button"
-        ng-click="ctrl.selection.unit = null"></input>
+        ng-click="ctrl.selection.reset()"></input>
   </div>    
   <div class="palette" ng-show="ctrl.taskVerb">
     <input type="button" 

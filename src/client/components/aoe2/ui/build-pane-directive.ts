@@ -39,7 +39,7 @@ class BuildPaneDirectiveController {
     }
 
     return this.rulesService.tasks[this.taskVerb].filter(function(task: core.ITask) {
-      var unitTasksObjects = this.selection.unit.tasks[this.taskVerb];
+      var unitTasksObjects = this.selection.assignable.tasks[this.taskVerb];
       return unitTasksObjects !== undefined && 
           (task.verb != core.TaskVerb.harvest || unitTasksObjects.indexOf(task.object) > -1);
     }.bind(this));
