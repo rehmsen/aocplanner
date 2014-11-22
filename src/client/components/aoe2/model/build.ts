@@ -30,15 +30,14 @@ export class Building extends Buildable {
       age: number,
       buildDuration: number,
       cost: core.IResources,
-      source: string,
       public room: number) {
-    super(id, age, buildDuration, cost, source);
+    super(id, age, buildDuration, cost, 'villager');
   }
 
   static create(object: any):Building {
     return new Building(
         object.id, object.age, object.buildDuration, object.cost, 
-        object.source, object.room || 0);
+        object.room || 0);
   }
 
   finished(state: core.IState) {
