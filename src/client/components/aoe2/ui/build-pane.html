@@ -1,5 +1,6 @@
-<div class="palettes-container">
-  <div class="palette" ng-show="!ctrl.selection.assignable"> 
+<div class="palette-container">
+<div class="palette">
+  <div ng-show="!ctrl.selection.assignable"> 
     <div>
       <input type="button" 
              ng-repeat="unit in ctrl.rulesService.units"
@@ -17,7 +18,7 @@
              ng-disabled="!ctrl.currentState.hasBuilding[tech.source]"></input>
     </div>
   </div>
-  <div class="palette" ng-show="ctrl.selection.assignable && !ctrl.taskVerb">
+  <div ng-show="ctrl.selection.assignable && !ctrl.taskVerb">
    <input type="button" 
         ng-repeat="(taskVerb, taskObjects) in ctrl.selection.assignable.tasks"
         class="icon-{{ taskVerb }} button"
@@ -26,7 +27,7 @@
         class="icon-cancel button cancel-button"
         ng-click="ctrl.selection.reset()"></input>
   </div>    
-  <div class="palette" ng-show="ctrl.taskVerb">
+  <div ng-show="ctrl.taskVerb">
     <input type="button" 
         ng-repeat="task in ctrl.tasks"
         class="icon-{{ task.object }} button"
@@ -35,4 +36,5 @@
         class="icon-cancel button cancel-button"
         ng-click="ctrl.taskVerb = null"></input>
   </div>
+</div>
 </div>
