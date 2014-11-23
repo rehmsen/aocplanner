@@ -70,19 +70,22 @@ timeline {
   bottom: 0;
   left: 0;
   right: 0;
-  padding-top: 15px;
+  padding-top: 13px;
   height: $bottom-pane-height;
   background: url('/assets/images/background/bottom_center_tile.png') repeat-x; 
 }
 
-.left-bottom {
-  position: absolute; 
-  left: 0; 
-  top: 0; 
-  bottom: 0; 
+.bottom-left {
+  float: left;
   width: 406px; 
   background: url('/assets/images/background/bottom_left.png');
-  
+  box-sizing: border-box;
+  padding: 13px 50px 16px 32px;
+}
+
+.bottom-center {
+  float: left;
+  padding: 13px;
 }
 
 .task-distribution {

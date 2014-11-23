@@ -36,9 +36,13 @@
   </div>
 </div>
 <div class="bottom-pane">
-  <div class="left-bottom"></div>
-  <build-pane 
-      current-state="mainCtrl.currentState"
-      selection="mainCtrl.selection">
-  </build-pane>
+  <div class="bottom-left">
+    <build-pane
+        current-state="mainCtrl.currentState"
+        selection="mainCtrl.selection">
+    </build-pane>
+  </div>
+  <div class="bottom-center">
+    <selection selection="mainCtrl.selection"></selection>
+  </div>
 </div>
