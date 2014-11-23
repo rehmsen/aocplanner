@@ -28,12 +28,11 @@
     </div>
   </div>
   <div class="task-distribution">
-    <task-assignment 
+    <task-count 
         ng-repeat="assignment in mainCtrl.currentState.assignments"
-        assignment="assignment"
-        selection="mainCtrl.selection"
-        assignable="assignment.assignable">
-    </task-assignment>
+        task-count="assignment"
+        selection="mainCtrl.selection">
+    </task-count>
   </div>
 </div>
 <div class="bottom-pane">
