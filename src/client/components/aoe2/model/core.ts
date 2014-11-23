@@ -79,6 +79,7 @@ export interface ITask {
   verb: TaskVerb;
   object?: string;
   id: string;
+  icon: string;
 
   updateState(state: IState, delta: number, count: number): void
 
@@ -89,6 +90,8 @@ export interface ITask {
 export class IdleTask implements ITask {
   verb = TaskVerb.idle;
   id = TaskVerb[this.verb];
+
+  get icon(): string { return this.id; }
 
   updateState(state: IState, delta: number, count: number): void {}
 
@@ -107,6 +110,8 @@ export class HarvestTask implements ITask {
     this.object = source.id;
     this.id = TaskVerb[this.verb] + ':' + this.object; 
   }
+
+  get icon(): string { return this.object; }
 
   updateState(state: IState, delta: number, count: number): void {
      state.resources[this.source.resource] += 

@@ -34,7 +34,10 @@ export class ConstructionTask implements core.ITask {
     this.id = core.TaskVerb[this.verb] + ':' + this.object; 
   }
 
+  get icon(): string { return core.TaskVerb[this.verb]; }
+
   updateState(state: core.IState, delta: number, count: number): void {}
+
   updateBuildOrder(
       buildOrderService: core.IBuildOrderService, currentTime: number): number {
     return buildOrderService.enqueueBuildable(this.building, currentTime);

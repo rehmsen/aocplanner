@@ -1,6 +1,6 @@
 <div>
   <input type="button" 
-         class="icon-{{getTaskIconClass()}} task-icon icon"
+         class="icon-{{ assignment().task.icon }} task-icon icon"
          ng-click="selection.set(assignable, assignment().task)">
   </input>
   <div class="counter">{{assignment().count}}</div>
