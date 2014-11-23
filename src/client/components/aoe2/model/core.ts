@@ -136,6 +136,7 @@ export interface IAssignment extends ITaskCount {
 
 export interface IBuildOrderItem {
   start: number;
+  isSpendingResources: boolean;
 
   apply(state: IState): void;
 }
@@ -162,6 +163,14 @@ export class Buildable {
       public cost: IResources,
       public source: string,
       public hasQueue = false) {
+  }
+
+  canBuild(state: IState): boolean {
+    var result = true;
+    angular.forEach(this.cost, (quantity, resource) => {
+      result = result && state.resources[resource] >= quantity;
+    });
+    return result;
   }
 
   started(state: IState, delta: number) {

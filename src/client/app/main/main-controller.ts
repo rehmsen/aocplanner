@@ -25,7 +25,7 @@ class MainController {
         buildOrderService, rulesService, this.settings);
 
     this.rulesService.load('assets/rules/aoc.yaml').then(() => {
-      this.currentState.time = 0;
+      this.currentState.update(0);
     });
 
     this.selection = new core.Selection();

@@ -34,12 +34,23 @@ class State implements core.IState {
   get time(): number {
     return this.time_;
   }
-  set time(time: number) {
+
+  update(time: number) {
+    this.interpolate_(time);
+    this.time_ = time;
+  }
+  // Prefer the less surprising update(t), keeping this setter only since
+  // it works with 2 way binding.
+  set time(t: number) {
+    this.update(t);
+  }
+
+  private reset_(): void {
     if (!this.rulesService.loaded) {
       throw new Error(
         'Cannot initialize state before rulesService is loaded.');
     }
-    this.time_ = time !== undefined ? time : Number.MAX_VALUE;
+
     this.resources = angular.copy(
         this.rulesService.startResources[this.settings.resources]);
     // TODO(olrehm): Initialize from rules/settings.
@@ -56,25 +67,39 @@ class State implements core.IState {
       'town_center': true
     };
     this.hasTechnology = {};
+  }
 
-    var lastTime = 0;
+  private interpolate_(time: number): void {
+    this.reset_();
+
+    var done = false;
+    var assignmentApplicator = this.newAssignmentApplicator_();
     this.buildOrderService.buildOrder.forEach((item) => {
-      var delta = Math.min(item.start, this.time_) - lastTime;
+      if (!done) {
+        assignmentApplicator(Math.min(item.start, time));
+      }
+
+      if (item.start > time) {
+        done = true;
+      }
+      if (!done) {
+        item.apply(this);
+      }      
+    });
+    if (!done) {
+      assignmentApplicator(time);
+    }
+  }
+
+  private newAssignmentApplicator_() {
+    var lastTime = 0;
+    return (time: number) => {
+      var delta = time - lastTime;
       angular.forEach(this.assignments, (assignment: core.IAssignment) => {
         assignment.apply(delta, this);
-      });
-
-      lastTime += delta;
-      if (item.start > this.time_) {
-        return;
-      }
-      
-      item.apply(this);
-    });
-    var delta = this.time_ - lastTime;
-    angular.forEach(this.assignments, (assignment: core.IAssignment) => {
-      assignment.apply(delta, this);
-    });
+      });        
+      lastTime += delta;      
+    };
   }
 }
 

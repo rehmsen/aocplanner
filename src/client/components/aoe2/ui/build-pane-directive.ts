@@ -45,16 +45,10 @@ class BuildPaneDirectiveController {
     });
   }
 
-  construct(building: build.Building): void {
-    var queueEnd = this.buildOrderService.enqueueBuildable(
-        building, this.currentState.time);
-    this.currentState.time = queueEnd;
-  }
-
   research(tech: build.Technology): void {
     var queueEnd = this.buildOrderService.enqueueBuildable(
         tech, this.currentState.time);
-    this.currentState.time = queueEnd;
+    this.currentState.update(queueEnd);
     this.hasStartedTechnology[tech.id] = true;
   }
 
@@ -65,7 +59,7 @@ class BuildPaneDirectiveController {
     } else {
       var queueEnd = this.buildOrderService.enqueueBuildable(
         unit, this.currentState.time);
-      this.currentState.time = queueEnd;
+      this.currentState.update(queueEnd);
     }
   }
 
@@ -85,8 +79,7 @@ class BuildPaneDirectiveController {
       this.buildOrderService.sortInItem(reassignementItem);
     });
 
-    newTime = toTask.updateBuildOrder(this.buildOrderService, newTime);
-    this.currentState.time = newTime;
+    toTask.updateBuildOrder(this.buildOrderService, newTime);
 
     this.selection.reset();
     this.taskVerb = null;

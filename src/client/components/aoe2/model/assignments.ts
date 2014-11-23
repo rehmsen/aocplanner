@@ -14,6 +14,8 @@ export class TaskAssignment implements core.IAssignment {
 }
 
 export class ReassignmentItem implements core.IBuildOrderItem {
+  isSpendingResources = false;
+
   constructor(
       public start: number,
       private count: number,

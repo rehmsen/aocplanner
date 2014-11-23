@@ -101,6 +101,10 @@ export class Unit extends core.Buildable implements core.IAssignable {
         object.source, object.tasks)    
   }
 
+  canBuild(state: core.IState): boolean {
+    return super.canBuild(state) && state.pop + 1 <= state.popCap;
+  }
+
   started(state: core.IState, delta: number) {
     super.started(state, delta);
     state.pop++;
@@ -115,6 +119,8 @@ export class Unit extends core.Buildable implements core.IAssignable {
 }
 
 export class BuildableStartedItem implements core.IBuildOrderItem {
+  isSpendingResources = true;
+
   constructor(
       public start: number,
       public buildable: core.Buildable,
@@ -132,6 +138,8 @@ export class BuildableStartedItem implements core.IBuildOrderItem {
 }
 
 export class BuildableFinishedItem implements core.IBuildOrderItem {
+  isSpendingResources = false;
+
   constructor(
       public start: number,
       public buildable: core.Buildable) {

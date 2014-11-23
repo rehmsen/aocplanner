@@ -5,6 +5,7 @@ import build = require('./build');
 
 class BuildOrderService implements core.IBuildOrderService {
   buildOrder: core.IBuildOrderItem[] = [];
+  lastResourceSpendTime: number;
   queues: build.Queue[];
 
   constructor() {
@@ -18,6 +19,10 @@ class BuildOrderService implements core.IBuildOrderService {
   }
 
   sortInItem(item: core.IBuildOrderItem) {
+    if (item.isSpendingResources && this.lastResourceSpendTime < item.start) {
+      this.lastResourceSpendTime = item.start;
+    }
+
     // TODO(oler): Replace with binary search.
     var index = 0;
     this.buildOrder.forEach((eachItem) => {
