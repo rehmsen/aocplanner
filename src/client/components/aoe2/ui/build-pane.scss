@@ -2,11 +2,12 @@
 
 build-pane {
   .palette-container {
-    width: 345px;
-    overflow-y: auto;
-    margin: 12px 34px;  
-    height: 130px;
+    display: inline-block;
     position: relative;  
+    width: 345px;
+    height: 130px;
+    margin: 12px 34px;  
+    overflow-y: auto;
   }
 
   .palette {
