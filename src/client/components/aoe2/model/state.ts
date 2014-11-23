@@ -45,7 +45,7 @@ class State implements core.IState {
     // TODO(olrehm): Initialize from rules/settings.
     this.pop = 4;
     this.popCap = 5;
-    var villager = this.rulesService.workers.filter(function(unit) { 
+    var villager = this.rulesService.workers.filter((unit) => { 
       return unit.id == 'villager'; 
     })[0];
     this.assignments = {
@@ -58,11 +58,11 @@ class State implements core.IState {
     this.hasTechnology = {};
 
     var lastTime = 0;
-    this.buildOrderService.buildOrder.forEach(function(item) {
+    this.buildOrderService.buildOrder.forEach((item) => {
       var delta = Math.min(item.start, this.time_) - lastTime;
-      angular.forEach(this.assignments, function(assignment: core.IAssignment) {
+      angular.forEach(this.assignments, (assignment: core.IAssignment) => {
         assignment.apply(delta, this);
-      }, this);
+      });
 
       lastTime += delta;
       if (item.start > this.time_) {
@@ -70,11 +70,11 @@ class State implements core.IState {
       }
       
       item.apply(this);
-    }, this);
+    });
     var delta = this.time_ - lastTime;
-    angular.forEach(this.assignments, function(assignment: core.IAssignment) {
+    angular.forEach(this.assignments, (assignment: core.IAssignment) => {
       assignment.apply(delta, this);
-    }, this);
+    });
   }
 }
 

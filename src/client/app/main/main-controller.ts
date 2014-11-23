@@ -24,9 +24,9 @@ class MainController {
     this.currentState = new State(
         buildOrderService, rulesService, this.settings);
 
-    this.rulesService.load('assets/rules/aoc.yaml').then(function() {
+    this.rulesService.load('assets/rules/aoc.yaml').then(() => {
       this.currentState.time = 0;
-    }.bind(this));
+    });
 
     this.selection = new core.Selection();
   }

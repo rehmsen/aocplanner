@@ -38,11 +38,11 @@ class BuildPaneDirectiveController {
       return [];
     }
 
-    return this.rulesService.tasks[this.taskVerb].filter(function(task: core.ITask) {
+    return this.rulesService.tasks[this.taskVerb].filter((task: core.ITask) => {
       var unitTasksObjects = this.selection.assignable.tasks[this.taskVerb];
       return unitTasksObjects !== undefined && 
           (task.verb != core.TaskVerb.harvest || unitTasksObjects.indexOf(task.object) > -1);
-    }.bind(this));
+    });
   }
 
   construct(building: build.Building): void {
@@ -76,14 +76,14 @@ class BuildPaneDirectiveController {
         this.toBeTrained, this.currentState.time);
     }
 
-    angular.forEach(this.selection.taskCounts, function(fromTaskCount) {
+    angular.forEach(this.selection.taskCounts, (fromTaskCount) => {
       var reassignementItem = new assignments.ReassignmentItem(
         this.currentState.time,
         fromTaskCount.count,
         fromTaskCount.task,
         toTask);
       this.buildOrderService.sortInItem(reassignementItem);
-    }, this);
+    });
 
     newTime = toTask.updateBuildOrder(this.buildOrderService, newTime);
     this.currentState.time = newTime;

@@ -165,7 +165,7 @@ export class Buildable {
   }
 
   started(state: IState, delta: number) {
-    angular.forEach(this.cost, function(quantity, resource) {
+    angular.forEach(this.cost, (quantity, resource) => {
       state.resources[resource] -= quantity;
     });    
   }
