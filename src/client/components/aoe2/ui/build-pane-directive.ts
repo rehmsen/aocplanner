@@ -13,7 +13,8 @@ function createBuildPaneDirective(): ng.IDirective {
     restrict: 'E',
     scope: {
       currentState: '=',
-      selection: '='
+      selection: '=',
+      error: '='
     },
     controller: BuildPaneDirectiveController,
     controllerAs: 'ctrl',
@@ -27,6 +28,7 @@ class BuildPaneDirectiveController {
   selection: core.Selection;
   toBeTrained: build.Unit;
   taskVerb: string;
+  error: string;
 
   constructor(
       public buildOrderService: BuildOrderService,
@@ -55,7 +57,8 @@ class BuildPaneDirectiveController {
 
   train(unit: build.Unit): void {
     if (this.currentState.pop >= this.currentState.popCap) {
-      throw new Error('Not enough room - build more houses!');
+      this.error = 'Not enough room - build more houses!';
+      return;
     }
 
     if (unit.tasks) {
@@ -87,7 +90,11 @@ class BuildPaneDirectiveController {
   }
 
   private train_(unit: build.Unit, initialTask?: core.ITask): void {
-    this.currentState.advanceUntilSufficientResources(unit.cost);
+    try {
+      this.currentState.advanceUntilSufficientResources(unit.cost);
+    } catch(e) {
+      this.error = e.message;
+    }
     var queueEnd = this.buildOrderService.enqueueBuildable(
       unit, this.currentState.time, initialTask);
     this.currentState.update(queueEnd);
