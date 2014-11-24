@@ -54,6 +54,10 @@ class BuildPaneDirectiveController {
   }
 
   train(unit: build.Unit): void {
+    if (this.currentState.pop >= this.currentState.popCap) {
+      throw new Error('Not enough room - build more houses!');
+    }
+
     if (unit.tasks) {
       this.toBeTrained = unit;
       this.selection.set(unit, new core.IdleTask());

@@ -79,7 +79,6 @@ class State implements core.IState {
       this.buildOrderService.lastResourceSpendTime, this.time_);
     var index = this.interpolate_(start);
 
-
     while (true) {
       var resourceRates = this.sumUpResourceRates_();
       var delta = this.timeUntilSufficientResources_(
