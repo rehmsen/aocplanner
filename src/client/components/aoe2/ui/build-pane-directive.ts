@@ -58,37 +58,36 @@ class BuildPaneDirectiveController {
       this.toBeTrained = unit;
       this.selection.set(unit, new core.IdleTask());
     } else {
-      this.currentState.advanceUntilSufficientResources(unit.cost);
-      var queueEnd = this.buildOrderService.enqueueBuildable(
-        unit, this.currentState.time);
-      this.currentState.update(queueEnd);
+      this.train_(unit);
     }
   }
 
   assign(toTask: core.ITask): void {
-    var newTime: number = this.currentState.time;
     if (this.toBeTrained) {
-      this.currentState.advanceUntilSufficientResources(this.toBeTrained.cost);
-      newTime = this.buildOrderService.enqueueBuildable(
-        this.toBeTrained, this.currentState.time);
+      this.train_(this.toBeTrained);
     }
 
     angular.forEach(this.selection.taskCounts, (fromTaskCount) => {
       var reassignementItem = new assignments.ReassignmentItem(
-        newTime,
+        this.currentState.time,
         fromTaskCount.count,
         fromTaskCount.task,
         toTask);
       this.buildOrderService.sortInItem(reassignementItem);
     });
 
-    toTask.updateBuildOrder(this.buildOrderService, newTime);
-    this.currentState.update(newTime);
+    toTask.updateBuildOrder(this.buildOrderService, this.currentState.time);
 
     this.selection.reset();
     this.taskVerb = null;
   }
 
+  private train_(unit: build.Unit): void {
+    this.currentState.advanceUntilSufficientResources(unit.cost);
+    var queueEnd = this.buildOrderService.enqueueBuildable(
+      unit, this.currentState.time);
+    this.currentState.update(queueEnd);
+  }
 }
 
 export = createBuildPaneDirective;
