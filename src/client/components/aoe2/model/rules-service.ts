@@ -56,7 +56,7 @@ class RulesService {
           this.startResources = {};
           angular.forEach(rules.startResources, (resources, key) => {
             this.startResources[key] = resources;
-          }, this);
+          });
           this.loaded = true;
         }).
         error(function(data: string, status: number, 

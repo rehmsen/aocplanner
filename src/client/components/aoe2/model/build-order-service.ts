@@ -5,7 +5,7 @@ import build = require('./build');
 
 class BuildOrderService implements core.IBuildOrderService {
   buildOrder: core.IBuildOrderItem[] = [];
-  lastResourceSpendTime: number;
+  lastResourceSpendTime: number = 0;
   queues: build.Queue[];
 
   constructor() {

@@ -28,6 +28,7 @@ export class ConstructionTask implements core.ITask {
   verb = core.TaskVerb.construct;  
   object: string;
   id: string;
+  resourceRate: core.IResourceRate = {rate: 0};
 
   constructor(public building: Building) {
     this.object = building.id;
@@ -35,8 +36,6 @@ export class ConstructionTask implements core.ITask {
   }
 
   get icon(): string { return core.TaskVerb[this.verb]; }
-
-  updateState(state: core.IState, delta: number, count: number): void {}
 
   updateBuildOrder(
       buildOrderService: core.IBuildOrderService, currentTime: number): number {

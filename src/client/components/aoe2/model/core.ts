@@ -61,7 +61,7 @@ export interface IState {
   resources: IResources;
   pop: number;
   popCap: number;
-  assignments: {[task: string]: IAssignment};
+  assignments: {[task: string]: ITaskCount};
   age: IAge;
   ageProgress: number;
   hasBuilding: {[buildingId: string]: boolean};
@@ -75,13 +75,18 @@ export enum TaskVerb {
   construct
 }
 
+export interface IResourceRate {
+  rate: number;
+  resource?: Resource;
+}
+
 export interface ITask {
   verb: TaskVerb;
   object?: string;
   id: string;
   icon: string;
 
-  updateState(state: IState, delta: number, count: number): void
+  resourceRate: IResourceRate;
 
   updateBuildOrder(
       buildOrderService: IBuildOrderService, currentTime: number): number
@@ -90,6 +95,7 @@ export interface ITask {
 export class IdleTask implements ITask {
   verb = TaskVerb.idle;
   id = TaskVerb[this.verb];
+  resourceRate: IResourceRate = {rate: 0};
 
   get icon(): string { return this.id; }
 
@@ -105,17 +111,14 @@ export class HarvestTask implements ITask {
   verb = TaskVerb.harvest;  
   object: string;
   id: string;
+  get resourceRate() { 
+    return {rate: this.source.rate, resource: this.source.resource }; 
+  }
+  get icon(): string { return this.object; }
 
   constructor(public source: IResourceSource) {
     this.object = source.id;
     this.id = TaskVerb[this.verb] + ':' + this.object; 
-  }
-
-  get icon(): string { return this.object; }
-
-  updateState(state: IState, delta: number, count: number): void {
-     state.resources[this.source.resource] += 
-        count * this.source.rate * delta;    
   }
 
   updateBuildOrder(
@@ -128,10 +131,6 @@ export interface ITaskCount {
   assignable: IAssignable;
   count: number;
   task: ITask;  
-}
-
-export interface IAssignment extends ITaskCount {
-  apply(delta: number, state: IState): void;  
 }
 
 export interface IBuildOrderItem {
