@@ -21,7 +21,7 @@ function createTimelineDirective(): ng.IDirective {
     },
     link: function postLink(
         scope: ITimelineDirectiveScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes) {
-      scope.click = function($event:IAngularClickEvent): void {
+      scope.click = function($event: IAngularClickEvent): void {
         scope.time = $event.layerX / scope.timeScale;
       };
     }

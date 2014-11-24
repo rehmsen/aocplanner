@@ -3,17 +3,6 @@
     <resource-indicator current-state="mainCtrl.currentState">
     </resource-indicator>
   </div>
-  <div style="float: right;">
-    <select>
-      <option ng-repeat="civilization in mainCtrl.rulesService.civilizations">
-        {{civilization.name}}
-      </option>
-    </select>
-    <label>
-      <input type="checkbox" ng-model="settings.allTechs" disabled="true">
-      All Techs
-    </label>
-  </div>
   <age-indicator age="mainCtrl.currentState.age" progress="mainCtrl.currentState.ageProgress">
   </age-indicator>
 </div>
@@ -39,15 +28,23 @@
     </div>
   </div>
   <div class="task-distribution">
-    <task-assignment 
+    <task-count 
         ng-repeat="assignment in mainCtrl.currentState.assignments"
-        assignment="assignment">
-    </task-assignment>
+        task-count="assignment"
+        selection="mainCtrl.selection">
+    </task-count>
   </div>
+  <error message="mainCtrl.error"></error>  
 </div>
 <div class="bottom-pane">
-  <build-pane 
-      current-state="mainCtrl.currentState"
-      selection="mainCtrl.selection">
-  </build-pane>
+  <div class="bottom-left">
+    <build-pane
+        current-state="mainCtrl.currentState"
+        selection="mainCtrl.selection"
+        error="mainCtrl.error">
+    </build-pane>
+  </div>
+  <div class="bottom-center">
+    <selection selection="mainCtrl.selection"></selection>
+  </div>
 </div>

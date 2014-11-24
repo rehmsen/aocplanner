@@ -13,7 +13,8 @@ function createBuildPaneDirective(): ng.IDirective {
     restrict: 'E',
     scope: {
       currentState: '=',
-      selection: '='
+      selection: '=',
+      error: '='
     },
     controller: BuildPaneDirectiveController,
     controllerAs: 'ctrl',
@@ -24,8 +25,10 @@ function createBuildPaneDirective(): ng.IDirective {
 class BuildPaneDirectiveController {
   currentState: State;
   hasStartedTechnology: {[technologyId: string]: boolean} = {};
-  selection: build.Selection;
+  selection: core.Selection;
+  toBeTrained: build.Unit;
   taskVerb: string;
+  error: string;
 
   constructor(
       public buildOrderService: BuildOrderService,
@@ -37,59 +40,67 @@ class BuildPaneDirectiveController {
       return [];
     }
 
-    return this.rulesService.tasks[this.taskVerb].filter(function(task: core.ITask) {
-      var unitTasksObjects = this.selection.unit.tasks[this.taskVerb];
+    return this.rulesService.tasks[this.taskVerb].filter((task: core.ITask) => {
+      var unitTasksObjects = this.selection.assignable.tasks[this.taskVerb];
       return unitTasksObjects !== undefined && 
           (task.verb != core.TaskVerb.harvest || unitTasksObjects.indexOf(task.object) > -1);
-    }.bind(this));
-  }
-
-  construct(building: build.Building): void {
-    var queueEnd = this.buildOrderService.enqueueBuildable(
-        building, this.currentState.time);
-    this.currentState.time = queueEnd;
+    });
   }
 
   research(tech: build.Technology): void {
+    this.currentState.advanceUntilSufficientResources(tech.cost);
     var queueEnd = this.buildOrderService.enqueueBuildable(
         tech, this.currentState.time);
-    this.currentState.time = queueEnd;
+    this.currentState.update(queueEnd);
     this.hasStartedTechnology[tech.id] = true;
   }
 
   train(unit: build.Unit): void {
+    if (this.currentState.pop >= this.currentState.popCap) {
+      this.error = 'Not enough room - build more houses!';
+      return;
+    }
+
     if (unit.tasks) {
-      this.selection.set(unit, new core.IdleTask(), true);
+      this.toBeTrained = unit;
+      this.selection.set(unit, new core.IdleTask());
     } else {
-      var queueEnd = this.buildOrderService.enqueueBuildable(
-        unit, this.currentState.time);
-      this.currentState.time = queueEnd;
+      this.train_(unit);
     }
   }
 
   assign(toTask: core.ITask): void {
-    if (this.selection.toBeTrained) {
-      var queueEnd = this.buildOrderService.enqueueBuildable(
-        this.selection.unit, this.currentState.time);
+    if (this.toBeTrained) {
+      this.train_(this.toBeTrained, toTask);
+      this.toBeTrained = null;
     }
 
-    angular.forEach(this.selection.taskCounts, function(fromTaskCount) {
+    angular.forEach(this.selection.taskCounts, (fromTaskCount) => {
       var reassignementItem = new assignments.ReassignmentItem(
         this.currentState.time,
         fromTaskCount.count,
         fromTaskCount.task,
         toTask);
       this.buildOrderService.sortInItem(reassignementItem);
-    }, this);
+    });
 
-    var newTime = toTask.updateBuildOrder(
-        this.buildOrderService, queueEnd);
-    this.currentState.time = newTime;
+    toTask.updateBuildOrder(this.buildOrderService, this.currentState.time);
+    this.currentState.update(this.currentState.time);
 
     this.selection.reset();
     this.taskVerb = null;
   }
 
+  private train_(unit: build.Unit, initialTask?: core.ITask): void {
+    try {
+      this.currentState.advanceUntilSufficientResources(unit.cost);
+    } catch(e) {
+      this.error = e.message;
+    }
+    var queueEnd = this.buildOrderService.enqueueBuildable(
+      unit, this.currentState.time, initialTask);
+    this.currentState.update(queueEnd);
+  }
 }
 
 export = createBuildPaneDirective;

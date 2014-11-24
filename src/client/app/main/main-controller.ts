@@ -12,7 +12,7 @@ class MainController {
 
   settings: core.ISettings;
   currentState: State;
-  selection: build.Selection;
+  selection: core.Selection;
 
   constructor( 
       public buildOrderService: BuildOrderService,
@@ -24,11 +24,11 @@ class MainController {
     this.currentState = new State(
         buildOrderService, rulesService, this.settings);
 
-    this.rulesService.load('assets/rules/aoc.yaml').then(function() {
-      this.currentState.time = 0;
-    }.bind(this));
+    this.rulesService.load('assets/rules/aoc.yaml').then(() => {
+      this.currentState.update(0);
+    });
 
-    this.selection = new build.Selection();
+    this.selection = new core.Selection();
   }
 
 }

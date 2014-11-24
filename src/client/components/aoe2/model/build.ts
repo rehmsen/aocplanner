@@ -28,13 +28,15 @@ export class ConstructionTask implements core.ITask {
   verb = core.TaskVerb.construct;  
   object: string;
   id: string;
+  resourceRate: core.IResourceRate = {rate: 0};
 
   constructor(public building: Building) {
     this.object = building.id;
     this.id = core.TaskVerb[this.verb] + ':' + this.object; 
   }
 
-  updateState(state: core.IState, delta: number, count: number): void {}
+  get icon(): string { return core.TaskVerb[this.verb]; }
+
   updateBuildOrder(
       buildOrderService: core.IBuildOrderService, currentTime: number): number {
     return buildOrderService.enqueueBuildable(this.building, currentTime);
@@ -67,19 +69,21 @@ export class Technology extends core.Buildable {
   started(state: core.IState, delta: number) {
     super.started(state, delta);
     var progress = delta / this.buildDuration;
-    if (progress < 1.0) {
+    if (progress < 1.0 && this.effect_ && this.effect_.started) {
       eval(this.effect_.started);
     }
   }
 
   finished(state: core.IState) {
     super.finished(state);
-    eval(this.effect_.finished);
+    if (this.effect_ && this.effect_.finished){
+      eval(this.effect_.finished);
+    }
     state.hasTechnology[this.id] = true;
   }
 }
 
-export class Unit extends core.Buildable {
+export class Unit extends core.Buildable implements core.IAssignable {
   constructor(
       id: string,
       age: number,
@@ -96,6 +100,10 @@ export class Unit extends core.Buildable {
         object.source, object.tasks)    
   }
 
+  canBuild(state: core.IState): boolean {
+    return super.canBuild(state) && state.pop + 1 <= state.popCap;
+  }
+
   started(state: core.IState, delta: number) {
     super.started(state, delta);
     state.pop++;
@@ -110,6 +118,8 @@ export class Unit extends core.Buildable {
 }
 
 export class BuildableStartedItem implements core.IBuildOrderItem {
+  isSpendingResources = true;
+
   constructor(
       public start: number,
       public buildable: core.Buildable,
@@ -127,6 +137,8 @@ export class BuildableStartedItem implements core.IBuildOrderItem {
 }
 
 export class BuildableFinishedItem implements core.IBuildOrderItem {
+  isSpendingResources = false;
+
   constructor(
       public start: number,
       public buildable: core.Buildable) {
@@ -134,44 +146,6 @@ export class BuildableFinishedItem implements core.IBuildOrderItem {
 
   apply(state: core.IState) {
     this.buildable.finished(state);
-  }
-}
-
-export class Selection {
-  unit: Unit;
-  taskCounts: {[taskId: string]: core.ITaskCount};
-  toBeTrained: boolean; 
-
-  constructor() {
-    this.reset();
-  }
-
-  reset() {
-    this.unit = null;
-    this.taskCounts = {};
-    this.toBeTrained = false;
-  }
-
-  add(unit: Unit, task: core.ITask): boolean {
-    if (this.unit && this.unit.id != unit.id || this.toBeTrained) {
-      return false;
-    }
-    this.unit = unit;
-    if (!this.taskCounts[task.id]) {
-      this.taskCounts[task.id] = {task: task, count: 1};
-    } else {
-      this.taskCounts[task.id].count++;
-    }
-    return true;
-  }
-
-  set(unit: Unit, task: core.ITask, toBeTrained: boolean = false) {
-    if (task.verb != core.TaskVerb.idle && toBeTrained) {
-      throw new Error('Newly trained workers must initially be idle');
-    }
-    this.reset();
-    this.add(unit, task);
-    this.toBeTrained = toBeTrained;
   }
 }
 

@@ -1,19 +1,17 @@
 @import 'common';
 
 build-pane {
-  // box-sizing: border-box;
-  .palettes-container {
-    height: 100%;
+  .palette-container {
+    display: inline-block;
+    position: relative;  
+    width: 345px;
+    height: 130px;
+    overflow-y: auto;
   }
 
   .palette {
-    position: relative;
+    overflow:visible;
     float: left;
-    width: 283px;
-    height: 100%;
-    overflow-y: auto;
-    padding: 5px;  
-    // box-sizing: border-box;
   }
 
   input {
@@ -38,14 +36,14 @@ build-pane {
 
   .button:disabled {
     filter: grayscale(100%);
-    box-shadow: inset -2px -2px 2px rgba(255,255,255,0.8), 
-              inset 2px 2px 2px rgba(0,0,0,0.5);  
+    box-shadow: none;  
+    cursor: not-allowed;
   }  
 
   .cancel-button {
     position: absolute;
-    right: 5px;
-    bottom: 5px;
+    right: 22px;
+    bottom: 0;
   }
 }
 

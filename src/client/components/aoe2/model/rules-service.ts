@@ -10,11 +10,12 @@ class RulesService {
 
   ages: core.IAge[] = [];
   civilizations: core.ICivilization[];
-  startResources: {low: core.IResources; [key: string]: core.IResources};
+  startResources: {[key: string]: core.IResources};
 
   buildings: build.Building[];
   technologies: build.Technology[];
   units: build.Unit[];
+  workers: build.Unit[];
   resourceSources: core.IResourceSource[];
   tasks: {[verb: string]: core.ITask[]} = {};
 
@@ -26,11 +27,11 @@ class RulesService {
 
   load(uri: string): ng.IPromise<{}> {
     this.loadingPromise = this._http.get(uri).
-        success(function(data: string, status: number, 
-            headers: ng.IHttpHeadersGetter, config: ng.IRequestConfig) {
+        success((data: string, status: number, 
+            headers: ng.IHttpHeadersGetter, config: ng.IRequestConfig) => {
           var rules = jsyaml.safeLoad(data);
           this.civilizations = rules.civilizations;
-          this.ages = rules.ages.map(function(age: core.IAge, index: number) {
+          this.ages = rules.ages.map((age: core.IAge, index: number) => {
             age.index = index;
             return age;
           });
@@ -40,20 +41,24 @@ class RulesService {
           this.technologies = rules.technologies.map(build.Technology.create);
           this.units = rules.units.map(build.Unit.create);
 
+          this.workers = this.units.filter((unit: build.Unit) => { 
+            return unit.tasks !== undefined; 
+          });
+
           this.tasks['idle'] = [new core.IdleTask()];
-          this.tasks['harvest'] = this.resourceSources.map(function(resourceSource: any) {
+          this.tasks['harvest'] = this.resourceSources.map((resourceSource: any) => {
             return new core.HarvestTask(resourceSource);
           });
-          this.tasks['construct'] = this.buildings.map(function(building: build.Building) {
+          this.tasks['construct'] = this.buildings.map((building: build.Building) => {
             return new build.ConstructionTask(building);
           });
 
           this.startResources = {};
-          angular.forEach(rules.startResources, function(resources, key) {
+          angular.forEach(rules.startResources, (resources, key) => {
             this.startResources[key] = resources;
-          }, this);
+          });
           this.loaded = true;
-        }.bind(this)).
+        }).
         error(function(data: string, status: number, 
             headers: ng.IHttpHeadersGetter, config: ng.IRequestConfig) {
           console.log(data);

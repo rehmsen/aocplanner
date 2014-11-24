@@ -5,6 +5,7 @@ import build = require('./build');
 
 class BuildOrderService implements core.IBuildOrderService {
   buildOrder: core.IBuildOrderItem[] = [];
+  lastResourceSpendTime: number = 0;
   queues: build.Queue[];
 
   constructor() {
@@ -18,9 +19,13 @@ class BuildOrderService implements core.IBuildOrderService {
   }
 
   sortInItem(item: core.IBuildOrderItem) {
+    if (item.isSpendingResources && this.lastResourceSpendTime < item.start) {
+      this.lastResourceSpendTime = item.start;
+    }
+
     // TODO(oler): Replace with binary search.
     var index = 0;
-    this.buildOrder.forEach(function(eachItem) {
+    this.buildOrder.forEach((eachItem) => {
       if (eachItem.start > item.start) {
         return;
       }
@@ -32,7 +37,7 @@ class BuildOrderService implements core.IBuildOrderService {
   enqueueBuildable(
       buildable: core.Buildable, currentTime: number, 
       initialTask?: core.ITask): number {
-    var queue = this.queues.filter(function(queue) { 
+    var queue = this.queues.filter((queue) => { 
       return queue.source === buildable.source;
     })[0];
     var startTime = Math.max(currentTime, queue.end);
