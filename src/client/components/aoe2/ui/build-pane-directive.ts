@@ -48,7 +48,11 @@ class BuildPaneDirectiveController {
   }
 
   research(tech: build.Technology): void {
-    this.currentState.advanceUntilSufficientResources(tech.cost);
+    try {
+      this.currentState.advanceUntilSufficientResources(tech.cost);
+    } catch(e) {
+      this.error = e.message;
+    }
     var queueEnd = this.buildOrderService.enqueueBuildable(
         tech, this.currentState.time);
     this.currentState.update(queueEnd);
