@@ -37,7 +37,6 @@ class State implements core.IState {
 
   update(time: number) {
     this.interpolate_(time);
-    this.time_ = time;
   }
   // Prefer the less surprising update(t), keeping this setter only since
   // it works with 2 way binding.
@@ -79,7 +78,7 @@ class State implements core.IState {
     var start = Math.max(
       this.buildOrderService.lastResourceSpendTime, this.time_);
     var index = this.interpolate_(start);
-    this.time_ = start;
+
 
     while (true) {
       var resourceRates = this.sumUpResourceRates_();
@@ -133,15 +132,18 @@ class State implements core.IState {
       'town_center': true
     };
     this.hasTechnology = {};
+    this.time_ = 0;
   }
 
   private interpolate_(time: number): number {
     this.reset_();
 
     var lastIndex: number = 0;
-    var assignmentApplicator = this.newAssignmentApplicator_();
     this.buildOrderService.buildOrder.forEach((item) => {
-      assignmentApplicator(Math.min(item.start, time));
+      var delta = Math.min(item.start, time) - this.time_;
+      this.time_ += delta;
+      var resourceRates = this.sumUpResourceRates_();
+      this.applyResourceRates_(resourceRates, delta);
 
       if (item.start > time) {
         return;
@@ -149,23 +151,10 @@ class State implements core.IState {
       lastIndex++;
       item.apply(this);
     });
-    assignmentApplicator(time);
+    var resourceRates = this.sumUpResourceRates_();
+    this.applyResourceRates_(resourceRates, time - this.time_);
+    this.time_ = time;
     return lastIndex;
-  }
-
-  private newAssignmentApplicator_(t = 0) {
-    var lastTime = t;
-    return (time: number) => {
-      var delta = time - lastTime;
-      angular.forEach(this.assignments, (assignment: core.ITaskCount) => {
-        var resourceRate = assignment.task.resourceRate;
-        if (resourceRate.rate != 0) {
-          this.resources[resourceRate.resource] += 
-              assignment.count * resourceRate.rate * delta;    
-        }
-      });        
-      lastTime += delta;      
-    };
   }
 }
 
