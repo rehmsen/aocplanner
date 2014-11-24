@@ -64,7 +64,7 @@ class BuildPaneDirectiveController {
 
   assign(toTask: core.ITask): void {
     if (this.toBeTrained) {
-      this.train_(this.toBeTrained);
+      this.train_(this.toBeTrained, toTask);
     }
 
     angular.forEach(this.selection.taskCounts, (fromTaskCount) => {
@@ -82,10 +82,10 @@ class BuildPaneDirectiveController {
     this.taskVerb = null;
   }
 
-  private train_(unit: build.Unit): void {
+  private train_(unit: build.Unit, initialTask?: core.ITask): void {
     this.currentState.advanceUntilSufficientResources(unit.cost);
     var queueEnd = this.buildOrderService.enqueueBuildable(
-      unit, this.currentState.time);
+      unit, this.currentState.time, initialTask);
     this.currentState.update(queueEnd);
   }
 }
