@@ -72,6 +72,7 @@ class BuildPaneDirectiveController {
   assign(toTask: core.ITask): void {
     if (this.toBeTrained) {
       this.train_(this.toBeTrained, toTask);
+      this.toBeTrained = null;
     }
 
     angular.forEach(this.selection.taskCounts, (fromTaskCount) => {
