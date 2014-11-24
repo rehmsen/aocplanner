@@ -85,6 +85,7 @@ class BuildPaneDirectiveController {
     });
 
     toTask.updateBuildOrder(this.buildOrderService, this.currentState.time);
+    this.currentState.update(this.currentState.time);
 
     this.selection.reset();
     this.taskVerb = null;
