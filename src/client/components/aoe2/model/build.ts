@@ -37,10 +37,8 @@ export class ConstructionTask implements core.ITask {
 
   get icon(): string { return core.TaskVerb[this.verb]; }
 
-  updateBuildOrder(
-      buildOrderService: core.IBuildOrderService, currentTime: number): number {
-    // TODO(olrehm): Handle the case where we do not have enough resources.
-    return buildOrderService.enqueueBuildable(this.building, currentTime);
+  onAssign(state: core.IState): void {
+    state.buildNext(this.building);
   }
 }
 

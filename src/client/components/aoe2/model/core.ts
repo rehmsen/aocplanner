@@ -66,6 +66,8 @@ export interface IState {
   ageProgress: number;
   hasBuilding: {[buildingId: string]: boolean};
   hasTechnology: {[technologyId: string]: boolean};
+
+  buildNext(buildable: Buildable, initialTask?: ITask): void;
 }
 
 
@@ -88,8 +90,7 @@ export interface ITask {
 
   resourceRate: IResourceRate;
 
-  updateBuildOrder(
-      buildOrderService: IBuildOrderService, currentTime: number): number
+  onAssign(state: IState): void;
 }
 
 export class IdleTask implements ITask {
@@ -101,10 +102,7 @@ export class IdleTask implements ITask {
 
   updateState(state: IState, delta: number, count: number): void {}
 
-  updateBuildOrder(
-      buildOrderService: IBuildOrderService, currentTime: number): number {
-    return currentTime;
-  }
+  onAssign(state: IState): void {}
 }
 
 export class HarvestTask implements ITask {
@@ -121,10 +119,7 @@ export class HarvestTask implements ITask {
     this.id = TaskVerb[this.verb] + ':' + this.object; 
   }
 
-  updateBuildOrder(
-      buildOrderService: IBuildOrderService, currentTime: number): number {
-    return currentTime;
-  }
+  onAssign(state: IState): void {}
 }
 
 export interface ITaskCount {

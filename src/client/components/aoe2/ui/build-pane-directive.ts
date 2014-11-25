@@ -85,7 +85,7 @@ class BuildPaneDirectiveController {
       this.buildOrderService.sortInItem(reassignementItem);
     });
 
-    toTask.updateBuildOrder(this.buildOrderService, this.currentState.time);
+    toTask.onAssign(this.currentState);
     this.currentState.update(this.currentState.time);
 
     this.selection.reset();
