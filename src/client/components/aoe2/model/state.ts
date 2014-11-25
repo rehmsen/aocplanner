@@ -1,4 +1,5 @@
 import assignments = require('./assignments');
+import build = require('./build');
 import core = require('./core');
 import BuildOrderService = require('./build-order-service');
 import RulesService = require('./rules-service');
@@ -44,11 +45,12 @@ class State implements core.IState {
     this.update(t);
   }
 
-  buildNext(buildable: core.Buildable, initialTask?: core.ITask) {
+  buildNext(buildable: core.Buildable): build.BuildableStartedItem {
     this.advanceUntilSufficientResources_(buildable.cost);
-    var queueEnd = this.buildOrderService.enqueueBuildable(
-      buildable, this.time, initialTask);
-    this.update(queueEnd);    
+    var item = this.buildOrderService.enqueueBuildable(
+      buildable, this.time);
+    this.update(item.end);    
+    return item;
   }
 
   private advanceUntilSufficientResources_(cost: core.IResources) {

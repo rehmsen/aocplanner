@@ -118,11 +118,11 @@ export class Unit extends core.Buildable implements core.IAssignable {
 
 export class BuildableStartedItem implements core.IBuildOrderItem {
   isSpendingResources = true;
+  initialTask: core.ITask;
 
   constructor(
       public start: number,
-      public buildable: core.Buildable,
-      public initialTask: core.ITask) {
+      public buildable: core.Buildable) {
   }
 
   get end(): number {

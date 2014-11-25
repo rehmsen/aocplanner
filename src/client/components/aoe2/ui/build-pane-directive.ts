@@ -26,9 +26,9 @@ class BuildPaneDirectiveController {
   currentState: State;
   hasStartedTechnology: {[technologyId: string]: boolean} = {};
   selection: core.Selection;
-  toBeTrained: build.Unit;
   taskVerb: string;
   error: string;
+  private trainedItem_: build.BuildableStartedItem;
 
   constructor(
       public buildOrderService: BuildOrderService,
@@ -48,11 +48,7 @@ class BuildPaneDirectiveController {
   }
 
   research(tech: build.Technology): void {
-    try {
-      this.currentState.buildNext(tech);
-    } catch(e) {
-      this.error = e.message;
-    }
+    this.buildCatchingError_(tech);
     this.hasStartedTechnology[tech.id] = true;
   }
 
@@ -62,18 +58,17 @@ class BuildPaneDirectiveController {
       return;
     }
 
+    this.trainedItem_ = this.buildCatchingError_(unit);
+
     if (unit.tasks) {
-      this.toBeTrained = unit;
       this.selection.set(unit, new core.IdleTask());
-    } else {
-      this.train_(unit);
     }
   }
 
   assign(toTask: core.ITask): void {
-    if (this.toBeTrained) {
-      this.train_(this.toBeTrained, toTask);
-      this.toBeTrained = null;
+    if (this.trainedItem_) {
+      this.trainedItem_.initialTask = toTask;
+      this.trainedItem_ = null;
     }
 
     angular.forEach(this.selection.taskCounts, (fromTaskCount) => {
@@ -92,9 +87,10 @@ class BuildPaneDirectiveController {
     this.taskVerb = null;
   }
 
-  private train_(unit: build.Unit, initialTask?: core.ITask): void {
+  private buildCatchingError_(buildable: core.Buildable): 
+      build.BuildableStartedItem {
     try {
-      this.currentState.buildNext(unit, initialTask);
+      return this.currentState.buildNext(buildable);
     } catch(e) {
       this.error = e.message;
     }

@@ -181,10 +181,3 @@ export class Buildable {
 
   }
 }
-
-export interface IBuildOrderService {
-  enqueueBuildable(
-      buildable: Buildable, currentTime: number, 
-      initialTask?: ITask): number
-}
-
