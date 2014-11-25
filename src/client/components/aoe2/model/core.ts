@@ -87,6 +87,7 @@ export interface ITask {
   object?: string;
   id: string;
   icon: string;
+  fixedTime: boolean;
 
   resourceRate: IResourceRate;
 
@@ -97,6 +98,7 @@ export class IdleTask implements ITask {
   verb = TaskVerb.idle;
   id = TaskVerb[this.verb];
   resourceRate: IResourceRate = {rate: 0};
+  fixedTime: boolean = false;
 
   get icon(): string { return this.id; }
 
@@ -109,6 +111,7 @@ export class HarvestTask implements ITask {
   verb = TaskVerb.harvest;  
   object: string;
   id: string;
+  fixedTime: boolean = false;
   get resourceRate() { 
     return {rate: this.source.rate, resource: this.source.resource }; 
   }

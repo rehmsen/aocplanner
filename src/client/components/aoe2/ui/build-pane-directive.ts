@@ -71,20 +71,31 @@ class BuildPaneDirectiveController {
       this.trainedItem_ = null;
     }
 
+    var totalCount = 0;
     angular.forEach(this.selection.taskCounts, (fromTaskCount) => {
       var reassignementItem = new assignments.ReassignmentItem(
         this.currentState.time,
         fromTaskCount.count,
         fromTaskCount.task,
         toTask);
+      totalCount += fromTaskCount.count;
       this.buildOrderService.sortInItem(reassignementItem);
     });
+    this.selection.taskCounts = {};
 
     toTask.onAssign(this.currentState);
     this.currentState.update(this.currentState.time);
 
-    this.selection.reset();
     this.taskVerb = null;
+    if (toTask.fixedTime) {
+      this.selection.taskCounts[toTask.id] = {
+        assignable: this.selection.assignable, 
+        count: totalCount,
+        task: toTask
+      };
+    } else {
+      this.selection.reset();
+    }
   }
 
   private buildCatchingError_(buildable: core.Buildable): 
