@@ -26,9 +26,9 @@ class BuildPaneDirectiveController {
   currentState: State;
   hasStartedTechnology: {[technologyId: string]: boolean} = {};
   selection: core.Selection;
-  toBeTrained: build.Unit;
   taskVerb: string;
   error: string;
+  private trainedItem_: build.BuildableStartedItem;
 
   constructor(
       public buildOrderService: BuildOrderService,
@@ -48,14 +48,7 @@ class BuildPaneDirectiveController {
   }
 
   research(tech: build.Technology): void {
-    try {
-      this.currentState.advanceUntilSufficientResources(tech.cost);
-    } catch(e) {
-      this.error = e.message;
-    }
-    var queueEnd = this.buildOrderService.enqueueBuildable(
-        tech, this.currentState.time);
-    this.currentState.update(queueEnd);
+    this.buildCatchingError_(tech);
     this.hasStartedTechnology[tech.id] = true;
   }
 
@@ -65,45 +58,53 @@ class BuildPaneDirectiveController {
       return;
     }
 
+    this.trainedItem_ = this.buildCatchingError_(unit);
+
     if (unit.tasks) {
-      this.toBeTrained = unit;
       this.selection.set(unit, new core.IdleTask());
-    } else {
-      this.train_(unit);
     }
   }
 
   assign(toTask: core.ITask): void {
-    if (this.toBeTrained) {
-      this.train_(this.toBeTrained, toTask);
-      this.toBeTrained = null;
+    if (this.trainedItem_) {
+      this.trainedItem_.initialTask = toTask;
+      this.trainedItem_ = null;
     }
 
+    var totalCount = 0;
     angular.forEach(this.selection.taskCounts, (fromTaskCount) => {
       var reassignementItem = new assignments.ReassignmentItem(
         this.currentState.time,
         fromTaskCount.count,
         fromTaskCount.task,
         toTask);
+      totalCount += fromTaskCount.count;
       this.buildOrderService.sortInItem(reassignementItem);
     });
+    this.selection.taskCounts = {};
 
-    toTask.updateBuildOrder(this.buildOrderService, this.currentState.time);
+    toTask.onAssign(this.currentState);
     this.currentState.update(this.currentState.time);
 
-    this.selection.reset();
     this.taskVerb = null;
+    if (toTask.fixedTime) {
+      this.selection.taskCounts[toTask.id] = {
+        assignable: this.selection.assignable, 
+        count: totalCount,
+        task: toTask
+      };
+    } else {
+      this.selection.reset();
+    }
   }
 
-  private train_(unit: build.Unit, initialTask?: core.ITask): void {
+  private buildCatchingError_(buildable: core.Buildable): 
+      build.BuildableStartedItem {
     try {
-      this.currentState.advanceUntilSufficientResources(unit.cost);
+      return this.currentState.buildNext(buildable);
     } catch(e) {
       this.error = e.message;
     }
-    var queueEnd = this.buildOrderService.enqueueBuildable(
-      unit, this.currentState.time, initialTask);
-    this.currentState.update(queueEnd);
   }
 }
 

@@ -29,6 +29,7 @@ export class ConstructionTask implements core.ITask {
   object: string;
   id: string;
   resourceRate: core.IResourceRate = {rate: 0};
+  fixedTime: boolean = true;
 
   constructor(public building: Building) {
     this.object = building.id;
@@ -37,10 +38,8 @@ export class ConstructionTask implements core.ITask {
 
   get icon(): string { return core.TaskVerb[this.verb]; }
 
-  updateBuildOrder(
-      buildOrderService: core.IBuildOrderService, currentTime: number): number {
-    // TODO(olrehm): Handle the case where we do not have enough resources.
-    return buildOrderService.enqueueBuildable(this.building, currentTime);
+  onAssign(state: core.IState): void {
+    state.buildNext(this.building);
   }
 }
 
@@ -120,11 +119,11 @@ export class Unit extends core.Buildable implements core.IAssignable {
 
 export class BuildableStartedItem implements core.IBuildOrderItem {
   isSpendingResources = true;
+  initialTask: core.ITask;
 
   constructor(
       public start: number,
-      public buildable: core.Buildable,
-      public initialTask: core.ITask) {
+      public buildable: core.Buildable) {
   }
 
   get end(): number {

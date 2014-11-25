@@ -3,7 +3,7 @@
 import core = require('./core');
 import build = require('./build');
 
-class BuildOrderService implements core.IBuildOrderService {
+class BuildOrderService {
   buildOrder: core.IBuildOrderItem[] = [];
   lastResourceSpendTime: number = 0;
   queues: build.Queue[];
@@ -34,15 +34,15 @@ class BuildOrderService implements core.IBuildOrderService {
     this.buildOrder.splice(index, 0, item);    
   }
 
-  enqueueBuildable(
-      buildable: core.Buildable, currentTime: number, 
-      initialTask?: core.ITask): number {
+  enqueueBuildable(buildable: core.Buildable, 
+      currentTime: number): build.BuildableStartedItem {
     var queue = this.queues.filter((queue) => { 
       return queue.source === buildable.source;
     })[0];
     var startTime = Math.max(currentTime, queue.end);
     var item = new build.BuildableStartedItem(
-        startTime, buildable, initialTask);
+        startTime, buildable);
+
     queue.push(item); 
     this.sortInItem(item);
     var finishedItem = new build.BuildableFinishedItem(item.end, buildable);
@@ -52,7 +52,7 @@ class BuildOrderService implements core.IBuildOrderService {
       this.queues.push(new build.Queue(buildable.id, item.end));
     }
 
-    return queue.end;
+    return item;
   }
 
 }
