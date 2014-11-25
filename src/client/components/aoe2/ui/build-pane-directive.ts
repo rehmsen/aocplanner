@@ -49,13 +49,10 @@ class BuildPaneDirectiveController {
 
   research(tech: build.Technology): void {
     try {
-      this.currentState.advanceUntilSufficientResources(tech.cost);
+      this.currentState.buildNext(tech);
     } catch(e) {
       this.error = e.message;
     }
-    var queueEnd = this.buildOrderService.enqueueBuildable(
-        tech, this.currentState.time);
-    this.currentState.update(queueEnd);
     this.hasStartedTechnology[tech.id] = true;
   }
 
@@ -97,13 +94,10 @@ class BuildPaneDirectiveController {
 
   private train_(unit: build.Unit, initialTask?: core.ITask): void {
     try {
-      this.currentState.advanceUntilSufficientResources(unit.cost);
+      this.currentState.buildNext(unit, initialTask);
     } catch(e) {
       this.error = e.message;
     }
-    var queueEnd = this.buildOrderService.enqueueBuildable(
-      unit, this.currentState.time, initialTask);
-    this.currentState.update(queueEnd);
   }
 }
 

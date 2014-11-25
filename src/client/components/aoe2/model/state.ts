@@ -44,37 +44,14 @@ class State implements core.IState {
     this.update(t);
   }
 
-  private timeUntilSufficientResources_(
-      cost: core.IResources, resourceRates: core.IResources): number {
-    var result = 0.0;
-    angular.forEach(cost, (quantity, resource) => {
-      var missing = quantity - this.resources[resource];
-      if (missing > 0) {
-        result = Math.max(result, missing / resourceRates[resource]);
-      }
-    });
-    return result;
+  buildNext(buildable: core.Buildable, initialTask?: core.ITask) {
+    this.advanceUntilSufficientResources_(buildable.cost);
+    var queueEnd = this.buildOrderService.enqueueBuildable(
+      buildable, this.time, initialTask);
+    this.update(queueEnd);    
   }
 
-  private sumUpResourceRates_(): core.IResources {
-    var result: core.IResources = { lumber: 0, food: 0, gold: 0, stone: 0 };
-    angular.forEach(this.assignments, (assignment: core.ITaskCount) => {
-      var resourceRate = assignment.task.resourceRate;
-      if (resourceRate.rate == 0) {
-        return;
-      }
-      result[resourceRate.resource] += assignment.count * resourceRate.rate;    
-    });     
-    return result;
-  }
-
-  private applyResourceRates_(resourceRates: core.IResources, delta: number): void {
-    angular.forEach(resourceRates, (rate, resource) => {
-      this.resources[resource] += delta * rate;     
-    });   
-  } 
-
-  advanceUntilSufficientResources(cost: core.IResources) {
+  private advanceUntilSufficientResources_(cost: core.IResources) {
     var start = Math.max(
       this.buildOrderService.lastResourceSpendTime, this.time_);
     var index = this.interpolate_(start);
@@ -108,6 +85,36 @@ class State implements core.IState {
       }
     };
   }
+
+  private timeUntilSufficientResources_(
+      cost: core.IResources, resourceRates: core.IResources): number {
+    var result = 0.0;
+    angular.forEach(cost, (quantity, resource) => {
+      var missing = quantity - this.resources[resource];
+      if (missing > 0) {
+        result = Math.max(result, missing / resourceRates[resource]);
+      }
+    });
+    return result;
+  }
+
+  private sumUpResourceRates_(): core.IResources {
+    var result: core.IResources = { lumber: 0, food: 0, gold: 0, stone: 0 };
+    angular.forEach(this.assignments, (assignment: core.ITaskCount) => {
+      var resourceRate = assignment.task.resourceRate;
+      if (resourceRate.rate == 0) {
+        return;
+      }
+      result[resourceRate.resource] += assignment.count * resourceRate.rate;    
+    });     
+    return result;
+  }
+
+  private applyResourceRates_(resourceRates: core.IResources, delta: number): void {
+    angular.forEach(resourceRates, (rate, resource) => {
+      this.resources[resource] += delta * rate;     
+    });   
+  } 
 
   private reset_(): void {
     if (!this.rulesService.loaded) {
