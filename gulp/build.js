@@ -3,7 +3,9 @@
 
 var autoprefixer = require('gulp-autoprefixer');
 var browserify = require('browserify');
+var fs = require('fs');
 var gulp = require('gulp');
+var replace = require('gulp-replace');
 var rimraf = require('rimraf');
 var sass = require('gulp-ruby-sass');
 var size = require('gulp-size');
@@ -103,9 +105,11 @@ gulp.task('copy:go', function() {
     .pipe(gulp.dest('./dist/'));
 });
 
-gulp.task('copy:appyaml', function() {
+gulp.task('build:appyaml', function() {
+  var version = JSON.parse(fs.readFileSync('./package.json', 'utf8')).version;
   return gulp.src('src/app.yaml')
-    .pipe(gulp.dest('./dist/'));
+      .pipe(replace('version: {{version}}', 'version: ' + version))
+      .pipe(gulp.dest('./dist'));
 });
 
 gulp.task('dist', [
@@ -116,5 +120,5 @@ gulp.task('dist', [
   'copy:images',
   'build:dependencies',
   'copy:go',
-  'copy:appyaml',
+  'build:appyaml',
   'copy:favicon']);
