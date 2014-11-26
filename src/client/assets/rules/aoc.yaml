@@ -53,10 +53,11 @@ resourceSources:
 - id: deep_sea_fish
   resource: food  
 - id: wood
-  resource: lumber  
+  resource: lumber 
+  rate: 0.299 
 - id: straggler
   resource: lumber  
-  rate: 0.30 # TODO(olrehm): Verify
+  rate: 0.299
 - id: goldmine
   resource: gold  
   rate: 0.4
@@ -154,12 +155,16 @@ technologies:
   age: 2
 - id: careening
   age: 2
-- id: carthography
+- id: cartography
   age: 1
   source: market
 - id: castle_age
   age: 1
+  buildDuration: 160
   source: town_center
+  cost:
+    food: 800
+    gold: 200
 - id: chain_barding_armor
   age: 2
 - id: chain_mail_armor
@@ -224,6 +229,10 @@ technologies:
   age: 3
 - id: hand_cart
   age: 2
+  buildDuration: 55
+  cost:
+    food: 300
+    wood: 200
 - id: heated_shot
   age: 2
 - id: heavy_camels
@@ -255,6 +264,10 @@ technologies:
   age: 3
 - id: imperial_age
   age: 2
+  buildDuration: 190
+  cost:
+    food: 1000
+    gold: 800
 - id: iron_casting
   age: 2
 - id: keep
@@ -345,6 +358,10 @@ technologies:
 - id: wheel_barrow
   age: 1
   source: town_center
+  buildDuration: 75
+  cost: 
+    food: 175
+    wood: 50
 
 units:
 - id: archer
