@@ -9,8 +9,8 @@ var git = require('gulp-git');
 gulp.task('bump:patch', function(){
   gulp.src('./package.json')
   .pipe(bump({type:'patch'}))
-  .pipe(git.commit('Bumping version.'))
-  .pipe(gulp.dest('./'));
+  .pipe(gulp.dest('./'))
+  .pipe(git.commit('Bumping version.'));
 });
 
 gulp.task('bump:minor', function(){
