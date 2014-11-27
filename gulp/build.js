@@ -106,7 +106,8 @@ gulp.task('copy:go', function() {
 });
 
 gulp.task('build:appyaml', function() {
-  var version = JSON.parse(fs.readFileSync('./package.json', 'utf8')).version;
+  var version = JSON.parse(fs.readFileSync('./package.json', 'utf8'))
+      .version.replace(/\./g, '-');
   return gulp.src('src/app.yaml')
       .pipe(replace('version: {{version}}', 'version: ' + version))
       .pipe(gulp.dest('./dist'));
