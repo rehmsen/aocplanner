@@ -1,5 +1,6 @@
 /// <reference path="../../../../../typings/angularjs/angular.d.ts" />
 
+import assignments = require('./assignments');
 import core = require('./core');
 import build = require('./build');
 
@@ -7,6 +8,7 @@ class BuildOrderService {
   buildOrder: core.IBuildOrderItem[] = [];
   lastResourceSpendTime: number = 0;
   queues: build.Queue[];
+  assignmentSequences: assignments.ReassignmentItem[][] = [];
 
   constructor() {
     // TODO(olrehm): Make this map dependent.
