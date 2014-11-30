@@ -6,22 +6,13 @@ build-order-item {
     position: relative;
   }
 
-  .buildable-icon {
+  .left-icon {
     position: absolute; 
     left: 3px;
   }
 
-  .task-icon {
+  .right-icon {
     position: absolute; 
     right: 3px;
-  }
-
-  .duration-bar {
-    position: absolute; 
-    top: 18px;
-    width: 100%; 
-    height: 10px;
-    background: blue; 
-    border-radius: 3px;
   }
 }
