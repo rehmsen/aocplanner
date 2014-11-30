@@ -89,7 +89,7 @@ class BuildPaneDirectiveController {
     this.currentState.update(this.currentState.time);
 
     this.taskVerb = null;
-    if (toTask.fixedTime) {
+    if (toTask.computeDuration(totalCount) < Infinity) {
       this.selection.taskCounts[toTask.id] = {
         assignable: this.selection.assignable, 
         count: totalCount,

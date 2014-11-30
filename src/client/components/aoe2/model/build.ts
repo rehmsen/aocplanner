@@ -29,7 +29,6 @@ export class ConstructionTask implements core.ITask {
   object: string;
   id: string;
   resourceRate: core.IResourceRate = {rate: 0};
-  fixedTime: boolean = true;
 
   constructor(public building: Building) {
     this.object = building.id;
@@ -37,6 +36,11 @@ export class ConstructionTask implements core.ITask {
   }
 
   get icon(): string { return core.TaskVerb[this.verb]; }
+
+  computeDuration(count: number): number {
+    // TODO(rehmsen): Consider count. 
+    return this.building.buildDuration;
+  }
 
   onAssign(state: core.IState): void {
     state.buildNext(this.building);

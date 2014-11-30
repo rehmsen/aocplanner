@@ -87,10 +87,10 @@ export interface ITask {
   object?: string;
   id: string;
   icon: string;
-  fixedTime: boolean;
 
   resourceRate: IResourceRate;
 
+  computeDuration(count: number): number;
   onAssign(state: IState): void;
 }
 
@@ -98,11 +98,12 @@ export class IdleTask implements ITask {
   verb = TaskVerb.idle;
   id = TaskVerb[this.verb];
   resourceRate: IResourceRate = {rate: 0};
-  fixedTime: boolean = false;
 
   get icon(): string { return this.id; }
 
-  updateState(state: IState, delta: number, count: number): void {}
+  computeDuration(count: number): number {
+    return Infinity;
+  }
 
   onAssign(state: IState): void {}
 }
@@ -111,7 +112,7 @@ export class HarvestTask implements ITask {
   verb = TaskVerb.harvest;  
   object: string;
   id: string;
-  fixedTime: boolean = false;
+
   get resourceRate() { 
     return {rate: this.source.rate, resource: this.source.resource }; 
   }
@@ -120,6 +121,10 @@ export class HarvestTask implements ITask {
   constructor(public source: IResourceSource) {
     this.object = source.id;
     this.id = TaskVerb[this.verb] + ':' + this.object; 
+  }
+
+  computeDuration(count: number): number {
+    return Infinity;
   }
 
   onAssign(state: IState): void {}
