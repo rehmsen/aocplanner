@@ -14,7 +14,7 @@ export class Building extends core.Buildable {
       cost: core.IResources,
       public room: number,
       hasQueue: boolean) {
-    super(id, age, buildDuration, cost, 'villager', hasQueue);
+    super(id, age, buildDuration, cost, null, hasQueue);
   }
 
   finished(state: core.IState) {

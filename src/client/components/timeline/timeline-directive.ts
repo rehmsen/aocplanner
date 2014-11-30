@@ -7,8 +7,8 @@ interface ITimelineDirectiveScope extends ng.IScope {
 }
 
 interface IAngularClickEvent extends ng.IAngularEvent {
-  layerX: number;
-  layerY: number;
+  offsetX: number;
+  offsetY: number;
 }
 
 function createTimelineDirective(): ng.IDirective {
