@@ -137,6 +137,7 @@ export interface ITaskCount {
 }
 
 export interface IBuildOrderItem {
+  type: string;
   start: number;
   isSpendingResources: boolean;
 

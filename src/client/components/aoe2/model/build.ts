@@ -35,7 +35,7 @@ export class ConstructionTask implements core.ITask {
     this.id = core.TaskVerb[this.verb] + ':' + this.object; 
   }
 
-  get cssClass(): string { return 'icon-' + building.id; }
+  get cssClass(): string { return 'icon-' + this.building.id; }
 
   computeDuration(count: number): number {
     // TODO(rehmsen): Consider count. 
@@ -122,6 +122,7 @@ export class Unit extends core.Buildable implements core.IAssignable {
 }
 
 export class BuildableStartedItem implements core.IBuildOrderItem {
+  type = 'BuildableStarted';
   isSpendingResources = true;
   initialTask: core.ITask;
 
@@ -141,6 +142,7 @@ export class BuildableStartedItem implements core.IBuildOrderItem {
 }
 
 export class BuildableFinishedItem implements core.IBuildOrderItem {
+  type = 'BuildableFinished';
   isSpendingResources = false;
 
   constructor(

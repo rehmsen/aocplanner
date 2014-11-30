@@ -1,0 +1,14 @@
+<div class="container">
+  <div type="button" 
+         class="{{ sequence()[0].fromTask.cssClass }} task-icon icon">
+  </div>
+  <div ng-repeat="reassignment in sequence()" 
+       class="reassignment-container">
+    <div style="width: {{computeWidth(reassignment)}}px">
+      <div class="{{durationClass(reassignment)}}"></div>
+      <div class="{{reassignment.toTask.cssClass}} left-icon task-icon"></div>
+    </div>
+    <div class="icon-red_arrow arrow">
+    </div>
+  </div>
+</div>

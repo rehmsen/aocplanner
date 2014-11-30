@@ -26,6 +26,15 @@
         </build-order-item>
       </div>
     </div>
+    <timeline-container time-scale="mainCtrl.timeScale">
+      <div ng-repeat="sequence in mainCtrl.buildOrderService.assignmentSequences">
+        <reassignment 
+            sequence="sequence" 
+            time-scale="mainCtrl.timeScale"
+            style="position:relative; left: {{35 + sequence[0].start * mainCtrl.timeScale}}px">
+        </reassignment>
+      </div>
+    </timeline-container>
   </div>
   <div class="task-distribution">
     <task-count 
