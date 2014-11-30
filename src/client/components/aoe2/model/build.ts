@@ -35,7 +35,7 @@ export class ConstructionTask implements core.ITask {
     this.id = core.TaskVerb[this.verb] + ':' + this.object; 
   }
 
-  get icon(): string { return core.TaskVerb[this.verb]; }
+  get cssClass(): string { return 'icon-' + building.id; }
 
   computeDuration(count: number): number {
     // TODO(rehmsen): Consider count. 
