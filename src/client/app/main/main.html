@@ -36,6 +36,15 @@
       </div>
     </timeline-container>
   </div>
+<!--   <timeline-container time-scale="mainCtrl.timeScale">
+    <build-order-item 
+        start-time="{{item.start}}"
+        ng-repeat="item in mainCtrl.buildOrderService.queues[0].items"
+        item="item"
+        time-scale="mainCtrl.timeScale">
+    </build-order-item>
+  </timeline-container>
+ -->
   <div class="task-distribution">
     <task-count 
         ng-repeat="assignment in mainCtrl.currentState.assignments"

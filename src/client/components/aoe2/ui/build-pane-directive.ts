@@ -85,7 +85,11 @@ class BuildPaneDirectiveController {
     });
     this.selection.taskCounts = {};
 
-    toTask.onAssign(this.currentState);
+    try {
+      toTask.onAssign(this.currentState);
+    } catch(e) {
+      this.error = e.message;
+    }
     this.currentState.update(this.currentState.time);
 
     this.taskVerb = null;

@@ -1,5 +1,5 @@
 application: aoc-bo-planner
-version: 1
+version: {{version}}
 runtime: go
 api_version: go1
 
