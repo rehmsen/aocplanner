@@ -10,3 +10,34 @@ div {
   display: inline-block;
   z-index: 3;
 }
+
+.task-icon {
+  @extend .icon;
+  border-radius: 50%;
+}
+
+.duration-bar {
+  position: absolute; 
+  top: 18px;
+  width: 100%; 
+  height: 10px;
+  background: blue; 
+  border-radius: 3px;
+}
+
+.indefinite-duration-bar {
+  @extend .duration-bar;
+  background: linear-gradient(to right, blue , rgba(255,0,0,0));
+}
+
+.left-icon {
+  @extend .icon;
+  position: absolute; 
+  left: 3px;
+}
+
+.right-icon {
+  @extend .task-icon;
+  position: absolute; 
+  right: 3px;
+}

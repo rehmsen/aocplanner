@@ -7,8 +7,8 @@ interface ITimelineDirectiveScope extends ng.IScope {
 }
 
 interface IAngularClickEvent extends ng.IAngularEvent {
-  layerX: number;
-  layerY: number;
+  offsetX: number;
+  offsetY: number;
 }
 
 function createTimelineDirective(): ng.IDirective {
@@ -22,7 +22,7 @@ function createTimelineDirective(): ng.IDirective {
     link: function postLink(
         scope: ITimelineDirectiveScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes) {
       scope.click = function($event: IAngularClickEvent): void {
-        scope.time = $event.layerX / scope.timeScale;
+        scope.time = $event.offsetX / scope.timeScale;
       };
     }
   };

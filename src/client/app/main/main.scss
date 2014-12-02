@@ -31,6 +31,8 @@ resource-indicator {
 
 .main-pane {
   position: absolute;
+  display: flex;
+  flex-direction: column;
   top: 30px;
   bottom: $bottom-pane-height;
   left: 0;
@@ -40,9 +42,7 @@ resource-indicator {
 }
 
 timeline {
-  position: absolute;
-  left: 35px;
-  right: 0;
+  margin-left: 35px;
 }
 
 .time-indicator {
@@ -55,14 +55,16 @@ timeline {
 }
 
 .build-order {
-  position: absolute;
-  top: 30px;
 }
 
 .items {
   display: inline-block;
   position: relative;
   height: $icon-size;
+}
+
+reassignment {
+  position: relative;
 }
 
 .bottom-pane {

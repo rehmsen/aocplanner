@@ -1,0 +1,23 @@
+reassignment {
+	display: inline-block;
+	
+	.container {
+		margin-left: -36px;
+	}
+
+	.arrow {
+		position: absolute;
+		left: -12px; 
+		top: 10px;
+		z-index: 5;
+		color: white;
+		font-size: 9pt;
+		padding: 3px 10px;
+	}
+
+	.reassignment-container {
+		display: inline-block; 
+		position: relative;
+		height: 36px;
+	}
+}

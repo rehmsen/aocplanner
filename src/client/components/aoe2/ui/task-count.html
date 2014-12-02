@@ -1,7 +1,7 @@
 <div ng-show="taskCount().count > 0"
      ng-click="selection.set(taskCount().assignable, taskCount().task)" >
   <input type="button" 
-         class="icon-{{ taskCount().task.icon }} task-icon icon">
+         class="{{ taskCount().task.cssClass }} task-icon icon">
   </input>
   <div class="counter">{{taskCount().count}}</div>
 </div>

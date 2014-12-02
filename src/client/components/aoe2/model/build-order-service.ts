@@ -1,5 +1,6 @@
 /// <reference path="../../../../../typings/angularjs/angular.d.ts" />
 
+import assignments = require('./assignments');
 import core = require('./core');
 import build = require('./build');
 
@@ -7,14 +8,12 @@ class BuildOrderService {
   buildOrder: core.IBuildOrderItem[] = [];
   lastResourceSpendTime: number = 0;
   queues: build.Queue[];
+  assignmentSequences: assignments.ReassignmentItem[][] = [];
 
   constructor() {
     // TODO(olrehm): Make this map dependent.
     this.queues = [
-      new build.Queue('town_center'),
-      new build.Queue('villager'),
-      new build.Queue('villager'),
-      new build.Queue('villager')
+      new build.Queue('town_center')
     ];    
   }
 
@@ -36,14 +35,20 @@ class BuildOrderService {
 
   enqueueBuildable(buildable: core.Buildable, 
       currentTime: number): build.BuildableStartedItem {
-    var queue = this.queues.filter((queue) => { 
-      return queue.source === buildable.source;
-    })[0];
-    var startTime = Math.max(currentTime, queue.end);
+    var startTime = currentTime;
+    var queue: build.Queue;
+    if (buildable.source) {
+      queue = this.queues.filter((queue) => { 
+        return queue.source === buildable.source;
+      })[0];
+      startTime = Math.max(currentTime, queue.end);
+    }
     var item = new build.BuildableStartedItem(
         startTime, buildable);
 
-    queue.push(item); 
+    if (queue) {
+      queue.push(item);
+    }
     this.sortInItem(item);
     var finishedItem = new build.BuildableFinishedItem(item.end, buildable);
     this.sortInItem(finishedItem);

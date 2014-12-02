@@ -29,6 +29,7 @@ class BuildPaneDirectiveController {
   taskVerb: string;
   error: string;
   private trainedItem_: build.BuildableStartedItem;
+  private assignmentSequence_: assignments.ReassignmentItem[] = [];
 
   constructor(
       public buildOrderService: BuildOrderService,
@@ -79,6 +80,7 @@ class BuildPaneDirectiveController {
         fromTaskCount.task,
         toTask);
       totalCount += fromTaskCount.count;
+      this.assignmentSequence_.push(reassignementItem);
       this.buildOrderService.sortInItem(reassignementItem);
     });
     this.selection.taskCounts = {};
@@ -91,13 +93,16 @@ class BuildPaneDirectiveController {
     this.currentState.update(this.currentState.time);
 
     this.taskVerb = null;
-    if (toTask.fixedTime) {
+    if (toTask.computeDuration(totalCount) < Infinity) {
       this.selection.taskCounts[toTask.id] = {
         assignable: this.selection.assignable, 
         count: totalCount,
         task: toTask
       };
     } else {
+      this.buildOrderService.assignmentSequences.push(
+          this.assignmentSequence_);
+      this.assignmentSequence_ = [];
       this.selection.reset();
     }
   }
