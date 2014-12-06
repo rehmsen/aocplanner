@@ -1,6 +1,6 @@
 /// <reference path="../../../../typings/angularjs/angular.d.ts" />
 
-interface ITimelineDirectiveScope extends ng.IScope {
+interface ITimelinePickerDirectiveScope extends ng.IScope {
   click: ($event: ng.IAngularEvent)=>void;
   time: number;
   timeScale: number;
@@ -11,7 +11,7 @@ interface IAngularClickEvent extends ng.IAngularEvent {
   offsetY: number;
 }
 
-function createTimelineDirective(): ng.IDirective {
+function createTimelinePickerDirective(): ng.IDirective {
   return {
     templateUrl: '/components/timeline/timeline.html',
     restrict: 'E',
@@ -20,7 +20,7 @@ function createTimelineDirective(): ng.IDirective {
       timeScale: '='
     },
     link: function postLink(
-        scope: ITimelineDirectiveScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes) {
+        scope: ITimelinePickerDirectiveScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes) {
       scope.click = function($event: IAngularClickEvent): void {
         scope.time = $event.offsetX / scope.timeScale;
       };
@@ -28,4 +28,4 @@ function createTimelineDirective(): ng.IDirective {
   };
 }
 
-export = createTimelineDirective;
+export = createTimelinePickerDirective;

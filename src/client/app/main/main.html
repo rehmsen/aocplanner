@@ -8,8 +8,8 @@
 </div>
 
 <div class="main-pane">
-  <timeline time="mainCtrl.currentState.time" time-scale="mainCtrl.timeScale">
-  </timeline>
+  <timeline-picker time="mainCtrl.currentState.time" time-scale="mainCtrl.timeScale">
+  </timeline-picker>
   <div class="time-indicator" style="left: {{35 + mainCtrl.currentState.time * mainCtrl.timeScale}}px">
     {{ mainCtrl.currentState.time|duration }}
   </div>
