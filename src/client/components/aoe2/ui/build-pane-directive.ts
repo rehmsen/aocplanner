@@ -62,15 +62,15 @@ class BuildPaneDirectiveController {
     this.trainedItem_ = this.buildCatchingError_(unit);
 
     if (unit.tasks) {
-      this.selection.set(unit, new core.IdleTask());
+      this.selection.set(unit, new core.IdleTask(true));
     }
   }
 
   assign(toTask: core.ITask): void {
-    if (this.trainedItem_) {
+    if (this.trainedItem_ && toTask.computeDuration(1) == Infinity) {
       this.trainedItem_.initialTask = toTask;
-      this.trainedItem_ = null;
     }
+    this.trainedItem_ = null;
 
     var totalCount = 0;
     angular.forEach(this.selection.taskCounts, (fromTaskCount) => {

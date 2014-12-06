@@ -18,4 +18,8 @@ reassignment {
 		position: relative;
 		height: $icon-size;
 	}
+
+	.hidden {
+		visibility: hidden;
+	}
 }

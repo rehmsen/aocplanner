@@ -1,10 +1,11 @@
 /// <reference path="../../../../../typings/angularjs/angular.d.ts" />
 
 import assignments = require('../model/assignments');
+import core = require('../model/core');
 
 interface ReassignmentDirectiveScope extends ng.IScope {
-	computeWidth(reassignment: assignments.ReassignmentItem): number;
-	durationClass(reassignment: assignments.ReassignmentItem): string;
+	computeWidth(task: core.ITask, count: number): number;
+	durationClass(task: core.ITask): string;
   sequence(): assignments.ReassignmentItem[];
   timeScale(): number;	
 }
@@ -22,13 +23,13 @@ function createReassignmentDirective(): ng.IDirective {
 	        scope: ReassignmentDirectiveScope, 
 	        element: ng.IAugmentedJQuery, 
 	        attrs: ng.IAttributes): void {
-	    	scope.computeWidth = function(reassignment: assignments.ReassignmentItem) {
-	    		var duration = reassignment.toTask.computeDuration(reassignment.count);
+	    	scope.computeWidth = function(task: core.ITask, count: number) {
+	    		var duration = task.computeDuration(count);
 	    		return duration < Infinity ? duration * scope.timeScale() : 50;
 	    	}
-	    	scope.durationClass = function(reassignment: assignments.ReassignmentItem) {
-	    		var duration = reassignment.toTask.computeDuration(reassignment.count);
-				return duration < Infinity ? 'duration-bar' : 'indefinite-duration-bar';	    		
+	    	scope.durationClass = function(task: core.ITask) {
+	    		var duration = task.computeDuration(1);
+					return duration < Infinity ? 'duration-bar' : 'indefinite-duration-bar';	    		
 	    	}
 	    }
 	};

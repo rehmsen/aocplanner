@@ -29,6 +29,7 @@ export class ConstructionTask implements core.ITask {
   object: string;
   id: string;
   resourceRate: core.IResourceRate = {rate: 0};
+  initial: boolean = false;
 
   constructor(public building: Building) {
     this.object = building.id;

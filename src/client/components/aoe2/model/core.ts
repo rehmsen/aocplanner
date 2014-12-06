@@ -87,6 +87,7 @@ export interface ITask {
   object?: string;
   id: string;
   cssClass: string;
+  initial: boolean;
 
   resourceRate: IResourceRate;
 
@@ -98,6 +99,10 @@ export class IdleTask implements ITask {
   verb = TaskVerb.idle;
   id = TaskVerb[this.verb];
   resourceRate: IResourceRate = {rate: 0};
+
+
+  constructor(public initial: boolean = false) {
+  }
 
   get cssClass(): string { return 'icon-' + this.id; }
 
@@ -112,6 +117,7 @@ export class HarvestTask implements ITask {
   verb = TaskVerb.harvest;  
   object: string;
   id: string;
+  initial: boolean = false;
 
   get resourceRate() { 
     return {rate: this.source.rate, resource: this.source.resource }; 

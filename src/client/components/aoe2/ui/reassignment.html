@@ -1,14 +1,14 @@
-<div class="container">
-  <div type="button" 
-         class="{{ sequence()[0].fromTask.cssClass }} task-icon icon">
-  </div>
+<div class="container" ng-show="sequence().length > 1 || !sequence()[0].fromTask.initial">
+  <div class="{{sequence()[0].fromTask.cssClass}} icon task-icon"
+       ng-class="{hidden: sequence()[0].fromTask.initial}"></div>
   <div ng-repeat="reassignment in sequence()" 
        class="reassignment-container">
-    <div style="width: {{computeWidth(reassignment)}}px">
-      <div class="{{durationClass(reassignment)}}"></div>
+    <div style="width: {{computeWidth(reassignment.toTask, reassignment.count)}}px">
+      <div class="{{durationClass(reassignment.toTask)}}"></div>
       <div class="{{reassignment.toTask.cssClass}} left-icon task-icon"></div>
     </div>
-    <div class="icon-red_arrow arrow">
+    <div class="icon-red_arrow arrow" 
+         ng-show="!reassignment.fromTask.initial">
       {{reassignment.count}}
     </div>
   </div>
