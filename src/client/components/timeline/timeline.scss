@@ -8,3 +8,12 @@ timeline-picker {
     font-size: 9pt;
   }
 }
+
+timeline-container {
+  display: block;
+  
+  .container {
+    display: block;
+    position: relative;
+  }
+}

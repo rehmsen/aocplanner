@@ -3,7 +3,7 @@
 
 export function createContainerDirective(): ng.IDirective {
   return {
-    template: '<div ng-transclude></div>',
+    template: '<div ng-transclude class="container"></div>',
     transclude: true,
     restrict: 'E',
     scope: {
@@ -15,17 +15,21 @@ export function createContainerDirective(): ng.IDirective {
   };
 }
 
-export function createStartTimeDirective(): ng.IDirective {
+export function createStartTimeDirective($timeout: ng.ITimeoutService): ng.IDirective {
   return {
     restrict: 'A',
     require: '^timelineContainer',
     link: function postLink(
         scope: IStartTimeDirectiveScope, element: ng.IAugmentedJQuery, 
         attrs: ng.IAttributes, timelineContainerCtrl: ContainerController) {
-      timelineContainerCtrl.registerItem({
-        start: parseInt(attrs['startTime']), 
-        element: element,
-        scope: scope
+      element.css('position', 'absolute');
+      $timeout(function() {
+        timelineContainerCtrl.registerItem({
+          start: parseInt(attrs['startTime']), 
+          originX: parseInt(attrs['originX']) || 0,
+          element: element,
+          scope: scope
+        });
       });
     }
   };
@@ -37,12 +41,13 @@ class ContainerController {
   private rows: { height: number; end: number; }[] = [];
 
   registerItem(item: IItem): void {
+    // Get width first, because it can be reset to 0 on DOM modifications.
+    var width = item.element[0].offsetWidth;
     this.items.push(item);
-    var left = item.start * this.timeScale;
-    item.element.css('position', 'absolute');
+    var left = item.originX + item.start * this.timeScale;
     item.element.css('left', left + 'px');
     var top = 0;
-    var itemEnd = left + item.element[0].offsetWidth;
+    var itemEnd = left + width;
     var placed = this.rows.some((row) => {
       if (row.end < left) {
         row.end = itemEnd;
@@ -61,6 +66,7 @@ class ContainerController {
 
 interface IItem {
   start: number;
+  originX: number;
   element: ng.IAugmentedJQuery;
   scope: IStartTimeDirectiveScope;
 }

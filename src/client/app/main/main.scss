@@ -41,8 +41,8 @@ resource-indicator {
   overflow: auto;
 }
 
-timeline-picker {
-  margin-left: 35px;
+timeline-picker, timeline-container {
+  padding-left: $icon-size;
 }
 
 .time-indicator {
@@ -52,9 +52,6 @@ timeline-picker {
   height: 100%;
   vertical-align: bottom;
   pointer-events:none;
-}
-
-.build-order {
 }
 
 .items {

@@ -27,24 +27,13 @@
       </div>
     </div>
     <timeline-container time-scale="mainCtrl.timeScale">
-      <div ng-repeat="sequence in mainCtrl.buildOrderService.assignmentSequences">
-        <reassignment 
-            sequence="sequence" 
-            time-scale="mainCtrl.timeScale"
-            style="position:relative; left: {{35 + sequence[0].start * mainCtrl.timeScale}}px">
-        </reassignment>
+      <div ng-repeat="sequence in mainCtrl.buildOrderService.assignmentSequences"
+           start-time="{{sequence[0].start}}" origin-x="-36">
+        <reassignment sequence="sequence" 
+                      time-scale="mainCtrl.timeScale"></reassignment>
       </div>
     </timeline-container>
   </div>
-<!--   <timeline-container time-scale="mainCtrl.timeScale">
-    <build-order-item 
-        start-time="{{item.start}}"
-        ng-repeat="item in mainCtrl.buildOrderService.queues[0].items"
-        item="item"
-        time-scale="mainCtrl.timeScale">
-    </build-order-item>
-  </timeline-container>
- -->
   <div class="task-distribution">
     <task-count 
         ng-repeat="assignment in mainCtrl.currentState.assignments"
