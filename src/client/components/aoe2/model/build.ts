@@ -14,7 +14,7 @@ export class Building extends core.Buildable {
       cost: core.IResources,
       public room: number,
       hasQueue: boolean) {
-    super(id, age, buildDuration, cost, 'villager', hasQueue);
+    super(id, age, buildDuration, cost, null, hasQueue);
   }
 
   finished(state: core.IState) {
@@ -29,14 +29,18 @@ export class ConstructionTask implements core.ITask {
   object: string;
   id: string;
   resourceRate: core.IResourceRate = {rate: 0};
-  fixedTime: boolean = true;
+  initial: boolean = false;
 
   constructor(public building: Building) {
     this.object = building.id;
     this.id = core.TaskVerb[this.verb] + ':' + this.object; 
   }
 
-  get icon(): string { return core.TaskVerb[this.verb]; }
+  get cssClass(): string { return 'icon-' + this.building.id; }
+
+  computeDuration(count: number): number {
+    return this.building.buildDuration / Math.sqrt(count);
+  }
 
   onAssign(state: core.IState): void {
     state.buildNext(this.building);
@@ -118,6 +122,7 @@ export class Unit extends core.Buildable implements core.IAssignable {
 }
 
 export class BuildableStartedItem implements core.IBuildOrderItem {
+  type = 'BuildableStarted';
   isSpendingResources = true;
   initialTask: core.ITask;
 
@@ -137,6 +142,7 @@ export class BuildableStartedItem implements core.IBuildOrderItem {
 }
 
 export class BuildableFinishedItem implements core.IBuildOrderItem {
+  type = 'BuildableFinished';
   isSpendingResources = false;
 
   constructor(

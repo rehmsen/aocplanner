@@ -2,13 +2,23 @@ import core = require('./core');
 import build = require('./build');
 
 export class ReassignmentItem implements core.IBuildOrderItem {
+  type = 'reassignment';
   isSpendingResources = false;
 
   constructor(
       public start: number,
-      private count: number,
-      private fromTask: core.ITask,
-      private toTask: core.ITask) {}
+      public count: number,
+      public fromTask: core.ITask,
+      public toTask: core.ITask,
+      private duration_: number = 0) {}
+
+  get duration(): number {
+    return this.duration_ || this.toTask.computeDuration(this.count);
+  }
+
+  get end(): number {
+    return this.start + this.duration;
+  }
 
   apply(state: core.IState) {
     if (this.fromTask) {

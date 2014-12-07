@@ -29,10 +29,12 @@ class BuildPaneDirectiveController {
   taskVerb: string;
   error: string;
   private trainedItem_: build.BuildableStartedItem;
+  private assignmentSequence_: assignments.ReassignmentItem[] = [];
 
   constructor(
       public buildOrderService: BuildOrderService,
       public rulesService: RulesService) {
+    this.selection.registerOnReset(this.onResetSelection.bind(this));
   }
 
   get tasks(): core.ITask[] {
@@ -61,47 +63,76 @@ class BuildPaneDirectiveController {
     this.trainedItem_ = this.buildCatchingError_(unit);
 
     if (unit.tasks) {
-      this.selection.set(unit, new core.IdleTask());
+      this.selection.set(unit, new core.IdleTask(true));
     }
   }
 
   assign(toTask: core.ITask): void {
-    if (this.trainedItem_) {
-      this.trainedItem_.initialTask = toTask;
+    try {
+      var previousReassignment = this.assignmentSequence_[this.assignmentSequence_.length-1];
+      var previousEndTime = previousReassignment ? previousReassignment.end : this.currentState.time;
+      this.currentState.update(previousEndTime);
+      toTask.onAssign(this.currentState);
+      var fromTask = this.selection.taskCount.task;
+      if (previousReassignment && this.currentState.time > previousEndTime) {
+        fromTask = new core.IdleTask();
+        this.enqueueReassignment(new assignments.ReassignmentItem(
+            previousEndTime, previousReassignment.count, 
+            previousReassignment.toTask, fromTask,
+            this.currentState.time - previousEndTime));
+      }
+
+      if (this.trainedItem_ && toTask.computeDuration(1) == Infinity) {
+        this.trainedItem_.initialTask = toTask;
+      }
       this.trainedItem_ = null;
+      var reassignmentItem = new assignments.ReassignmentItem(
+        this.currentState.time, this.selection.taskCount.count,
+        fromTask, toTask);
+      this.enqueueReassignment(reassignmentItem);
+
+      if (this.assignmentSequence_.length == 1) {
+        this.buildOrderService.assignmentSequences.push(
+            this.assignmentSequence_);
+      }
+
+      this.taskVerb = null;
+      if (reassignmentItem.end < Infinity) {
+        this.selection.taskCount.task = toTask;
+        this.currentState.update(reassignmentItem.end);
+      } else {
+        this.currentState.update(this.assignmentSequence_[0].start);
+        this.selection.reset();
+      }
+    } catch(e) {
+      this.error = e.message;
+    }
+  }
+
+  onResetSelection = function() {
+    var l = this.assignmentSequence_.length;
+    if (l > 0 && this.assignmentSequence_[l-1].end < Infinity) {
+      var last = this.assignmentSequence_[l-1];
+      this.enqueueReassignment(new assignments.ReassignmentItem(
+          last.end, last.count, last.toTask, new core.IdleTask()));
     }
 
-    var totalCount = 0;
-    angular.forEach(this.selection.taskCounts, (fromTaskCount) => {
-      var reassignementItem = new assignments.ReassignmentItem(
-        this.currentState.time,
-        fromTaskCount.count,
-        fromTaskCount.task,
-        toTask);
-      totalCount += fromTaskCount.count;
-      this.buildOrderService.sortInItem(reassignementItem);
-    });
-    this.selection.taskCounts = {};
-
-    toTask.onAssign(this.currentState);
-    this.currentState.update(this.currentState.time);
-
+    this.assignmentSequence_ = [];
+    this.trainedItem_ = null;  
     this.taskVerb = null;
-    if (toTask.fixedTime) {
-      this.selection.taskCounts[toTask.id] = {
-        assignable: this.selection.assignable, 
-        count: totalCount,
-        task: toTask
-      };
-    } else {
-      this.selection.reset();
-    }
+  }
+
+  enqueueReassignment(reassignmentItem: assignments.ReassignmentItem) {
+    this.assignmentSequence_.push(reassignmentItem);
+    this.buildOrderService.sortInItem(reassignmentItem);
   }
 
   private buildCatchingError_(buildable: core.Buildable): 
       build.BuildableStartedItem {
     try {
-      return this.currentState.buildNext(buildable);
+      var item = this.currentState.buildNext(buildable);
+      this.currentState.update(item.end);  
+      return item;
     } catch(e) {
       this.error = e.message;
     }

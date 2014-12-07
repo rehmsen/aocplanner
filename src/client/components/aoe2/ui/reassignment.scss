@@ -1,0 +1,27 @@
+@import './common';
+
+reassignment {
+ 	display: flex;
+
+  .container {
+	 	display: flex;
+  }
+	.arrow {
+		position: absolute;
+		left: -12px; 
+		top: 10px;
+		z-index: 5;
+		color: white;
+		font-size: 9pt;
+		padding: 3px 10px;
+	}
+
+	.reassignment-container {
+		position: relative;
+		height: $icon-size;
+	}
+
+	.hidden {
+		visibility: hidden;
+	}
+}

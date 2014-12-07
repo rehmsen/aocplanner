@@ -26,26 +26,38 @@ export interface IAssignable {
 
 export class Selection {
   assignable: IAssignable;
-  taskCounts: {[taskId: string]: ITaskCount};
+  taskCount: ITaskCount;
+  private resetCallbacks_: { (): void }[] = [];
 
   constructor() {
     this.reset();
   }
 
   reset() {
+    this.resetCallbacks_.forEach((callback) => callback());
     this.assignable = null;
-    this.taskCounts = {};
+    this.taskCount = null;
+  }
+
+  isCompatible(assignable: IAssignable, task: ITask): boolean {
+    if (this.assignable && this.assignable.id != assignable.id) {
+      // TODO(rehmsen): Should throw error
+      return false;
+    }
+    if (this.taskCount && this.taskCount.task.id != task.id) {
+      // TODO(rehmsen): Should throw error
+      return false;
+    }
+    return true;    
   }
 
   add(assignable: IAssignable, task: ITask): boolean {
-    if (this.assignable && this.assignable.id != assignable.id) {
-      return false;
-    }
+    if (!this.isCompatible(assignable, task)) return false;
     this.assignable = assignable;
-    if (!this.taskCounts[task.id]) {
-      this.taskCounts[task.id] = {task: task, count: 1, assignable: assignable};
+    if (!this.taskCount) {
+      this.taskCount = {task: task, count: 1, assignable: assignable};
     } else {
-      this.taskCounts[task.id].count++;
+      this.taskCount.count++;
     }
     return true;
   }
@@ -53,6 +65,10 @@ export class Selection {
   set(assignable: IAssignable, task: ITask) {
     this.reset();
     this.add(assignable, task);
+  }
+
+  registerOnReset(callback: () => void) {
+    this.resetCallbacks_.push(callback);
   }
 }
 
@@ -86,11 +102,12 @@ export interface ITask {
   verb: TaskVerb;
   object?: string;
   id: string;
-  icon: string;
-  fixedTime: boolean;
+  cssClass: string;
+  initial: boolean;
 
   resourceRate: IResourceRate;
 
+  computeDuration(count: number): number;
   onAssign(state: IState): void;
 }
 
@@ -98,11 +115,16 @@ export class IdleTask implements ITask {
   verb = TaskVerb.idle;
   id = TaskVerb[this.verb];
   resourceRate: IResourceRate = {rate: 0};
-  fixedTime: boolean = false;
 
-  get icon(): string { return this.id; }
 
-  updateState(state: IState, delta: number, count: number): void {}
+  constructor(public initial: boolean = false) {
+  }
+
+  get cssClass(): string { return 'icon-' + this.id; }
+
+  computeDuration(count: number): number {
+    return Infinity;
+  }
 
   onAssign(state: IState): void {}
 }
@@ -111,15 +133,20 @@ export class HarvestTask implements ITask {
   verb = TaskVerb.harvest;  
   object: string;
   id: string;
-  fixedTime: boolean = false;
+  initial: boolean = false;
+
   get resourceRate() { 
     return {rate: this.source.rate, resource: this.source.resource }; 
   }
-  get icon(): string { return this.object; }
+  get cssClass(): string { return 'icon-' + this.object; }
 
   constructor(public source: IResourceSource) {
     this.object = source.id;
     this.id = TaskVerb[this.verb] + ':' + this.object; 
+  }
+
+  computeDuration(count: number): number {
+    return Infinity;
   }
 
   onAssign(state: IState): void {}
@@ -132,6 +159,7 @@ export interface ITaskCount {
 }
 
 export interface IBuildOrderItem {
+  type: string;
   start: number;
   isSpendingResources: boolean;
 

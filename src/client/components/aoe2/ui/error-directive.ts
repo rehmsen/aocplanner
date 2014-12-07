@@ -21,7 +21,7 @@ function createErrorDirective($timeout: ng.ITimeoutService): ng.IDirective {
           scope.displayedMessage = message;
           scope.message = '';
           scope.opacity = 1.0;
-          $timeout(() => { scope.opacity = 0.0; }, 3000);          
+          $timeout(() => { scope.opacity = 0.0; }, 6000);          
         }
       })
     }

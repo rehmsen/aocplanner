@@ -1,7 +1,7 @@
-<div ng-show="taskCount().count > 0"
-     ng-click="selection.set(taskCount().assignable, taskCount().task)" >
+<div ng-show="ctrl.taskCount().count > 0"
+     ng-click="ctrl.addOrSet()" >
   <input type="button" 
-         class="icon-{{ taskCount().task.icon }} task-icon icon">
+         class="{{ ctrl.taskCount().task.cssClass }} task-icon icon">
   </input>
-  <div class="counter">{{taskCount().count}}</div>
+  <div class="counter">{{ctrl.taskCount().count}}</div>
 </div>
