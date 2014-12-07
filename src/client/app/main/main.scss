@@ -54,6 +54,11 @@ timeline-picker, timeline-container {
   pointer-events:none;
 }
 
+.queue {
+  display: flex;
+  position: relative;
+}
+
 .items {
   display: inline-block;
   position: relative;

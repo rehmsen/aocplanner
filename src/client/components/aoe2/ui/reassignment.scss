@@ -1,8 +1,11 @@
 @import './common';
 
 reassignment {
-	display: inline-block;
-	
+ 	display: flex;
+
+  .container {
+	 	display: flex;
+  }
 	.arrow {
 		position: absolute;
 		left: -12px; 
@@ -14,7 +17,6 @@ reassignment {
 	}
 
 	.reassignment-container {
-		display: inline-block; 
 		position: relative;
 		height: $icon-size;
 	}

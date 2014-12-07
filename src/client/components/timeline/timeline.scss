@@ -2,7 +2,7 @@ timeline-picker {
   display: block;
   height: 30px;
 
-  .container {
+  > .container {
     height: 100%;
     padding: 2px;
     font-size: 9pt;
@@ -12,7 +12,7 @@ timeline-picker {
 timeline-container {
   display: block;
   
-  .container {
+  > .container {
     display: block;
     position: relative;
   }
