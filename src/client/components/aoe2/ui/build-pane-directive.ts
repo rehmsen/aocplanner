@@ -34,6 +34,7 @@ class BuildPaneDirectiveController {
   constructor(
       public buildOrderService: BuildOrderService,
       public rulesService: RulesService) {
+    this.selection.registerOnReset(this.onResetSelection.bind(this));
   }
 
   get tasks(): core.ITask[] {
@@ -74,7 +75,7 @@ class BuildPaneDirectiveController {
 
     var totalCount = 0;
     angular.forEach(this.selection.taskCounts, (fromTaskCount) => {
-      var reassignementItem = new assignments.ReassignmentItem(
+      var reassignmentItem = new assignments.ReassignmentItem(
         this.currentState.time,
         fromTaskCount.count,
         fromTaskCount.task,
@@ -82,8 +83,8 @@ class BuildPaneDirectiveController {
       totalCount += fromTaskCount.count;
       // FIXME(rehmsen): This is broken for reassignments from multiple tasks, 
       //                 as they will happen in sequence.
-      this.assignmentSequence_.push(reassignementItem);
-      this.buildOrderService.sortInItem(reassignementItem);
+      this.assignmentSequence_.push(reassignmentItem);
+      this.buildOrderService.sortInItem(reassignmentItem);
     });
     this.selection.taskCounts = {};
 
@@ -107,9 +108,26 @@ class BuildPaneDirectiveController {
         task: toTask
       };
     } else {
-      this.assignmentSequence_ = [];
       this.selection.reset();
     }
+  }
+
+  onResetSelection = function() {
+    var l = this.assignmentSequence_.length;
+    if (l > 0 && this.assignmentSequence_[l-1].end < Infinity) {
+      var last = this.assignmentSequence_[l-1];
+      var reassignmentToIdle = new assignments.ReassignmentItem(
+        last.end,
+        last.count,
+        last.toTask,
+        new core.IdleTask());
+      this.assignmentSequence_.push(reassignmentToIdle);
+      this.buildOrderService.sortInItem(reassignmentToIdle);
+    }
+
+    this.assignmentSequence_ = [];
+    this.trainedItem_ = null;  
+    this.taskVerb = null;
   }
 
   private buildCatchingError_(buildable: core.Buildable): 

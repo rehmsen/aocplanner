@@ -27,12 +27,14 @@ export interface IAssignable {
 export class Selection {
   assignable: IAssignable;
   taskCounts: {[taskId: string]: ITaskCount};
+  private resetCallbacks_: { (): void }[] = [];
 
   constructor() {
     this.reset();
   }
 
   reset() {
+    this.resetCallbacks_.forEach((callback) => callback());
     this.assignable = null;
     this.taskCounts = {};
   }
@@ -53,6 +55,10 @@ export class Selection {
   set(assignable: IAssignable, task: ITask) {
     this.reset();
     this.add(assignable, task);
+  }
+
+  registerOnReset(callback: () => void) {
+    this.resetCallbacks_.push(callback);
   }
 }
 

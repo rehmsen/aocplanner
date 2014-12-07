@@ -11,6 +11,10 @@ export class ReassignmentItem implements core.IBuildOrderItem {
       public fromTask: core.ITask,
       public toTask: core.ITask) {}
 
+  get end(): number {
+    return this.start + this.toTask.computeDuration(this.count);
+  }
+
   apply(state: core.IState) {
     if (this.fromTask) {
       var fromAssignment = state.assignments[this.fromTask.id];
