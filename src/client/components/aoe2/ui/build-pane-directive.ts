@@ -60,11 +60,13 @@ class BuildPaneDirectiveController {
       return;
     }
 
-    this.trainedItem_ = this.buildCatchingError_(unit);
+    var item = this.buildCatchingError_(unit);
 
     if (unit.tasks) {
       this.selection.set(unit, new core.IdleTask(true));
     }
+    // Has to happen afterwards because otherwise the selection setting will clear it.
+    this.trainedItem_ = item;
   }
 
   assign(toTask: core.ITask): void {
