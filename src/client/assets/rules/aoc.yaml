@@ -49,9 +49,14 @@ resourceSources:
   resource: food
   rate: 0.29
 - id: coastal_fish
-  resource: food  
+  resource: food
+  rate: 0.426 # TODO(rehmsen): For ship only 0.28  
 - id: deep_sea_fish
-  resource: food  
+  resource: food
+  rate: 0.487
+- id: fish_trap
+  resource: food
+  rate: 0.206
 - id: wood
   resource: lumber 
   rate: 0.299 
@@ -73,16 +78,31 @@ resourceSources:
 
 
 buildings:
+- id: archery_range
+  age: 1
+  buildDuration: 50
+  cost: 
+    lumber: 175  
 - id: barracks
   age: 0
   buildDuration: 50
   cost: 
     lumber: 175
+- id: blacksmith
+  age: 1
+  # TODO(rehmsen): buildDuration: 
+  cost: 
+    lumber: 150
 - id: dock
   age: 0
   buildDuration: 35
   cost:
     lumber: 150
+- id: gate
+  age: 1
+  # TODO(rehmsen): buildDuration
+  cost: 
+    stone: 30
 - id: house
   age: 0
   room: 5
@@ -94,6 +114,11 @@ buildings:
   buildDuration: 35
   cost:
     lumber: 100
+- id: market
+  age: 1
+  # TODO(rehmsen): buildDuration: 
+  cost: 
+    lumber: 175
 - id: mill
   age: 0
   buildDuration: 35
@@ -113,13 +138,24 @@ buildings:
   age: 0
   cost:
     lumber: 2
+- id: stable
+  age: 1
+  buildDuration: 50
+  cost: 
+    lumber: 175  
 - id: town_center
-  age: 0
+  age: 2
   room: 5
   buildDuration: 150
   cost:
     lumber: 275
     stone: 100
+- id: watch_tower
+  age: 1
+  # TODO(rehmsen): buildDuration
+  cost: 
+    stone: 125
+    lumber: 25
 
 technologies:
 - id: arbalest
@@ -138,7 +174,11 @@ technologies:
   age: 3
 - id: blood_lines
   age: 1
+  buildDuration: 50
   source: stable
+  cost:
+    food: 150
+    gold: 100
 - id: bodkin_arrow
   age: 2
 - id: bow_saw
@@ -157,7 +197,11 @@ technologies:
   age: 2
 - id: cartography
   age: 1
+  buildDuration: 60
   source: market
+  cost:
+    food: 100
+    gold: 100
 - id: castle_age
   age: 1
   buildDuration: 160
@@ -177,7 +221,11 @@ technologies:
   age: 3
 - id: coinage
   age: 1
+  buildDuration: 50
   source: market
+  cost: 
+    food: 150
+    gold: 50
 - id: conscription
   age: 3
 - id: crop_rotation
@@ -186,7 +234,11 @@ technologies:
   age: 2
 - id: double_bit_axe
   age: 1
+  buildDuration: 25
   source: lumber_camp
+  cost:
+    food: 100
+    lumber: 50
 - id: dry_dock
   age: 3
 - id: elite_eagle_warrior
@@ -210,17 +262,28 @@ technologies:
     finished: state.ageIndex += 1
 - id: fletching
   age: 1
+  buildDuration: 30
   source: blacksmith
+  cost:
+    food: 100
+    gold: 50
 - id: forging
   age: 1
+  buildDuration: 50
   source: blacksmith
+  cost: 
+    food: 150
 - id: fortified_wall
   age: 3
 - id: galleone
   age: 3
 - id: gold_mining
   age: 1
+  buildDuration: 30
   age: mining_camp
+  cost:
+    food: 100
+    lumber: 75
 - id: gold_shaft_mining
   age: 2
 - id: guard_tower
@@ -232,7 +295,7 @@ technologies:
   buildDuration: 55
   cost:
     food: 300
-    wood: 200
+    lumber: 200
 - id: heated_shot
   age: 2
 - id: heavy_camels
@@ -257,7 +320,11 @@ technologies:
   age: 3
 - id: horse_collar
   age: 1
+  buildDuration: 20
   source: mill
+  cost:
+      food: 75
+      wood: 75
 - id: husbandry
   age: 2
 - id: illumination
@@ -286,7 +353,11 @@ technologies:
     gold: 50
 - id: man_at_arms
   age: 1
+  buildDuration: 40
   source: barracks
+  cost:
+    food: 100
+    gold: 40
 - id: masonry
   age: 2
 - id: murder_holes
@@ -295,7 +366,10 @@ technologies:
   age: 3
 - id: padded_archer_armor
   age: 1
+  buildDuration: 40
   source: blacksmith
+  cost:
+    food: 100
 - id: paladin
   age: 3
 - id: parthian_tactics
@@ -316,10 +390,16 @@ technologies:
   age: 2
 - id: scale_barding_amor
   age: 1
+  buildDuration: 45
   source: blacksmith
+  cost:
+    food: 150
 - id: scale_mail_amor
   age: 1
+  buildDuration: 40
   source: blacksmith
+  cost: 
+    food: 100
 - id: ship_wright
   age: 3
 - id: siege_engineers
@@ -332,19 +412,33 @@ technologies:
   age: 3
 - id: stone_mining
   age: 1
+  buildDuration: 30
   source: mining_camp
+  cost:
+    food: 100
+    wood: 75
 - id: stone_shaft_mining
   age: 2
 - id: thumb_ring
   age: 2
 - id: town_patrol
   age: 1
+  buildDuration: 40
   source: town_center
+  cost: 
+    food: 300
+    gold: 200
 - id: town_watch
+  buildDuration: 25
   age: 2
+  cost: 
+    food: 75
 - id: tracking
   age: 1
+  buildDuration: 35
   source: barracks
+  cost: 
+    food: 75
 - id: treadmill_crane
   age: 2
 - id: two_handed_swortman
@@ -373,6 +467,7 @@ units:
     gold: 45
 - id: fishing_ship
   age: 0
+  buildDuration: 40
   source: dock
   cost:
     lumber: 75
@@ -390,7 +485,7 @@ units:
 - id: militia
   age: 0
   source: barracks
-  buildDuration: 21 # TODO(olrehm): lookup
+  buildDuration: 21 # TODO(rehmsen): lookup
   cost: 
     food: 60
     gold: 20
@@ -416,12 +511,21 @@ units:
     food: 35
 - id: trade_cart
   age: 1
+  buildDuration: 50
   source: market
+  cost: 
+    wood: 100
+    gold: 50
 - id: trade_cog
   age: 1
+  buildDuration: 36
   source: dock
+  cost: 
+    wood: 100
+    gold: 50
 - id: transport_ship
   age: 1
+  buildDuration: 46
   source: dock
   cost:
     lumber: 100

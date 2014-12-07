@@ -125,7 +125,7 @@ class State implements core.IState {
 
     this.resources = angular.copy(
         this.rulesService.startResources[this.settings.resources]);
-    // TODO(olrehm): Initialize from rules/settings.
+    // TODO(rehmsen): Initialize from rules/settings.
     this.pop = 4;
     this.popCap = 5;
     var villager = this.rulesService.workers.filter((unit) => { 

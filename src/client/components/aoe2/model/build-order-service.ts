@@ -11,7 +11,7 @@ class BuildOrderService {
   assignmentSequences: assignments.ReassignmentItem[][] = [];
 
   constructor() {
-    // TODO(olrehm): Make this map dependent.
+    // TODO(rehmsen): Make this map dependent.
     this.queues = [
       new build.Queue('town_center')
     ];    
@@ -22,7 +22,7 @@ class BuildOrderService {
       this.lastResourceSpendTime = item.start;
     }
 
-    // TODO(oler): Replace with binary search.
+    // TODO(rehmsen): Replace with binary search.
     var index = 0;
     this.buildOrder.forEach((eachItem) => {
       if (eachItem.start > item.start) {
