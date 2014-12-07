@@ -80,10 +80,17 @@ class BuildPaneDirectiveController {
         fromTaskCount.task,
         toTask);
       totalCount += fromTaskCount.count;
+      // FIXME(rehmsen): This is broken for reassignments from multiple tasks, 
+      //                 as they will happen in sequence.
       this.assignmentSequence_.push(reassignementItem);
       this.buildOrderService.sortInItem(reassignementItem);
     });
     this.selection.taskCounts = {};
+
+    if (this.assignmentSequence_.length == 1) {
+      this.buildOrderService.assignmentSequences.push(
+          this.assignmentSequence_);
+    }
 
     try {
       toTask.onAssign(this.currentState);
@@ -100,8 +107,6 @@ class BuildPaneDirectiveController {
         task: toTask
       };
     } else {
-      this.buildOrderService.assignmentSequences.push(
-          this.assignmentSequence_);
       this.assignmentSequence_ = [];
       this.selection.reset();
     }

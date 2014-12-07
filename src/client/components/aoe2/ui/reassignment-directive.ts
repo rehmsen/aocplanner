@@ -4,6 +4,7 @@ import assignments = require('../model/assignments');
 import core = require('../model/core');
 
 interface ReassignmentDirectiveScope extends ng.IScope {
+	shouldShow(): boolean;
 	computeWidth(task: core.ITask, count: number): number;
 	durationClass(task: core.ITask): string;
   sequence(): assignments.ReassignmentItem[];
@@ -23,6 +24,14 @@ function createReassignmentDirective(): ng.IDirective {
 	        scope: ReassignmentDirectiveScope, 
 	        element: ng.IAugmentedJQuery, 
 	        attrs: ng.IAttributes): void {
+	    	scope.shouldShow = function(): boolean {
+	    		if (scope.sequence().length == 0) {
+	    			return false;
+	    		}
+	    		var reassignment = scope.sequence()[0];
+	    		return reassignment.toTask.computeDuration(1) < Infinity || !reassignment.fromTask.initial;
+	    	}
+
 	    	scope.computeWidth = function(task: core.ITask, count: number) {
 	    		var duration = task.computeDuration(count);
 	    		return duration < Infinity ? duration * scope.timeScale() : 50;

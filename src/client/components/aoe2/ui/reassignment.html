@@ -1,4 +1,5 @@
-<div class="container" ng-show="sequence().length > 1 || !sequence()[0].fromTask.initial">
+<div class="container" 
+     ng-show="shouldShow()">
   <div class="{{sequence()[0].fromTask.cssClass}} icon task-icon"
        ng-class="{hidden: sequence()[0].fromTask.initial}"></div>
   <div ng-repeat="reassignment in sequence()" 
