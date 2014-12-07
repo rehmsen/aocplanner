@@ -68,40 +68,44 @@ class BuildPaneDirectiveController {
   }
 
   assign(toTask: core.ITask): void {
-    if (this.trainedItem_ && toTask.computeDuration(1) == Infinity) {
-      this.trainedItem_.initialTask = toTask;
-    }
-    this.trainedItem_ = null;
-
-    var previousReassignment = this.assignmentSequence_[this.assignmentSequence_.length-1];
-    var startTime = previousReassignment ? previousReassignment.end : this.currentState.time;
-
-    var reassignmentItem = new assignments.ReassignmentItem(
-      startTime,
-      this.selection.taskCount.count,
-      this.selection.taskCount.task,
-      toTask);
-    this.assignmentSequence_.push(reassignmentItem);
-    this.buildOrderService.sortInItem(reassignmentItem);
-
-    if (this.assignmentSequence_.length == 1) {
-      this.buildOrderService.assignmentSequences.push(
-          this.assignmentSequence_);
-    }
-
     try {
+      var previousReassignment = this.assignmentSequence_[this.assignmentSequence_.length-1];
+      var previousEndTime = previousReassignment ? previousReassignment.end : this.currentState.time;
+      this.currentState.update(previousEndTime);
       toTask.onAssign(this.currentState);
+      var fromTask = this.selection.taskCount.task;
+      if (previousReassignment && this.currentState.time > previousEndTime) {
+        fromTask = new core.IdleTask();
+        this.enqueueReassignment(new assignments.ReassignmentItem(
+            previousEndTime, previousReassignment.count, 
+            previousReassignment.toTask, fromTask,
+            this.currentState.time - previousEndTime));
+      }
+
+      if (this.trainedItem_ && toTask.computeDuration(1) == Infinity) {
+        this.trainedItem_.initialTask = toTask;
+      }
+      this.trainedItem_ = null;
+      var reassignmentItem = new assignments.ReassignmentItem(
+        this.currentState.time, this.selection.taskCount.count,
+        fromTask, toTask);
+      this.enqueueReassignment(reassignmentItem);
+
+      if (this.assignmentSequence_.length == 1) {
+        this.buildOrderService.assignmentSequences.push(
+            this.assignmentSequence_);
+      }
+
+      this.taskVerb = null;
+      if (reassignmentItem.end < Infinity) {
+        this.selection.taskCount.task = toTask;
+        this.currentState.update(reassignmentItem.end);
+      } else {
+        this.currentState.update(this.assignmentSequence_[0].start);
+        this.selection.reset();
+      }
     } catch(e) {
       this.error = e.message;
-    }
-
-    this.taskVerb = null;
-    if (reassignmentItem.end < Infinity) {
-      this.selection.taskCount.task = toTask;
-      this.currentState.update(reassignmentItem.end);
-    } else {
-      this.currentState.update(this.assignmentSequence_[0].start);
-      this.selection.reset();
     }
   }
 
@@ -109,13 +113,8 @@ class BuildPaneDirectiveController {
     var l = this.assignmentSequence_.length;
     if (l > 0 && this.assignmentSequence_[l-1].end < Infinity) {
       var last = this.assignmentSequence_[l-1];
-      var reassignmentToIdle = new assignments.ReassignmentItem(
-        last.end,
-        last.count,
-        last.toTask,
-        new core.IdleTask());
-      this.assignmentSequence_.push(reassignmentToIdle);
-      this.buildOrderService.sortInItem(reassignmentToIdle);
+      this.enqueueReassignment(new assignments.ReassignmentItem(
+          last.end, last.count, last.toTask, new core.IdleTask()));
     }
 
     this.assignmentSequence_ = [];
@@ -123,10 +122,17 @@ class BuildPaneDirectiveController {
     this.taskVerb = null;
   }
 
+  enqueueReassignment(reassignmentItem: assignments.ReassignmentItem) {
+    this.assignmentSequence_.push(reassignmentItem);
+    this.buildOrderService.sortInItem(reassignmentItem);
+  }
+
   private buildCatchingError_(buildable: core.Buildable): 
       build.BuildableStartedItem {
     try {
-      return this.currentState.buildNext(buildable);
+      var item = this.currentState.buildNext(buildable);
+      this.currentState.update(item.end);  
+      return item;
     } catch(e) {
       this.error = e.message;
     }

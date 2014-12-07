@@ -9,10 +9,15 @@ export class ReassignmentItem implements core.IBuildOrderItem {
       public start: number,
       public count: number,
       public fromTask: core.ITask,
-      public toTask: core.ITask) {}
+      public toTask: core.ITask,
+      private duration_: number = 0) {}
+
+  get duration(): number {
+    return this.duration_ || this.toTask.computeDuration(this.count);
+  }
 
   get end(): number {
-    return this.start + this.toTask.computeDuration(this.count);
+    return this.start + this.duration;
   }
 
   apply(state: core.IState) {

@@ -5,8 +5,8 @@ import core = require('../model/core');
 
 interface ReassignmentDirectiveScope extends ng.IScope {
 	shouldShow(): boolean;
-	computeWidth(task: core.ITask, count: number): number;
-	durationClass(task: core.ITask): string;
+	computeWidth(reassignment: assignments.ReassignmentItem): number;
+	durationClass(reassignment: assignments.ReassignmentItem): string;
   sequence(): assignments.ReassignmentItem[];
   timeScale(): number;	
 }
@@ -29,16 +29,16 @@ function createReassignmentDirective(): ng.IDirective {
 	    			return false;
 	    		}
 	    		var reassignment = scope.sequence()[0];
-	    		return reassignment.toTask.computeDuration(1) < Infinity || !reassignment.fromTask.initial;
+	    		return reassignment.end < Infinity || !reassignment.fromTask.initial;
 	    	}
 
-	    	scope.computeWidth = function(task: core.ITask, count: number) {
-	    		var duration = task.computeDuration(count);
-	    		return duration < Infinity ? duration * scope.timeScale() : 50;
+	    	scope.computeWidth = function(reassignment: assignments.ReassignmentItem) {
+	    		return reassignment.duration < Infinity ? 
+	    		    reassignment.duration * scope.timeScale() : 
+	    		    50;
 	    	}
-	    	scope.durationClass = function(task: core.ITask) {
-	    		var duration = task.computeDuration(1);
-					return duration < Infinity ? 'duration-bar' : 'indefinite-duration-bar';	    		
+	    	scope.durationClass = function(reassignment: assignments.ReassignmentItem) {
+					return reassignment.duration < Infinity ? 'duration-bar' : 'indefinite-duration-bar';	    		
 	    	}
 	    }
 	};

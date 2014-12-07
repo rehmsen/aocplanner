@@ -48,8 +48,7 @@ class State implements core.IState {
   buildNext(buildable: core.Buildable): build.BuildableStartedItem {
     this.advanceUntilSufficientResources_(buildable.cost);
     var item = this.buildOrderService.enqueueBuildable(
-      buildable, this.time);
-    this.update(item.end);    
+      buildable, this.time);  
     return item;
   }
 
