@@ -90,7 +90,7 @@ buildings:
     lumber: 175
 - id: blacksmith
   age: 1
-  # TODO(rehmsen): buildDuration: 
+  buildDuration: 40
   cost: 
     lumber: 150
 - id: dock
@@ -98,9 +98,14 @@ buildings:
   buildDuration: 35
   cost:
     lumber: 150
+- id: fish_trap
+  age: 0
+  buildDuration: 60
+  cost: 
+    lumber: 100
 - id: gate
   age: 1
-  # TODO(rehmsen): buildDuration
+  buildDuration: 30
   cost: 
     stone: 30
 - id: house
@@ -116,7 +121,7 @@ buildings:
     lumber: 100
 - id: market
   age: 1
-  # TODO(rehmsen): buildDuration: 
+  buildDuration: 60
   cost: 
     lumber: 175
 - id: mill
@@ -131,18 +136,25 @@ buildings:
     lumber: 100
 - id: outpost
   age: 0
+  buildDuration: 15
   cost:
     lumber: 25
     stone: 10
 - id: palisade
   age: 0
+  buildDuration: 5
   cost:
     lumber: 2
 - id: stable
   age: 1
   buildDuration: 50
   cost: 
-    lumber: 175  
+    lumber: 175
+- id: stone_wall
+  age: 1
+  buildDuration: 8
+  cost:
+    stone: 5
 - id: town_center
   age: 2
   room: 5
@@ -152,7 +164,7 @@ buildings:
     stone: 100
 - id: watch_tower
   age: 1
-  # TODO(rehmsen): buildDuration
+  buildDuration: 80
   cost: 
     stone: 125
     lumber: 25
@@ -485,7 +497,7 @@ units:
 - id: militia
   age: 0
   source: barracks
-  buildDuration: 21 # TODO(rehmsen): lookup
+  buildDuration: 21
   cost: 
     food: 60
     gold: 20
