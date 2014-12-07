@@ -39,8 +39,7 @@ export class ConstructionTask implements core.ITask {
   get cssClass(): string { return 'icon-' + this.building.id; }
 
   computeDuration(count: number): number {
-    // TODO(rehmsen): Consider count. 
-    return this.building.buildDuration;
+    return this.building.buildDuration / Math.sqrt(count);
   }
 
   onAssign(state: core.IState): void {
