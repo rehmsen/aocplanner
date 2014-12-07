@@ -73,8 +73,11 @@ class BuildPaneDirectiveController {
     }
     this.trainedItem_ = null;
 
+    var previousReassignment = this.assignmentSequence_[this.assignmentSequence_.length-1];
+    var startTime = previousReassignment ? previousReassignment.end : this.currentState.time;
+
     var reassignmentItem = new assignments.ReassignmentItem(
-      this.currentState.time,
+      startTime,
       this.selection.taskCount.count,
       this.selection.taskCount.task,
       toTask);
@@ -91,12 +94,13 @@ class BuildPaneDirectiveController {
     } catch(e) {
       this.error = e.message;
     }
-    this.currentState.update(this.currentState.time);
 
     this.taskVerb = null;
-    if (toTask.computeDuration(this.selection.taskCount.count) < Infinity) {
+    if (reassignmentItem.end < Infinity) {
       this.selection.taskCount.task = toTask;
+      this.currentState.update(reassignmentItem.end);
     } else {
+      this.currentState.update(this.assignmentSequence_[0].start);
       this.selection.reset();
     }
   }
