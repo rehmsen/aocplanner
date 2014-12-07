@@ -39,7 +39,7 @@ export class Selection {
     this.taskCount = null;
   }
 
-  add(assignable: IAssignable, task: ITask): boolean {
+  isCompatible(assignable: IAssignable, task: ITask): boolean {
     if (this.assignable && this.assignable.id != assignable.id) {
       // TODO(rehmsen): Should throw error
       return false;
@@ -48,6 +48,11 @@ export class Selection {
       // TODO(rehmsen): Should throw error
       return false;
     }
+    return true;    
+  }
+
+  add(assignable: IAssignable, task: ITask): boolean {
+    if (!this.isCompatible(assignable, task)) return false;
     this.assignable = assignable;
     if (!this.taskCount) {
       this.taskCount = {task: task, count: 1, assignable: assignable};

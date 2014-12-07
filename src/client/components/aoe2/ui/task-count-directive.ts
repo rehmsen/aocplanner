@@ -21,9 +21,13 @@ class TaskCountDirectiveController {
   selection: core.Selection;
 
   addOrSet() {
-    var added = this.selection.add(this.taskCount().assignable, this.taskCount().task);
-    if (!added) {
-      this.selection.set(this.taskCount().assignable, this.taskCount().task);
+    var taskCount = this.taskCount();
+    if (this.selection.isCompatible(taskCount.assignable, taskCount.task)) {
+      if (!this.selection.taskCount || this.selection.taskCount.count < taskCount.count) {
+        this.selection.add(taskCount.assignable, taskCount.task);
+      }
+    } else {
+      this.selection.set(taskCount.assignable, taskCount.task);
     }
   }
 }
