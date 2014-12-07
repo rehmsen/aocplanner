@@ -26,7 +26,7 @@ export interface IAssignable {
 
 export class Selection {
   assignable: IAssignable;
-  taskCounts: {[taskId: string]: ITaskCount};
+  taskCount: ITaskCount;
   private resetCallbacks_: { (): void }[] = [];
 
   constructor() {
@@ -36,18 +36,23 @@ export class Selection {
   reset() {
     this.resetCallbacks_.forEach((callback) => callback());
     this.assignable = null;
-    this.taskCounts = {};
+    this.taskCount = null;
   }
 
   add(assignable: IAssignable, task: ITask): boolean {
     if (this.assignable && this.assignable.id != assignable.id) {
+      // TODO(rehmsen): Should throw error
+      return false;
+    }
+    if (this.taskCount && this.taskCount.task.id != task.id) {
+      // TODO(rehmsen): Should throw error
       return false;
     }
     this.assignable = assignable;
-    if (!this.taskCounts[task.id]) {
-      this.taskCounts[task.id] = {task: task, count: 1, assignable: assignable};
+    if (!this.taskCount) {
+      this.taskCount = {task: task, count: 1, assignable: assignable};
     } else {
-      this.taskCounts[task.id].count++;
+      this.taskCount.count++;
     }
     return true;
   }

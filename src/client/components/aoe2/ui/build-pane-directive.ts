@@ -73,20 +73,13 @@ class BuildPaneDirectiveController {
     }
     this.trainedItem_ = null;
 
-    var totalCount = 0;
-    angular.forEach(this.selection.taskCounts, (fromTaskCount) => {
-      var reassignmentItem = new assignments.ReassignmentItem(
-        this.currentState.time,
-        fromTaskCount.count,
-        fromTaskCount.task,
-        toTask);
-      totalCount += fromTaskCount.count;
-      // FIXME(rehmsen): This is broken for reassignments from multiple tasks, 
-      //                 as they will happen in sequence.
-      this.assignmentSequence_.push(reassignmentItem);
-      this.buildOrderService.sortInItem(reassignmentItem);
-    });
-    this.selection.taskCounts = {};
+    var reassignmentItem = new assignments.ReassignmentItem(
+      this.currentState.time,
+      this.selection.taskCount.count,
+      this.selection.taskCount.task,
+      toTask);
+    this.assignmentSequence_.push(reassignmentItem);
+    this.buildOrderService.sortInItem(reassignmentItem);
 
     if (this.assignmentSequence_.length == 1) {
       this.buildOrderService.assignmentSequences.push(
@@ -101,12 +94,8 @@ class BuildPaneDirectiveController {
     this.currentState.update(this.currentState.time);
 
     this.taskVerb = null;
-    if (toTask.computeDuration(totalCount) < Infinity) {
-      this.selection.taskCounts[toTask.id] = {
-        assignable: this.selection.assignable, 
-        count: totalCount,
-        task: toTask
-      };
+    if (toTask.computeDuration(this.selection.taskCount.count) < Infinity) {
+      this.selection.taskCount.task = toTask;
     } else {
       this.selection.reset();
     }
