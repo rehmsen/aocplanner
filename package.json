@@ -1,6 +1,6 @@
 {
   "name": "aocplanner",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Plan Age of Empire 2 strategies.",
   "main": "src/app/app.ts",
   "keywords": [],
