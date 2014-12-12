@@ -34,7 +34,9 @@ gulp.task('clean', ['clean:dist', 'clean:tmp']);
 
 gulp.task('build:ts', function() {
     var tsResult = gulp.src([
-        'src/client/{app,components}/**/*.ts', 'typings/**/*.ts'])
+        'src/client/{app,components}/**/*.ts', 
+        'typings/**/*.ts', 
+        '!typings/angular-protractor/angular-protractor.d.ts'])
         .pipe(sourcemaps.init())
         .pipe(ts({
           noExternalResolve: true, 
