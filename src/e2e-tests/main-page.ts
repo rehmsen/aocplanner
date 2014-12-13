@@ -1,4 +1,4 @@
-/// <reference path="../../../../typings/angular-protractor/angular-protractor.d.ts" />
+/// <reference path="../../typings/angular-protractor/angular-protractor.d.ts" />
 
 class MainPage {
   foodIndicator = element(by.className('icon-food'));

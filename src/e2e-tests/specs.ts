@@ -1,7 +1,7 @@
-/// <reference path="../../../../typings/angular-protractor/angular-protractor.d.ts" />
-/// <reference path="../../../../typings/jasmine/jasmine.d.ts" />
+/// <reference path="../../typings/angular-protractor/angular-protractor.d.ts" />
+/// <reference path="../../typings/jasmine/jasmine.d.ts" />
 
-import MainPage = require('./main_page');
+import MainPage = require('./main-page');
 
 describe('Main page', function() {
   var mainPage = new MainPage();
