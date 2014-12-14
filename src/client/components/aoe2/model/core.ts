@@ -21,7 +21,7 @@ export interface IResourceSource {
 
 export interface IAssignable {
   id: string;
-  tasks: {[verb: string]: string[]};
+  tasks: {[verb: string]: {[source: string]: number}};
 }
 
 export class Selection {

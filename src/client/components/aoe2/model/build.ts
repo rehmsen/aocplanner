@@ -94,7 +94,7 @@ export class Unit extends core.Buildable implements core.IAssignable {
       buildDuration: number,
       cost: core.IResources,
       source: string,
-      public tasks: {[verb: string]: string[]}) {
+      public tasks: {[verb: string]: {[source: string]: number}}) {
     super(id, age, buildDuration, cost, source);
   }
 
