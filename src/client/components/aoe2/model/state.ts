@@ -102,11 +102,13 @@ class State implements core.IState {
   private sumUpResourceRates_(): core.IResources {
     var result: core.IResources = { lumber: 0, food: 0, gold: 0, stone: 0 };
     angular.forEach(this.assignments, (assignment: core.ITaskCount) => {
-      var resourceRate = assignment.task.resourceRate;
-      if (resourceRate.rate == 0) {
+      var resource = assignment.task.resourceRate.resource
+      var rate = assignment.assignable.tasks[core.TaskVerb.harvest][assignment.task.object];
+
+      if (rate == 0) {
         return;
       }
-      result[resourceRate.resource] += assignment.count * resourceRate.rate;    
+      result[resource] += assignment.count * rate;    
     });     
     return result;
   }
