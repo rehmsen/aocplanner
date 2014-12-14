@@ -1,4 +1,11 @@
 /// <reference path="../../typings/angular-protractor/angular-protractor.d.ts" />
+/// <reference path="../../typings/selenium-webdriver/selenium-webdriver.d.ts" />
+
+function hasClass(element: protractor.ElementFinder, cls: string) {
+  return element.getAttribute('class').then(function (classes) {
+    return classes.split(' ').indexOf(cls) !== -1;
+  });
+};
 
 class MainPage {
   foodIndicator = element(by.className('icon-food'));
@@ -18,10 +25,55 @@ class MainPage {
   }
 
   taskDistribution = element(by.className('task-distribution'));
-  idleTaskAssignment = this.taskDistribution.element(by.className('icon-idle'));
+  getTaskAssignment(taskObject: string) {
+    return this.taskDistribution.element(by.className('icon-' + taskObject));
+  }
+  expectAssigned(taskObject: string, count: number) {
+    expect(this.getTaskAssignment(taskObject).isPresent()).toBe(true);
+    expect(this.taskDistribution.element(by.className('counter')).getText()).toBe('' + count);
+  }
 
   buildPane = element(by.tagName('build-pane'));
+
+  unitButtons = element.all(by.repeater('unit in ctrl.rulesService.units'));
+  techButtons = element.all(by.repeater('tech in ctrl.rulesService.technologies'));
   
+  // expectEnabledButtons(buttons: protractor.ElementArrayFinder, icons: string[]) {
+  //   buttons.filter((button) => {
+  //     return button.isDisplayed() && button.isEnabled();
+  //   }).then((displayedEnabledButtons) => {
+  //     var displayedEnabledIconPromises = displayedEnabledButtons.map((button: protractor.ElementFinder) => {
+  //       return button.getAttribute('class').then((classesString: string) => {
+  //         var classes = classesString.split(' ');
+  //         var iconClasses = classes.filter((cls) => {
+  //           return cls.indexOf('icon-') == 0;
+  //         });
+  //         expect(iconClasses.length).toBe(1);
+  //         return iconClasses[0].substring('icon-'.length);
+  //       });
+  //     });
+  //     webdriver.promise.fullyResolved(displayedEnabledIconPromises).then((displayedEnabledIcons) => {
+  //       expect(displayedEnabledIcons).toEqual(icons);
+  //     })
+  //   });
+
+
+  //   // icons.forEach((icon: string) => {
+  //   //   buttons.filter(function(button) {
+  //   //     return hasClass(button, 'icon-' + icon);
+  //   //   }).then(function(buttons) {
+  //   //     expect(buttons.length).toBe(1);
+  //   //     expect(buttons[0].isEnabled()).toBe(true);
+  //   //   })
+  //   // });
+  // }
+
+  // expectDisabledButtons(buttons: protractor.ElementArrayFinder, icons: string[]) {
+  //   icons.forEach((icon: string) => {
+  //     expect(buttons.element(by.class('icon-' + icon))).not.isEnabled();
+  //   });
+  // }
+
   constructButton = element(by.className('icon-construct'));
   constructHouseButton = this.buildPane.element(by.className('icon-house'));
 

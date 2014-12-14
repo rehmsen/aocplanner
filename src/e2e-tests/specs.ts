@@ -12,25 +12,37 @@ describe('Main page', function() {
     expect(browser.getTitle()).toEqual('AoC Planner');
   });
 
-  it('should have the correct start resources', function() {
-    expect(mainPage.foodIndicator.getText()).toBe('200');
-    expect(mainPage.lumberIndicator.getText()).toBe('200');
-    expect(mainPage.goldIndicator.getText()).toBe('100');
-    expect(mainPage.stoneIndicator.getText()).toBe('200');
 
-    expect(mainPage.timeIndicator.getText()).toBe('0:00:00');
-  });
+  describe('initial state', function() {
+    it('should have the correct resources', function() {
+      expect(mainPage.foodIndicator.getText()).toBe('200');
+      expect(mainPage.lumberIndicator.getText()).toBe('200');
+      expect(mainPage.goldIndicator.getText()).toBe('100');
+      expect(mainPage.stoneIndicator.getText()).toBe('200');
 
-  it('should start in dark age', function() {
-    expect(mainPage.ageName.getText()).toBe('Dark Age');
-  });
+      expect(mainPage.timeIndicator.getText()).toBe('0:00:00');
+    });
 
-  it('should start at time 0', function() {
-    expect(mainPage.timeIndicator.getText()).toBe('0:00:00');
+    it('should be in dark age', function() {
+      expect(mainPage.ageName.getText()).toBe('Dark Age');
+    });
+
+    // it('should show dark age units', function() {
+    //   mainPage.expectEnabledButtons(mainPage.unitButtons, ['villager']);
+    //   // mainPage.expectDisabledButtons(mainPage.unitButtons, ['militia']);
+    // });
+
+    it('should be at time 0', function() {
+      expect(mainPage.timeIndicator.getText()).toBe('0:00:00');
+    });
+
+    it('should have 3 idle villagers', function() {
+      mainPage.expectAssigned('idle', 3);
+    });
   });
 
   it('should allow selecting one idle villager', function() {
-    mainPage.idleTaskAssignment.click();
+    mainPage.getTaskAssignment('idle').click();
     mainPage.expectSelected('idle', 1);    
   });
 
@@ -56,8 +68,8 @@ describe('Main page', function() {
   });
 
   it('should allow assigning multiple idle villagers to construct house', function() {
-    mainPage.idleTaskAssignment.click();
-    mainPage.idleTaskAssignment.click();
+    mainPage.getTaskAssignment('idle').click();
+    mainPage.getTaskAssignment('idle').click();
     mainPage.constructButton.click();
     mainPage.constructHouseButton.click();
 
