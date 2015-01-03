@@ -41,8 +41,8 @@ export class ConstructionTask implements core.ITask {
     return this.building.buildDuration / Math.sqrt(count);
   }
 
-  isAvailable(state: core.IState): boolean {
-    return this.building.age <= state.age.index;
+  isAvailable(assignable: core.IAssignable, state: core.IState): boolean {
+    return assignable.tasks[core.TaskVerb[this.verb]] && this.building.age <= state.age.index;
   }
 
   onAssign(state: core.IState): void {

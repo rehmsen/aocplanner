@@ -101,7 +101,7 @@ export interface ITask {
   initial: boolean;
 
   computeDuration(count: number): number;
-  isAvailable(state: IState): boolean;
+  isAvailable(assignable: IAssignable, state: IState): boolean;
   onAssign(state: IState): void;
 }
 
@@ -118,8 +118,8 @@ export class IdleTask implements ITask {
     return Infinity;
   }
 
-  isAvailable(state: IState): boolean {
-    return true;
+  isAvailable(assignable: IAssignable, state: IState): boolean {
+    return false;
   }
 
   onAssign(state: IState): void {}
@@ -128,7 +128,7 @@ export class IdleTask implements ITask {
 export class HarvestTask implements ITask {
   verb = TaskVerb.harvest;  
   object: string;
-id: string;
+  id: string;
   initial: boolean = false;
 
   get cssClass(): string { return 'icon-' + this.object; }
@@ -141,9 +141,10 @@ id: string;
   computeDuration(count: number): number {
     return Infinity;
   }
-  
-  isAvailable(state: IState): boolean {
-    return true;
+
+  isAvailable(assignable: IAssignable, state: IState): boolean {
+    var sourceRates = assignable.tasks[TaskVerb[this.verb]];
+    return sourceRates && sourceRates[this.object] !== undefined;
   }
 
   onAssign(state: IState): void {}
