@@ -35,37 +35,26 @@ startResources:
 resourceSources:
 - id: sheep
   resource: food
-  rate: 0.33
 - id: boar
   resource: food  
-  rate: 0.36
 - id: deer
   resource: food  
-  rate: 0.59
 - id: berries
   resource: food
-  rate: 0.30
 - id: farm
   resource: food
-  rate: 0.29
 - id: coastal_fish
   resource: food
-  rate: 0.426 # TODO(rehmsen): For ship only 0.28  
 - id: deep_sea_fish
   resource: food
-  rate: 0.487
 - id: fish_trap
   resource: food
-  rate: 0.206
 - id: wood
   resource: lumber 
-  rate: 0.299 
 - id: straggler
   resource: lumber  
-  rate: 0.299
 - id: goldmine
   resource: gold  
-  rate: 0.4
 - id: land_trade
   resource: gold 
 - id: sea_trade
@@ -74,8 +63,6 @@ resourceSources:
   resource: gold
 - id: stonemine
   resource: stone  
-  rate: 0.38
-
 
 buildings:
 - id: archery_range

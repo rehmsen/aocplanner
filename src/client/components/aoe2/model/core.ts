@@ -93,19 +93,12 @@ export enum TaskVerb {
   construct
 }
 
-export interface IResourceRate {
-  rate: number;
-  resource?: Resource;
-}
-
 export interface ITask {
   verb: TaskVerb;
   object?: string;
   id: string;
   cssClass: string;
   initial: boolean;
-
-  resourceRate: IResourceRate;
 
   computeDuration(count: number): number;
   onAssign(state: IState): void;
@@ -114,8 +107,6 @@ export interface ITask {
 export class IdleTask implements ITask {
   verb = TaskVerb.idle;
   id = TaskVerb[this.verb];
-  resourceRate: IResourceRate = {rate: 0};
-
 
   constructor(public initial: boolean = false) {
   }
@@ -135,9 +126,6 @@ export class HarvestTask implements ITask {
   id: string;
   initial: boolean = false;
 
-  get resourceRate() { 
-    return {rate: this.source.rate, resource: this.source.resource }; 
-  }
   get cssClass(): string { return 'icon-' + this.object; }
 
   constructor(public source: IResourceSource) {

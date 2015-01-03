@@ -28,7 +28,6 @@ export class ConstructionTask implements core.ITask {
   verb = core.TaskVerb.construct;  
   object: string;
   id: string;
-  resourceRate: core.IResourceRate = {rate: 0};
   initial: boolean = false;
 
   constructor(public building: Building) {
