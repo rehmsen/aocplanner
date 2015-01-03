@@ -102,8 +102,23 @@ class State implements core.IState {
   private sumUpResourceRates_(): core.IResources {
     var result: core.IResources = { lumber: 0, food: 0, gold: 0, stone: 0 };
     angular.forEach(this.assignments, (assignment: core.ITaskCount) => {
-      var resource = assignment.task.resourceRate.resource
-      var rate = assignment.assignable.tasks[core.TaskVerb.harvest][assignment.task.object];
+      var taskVerb = assignment.task.verb;
+      if (taskVerb != core.TaskVerb.harvest) {
+        return;
+      }
+      var source = assignment.task.object; 
+
+      var resource: core.Resource;
+      this.rulesService.resourceSources.forEach((resourceSource: core.IResourceSource) => {
+        if (resourceSource.id == source) {
+          resource = resourceSource.resource;
+        }
+      });
+      if (resource == undefined) {
+        throw new Error('Unknown resource source: ' + source);
+      }
+
+      var rate = assignment.assignable.tasks[core.TaskVerb[taskVerb]][source];
 
       if (rate == 0) {
         return;

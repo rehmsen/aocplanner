@@ -558,4 +558,4 @@ units:
       stonemine:  0.38
       wood: 0.299
       straggler: 0.299
-    construct: []
+    construct: {}
