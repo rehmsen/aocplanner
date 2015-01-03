@@ -44,8 +44,20 @@ class BuildPaneDirectiveController {
 
     return this.rulesService.tasks[this.taskVerb].filter((task: core.ITask) => {
       var unitTasksObjects = this.selection.assignable.tasks[this.taskVerb];
-      return unitTasksObjects !== undefined && 
-          (task.verb != core.TaskVerb.harvest || !!unitTasksObjects[task.object]);
+      if (unitTasksObjects === undefined) {
+        // this unit is not a worker - do not show tasks
+        return false;
+      }
+      switch (task.verb) {
+        case core.TaskVerb.harvest:
+          // show only those harvest tasks that the unit supports
+          return unitTasksObjects[task.object] !== undefined;
+        case core.TaskVerb.construct:
+          // show only those construction tasks currently available
+          return task.isAvailable(this.currentState);
+        default:
+          return false;
+      }
     });
   }
 
