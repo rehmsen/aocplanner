@@ -82,7 +82,7 @@ class State implements core.IState {
         return;
       } else {
         // We need to continue
-        item.apply(this);
+        item.apply(this, this.time_);
       }
     };
   }
@@ -169,11 +169,10 @@ class State implements core.IState {
       var resourceRates = this.sumUpResourceRates_();
       this.applyResourceRates_(resourceRates, delta);
 
-      if (item.start > time) {
-        return;
+      if (item.start <= time) {
+        lastIndex++;
+        item.apply(this, time);
       }
-      lastIndex++;
-      item.apply(this);
     });
     var resourceRates = this.sumUpResourceRates_();
     this.applyResourceRates_(resourceRates, time - this.time_);

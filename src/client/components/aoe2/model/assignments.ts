@@ -20,7 +20,7 @@ export class ReassignmentItem implements core.IBuildOrderItem {
     return this.start + this.duration;
   }
 
-  apply(state: core.IState) {
+  apply(state: core.IState, time: number) {
     if (this.fromTask) {
       var fromAssignment = state.assignments[this.fromTask.id];
       if (!fromAssignment || fromAssignment.count < this.count) {

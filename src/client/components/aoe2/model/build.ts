@@ -75,8 +75,8 @@ export class Technology extends core.Buildable {
 
   started(state: core.IState, delta: number) {
     super.started(state, delta);
-    var progress = delta / this.buildDuration;
-    if (progress < 1.0 && this.effect_ && this.effect_.started) {
+    var progress = Math.min(delta / this.buildDuration, 1.0);
+    if (this.effect_ && this.effect_.started) {
       eval(this.effect_.started);
     }
   }
@@ -138,8 +138,8 @@ export class BuildableStartedItem implements core.IBuildOrderItem {
     return this.start + this.buildable.buildDuration;
   }
 
-  apply(state: core.IState) {
-    var delta = state.time - this.start;
+  apply(state: core.IState, time: number) {
+    var delta = time - this.start;
     this.buildable.started(state, delta);
   }
 }
@@ -153,7 +153,7 @@ export class BuildableFinishedItem implements core.IBuildOrderItem {
       public buildable: core.Buildable) {
   }
 
-  apply(state: core.IState) {
+  apply(state: core.IState, time: number) {
     this.buildable.finished(state);
   }
 }

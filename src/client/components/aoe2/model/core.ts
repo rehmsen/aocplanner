@@ -161,7 +161,7 @@ export interface IBuildOrderItem {
   start: number;
   isSpendingResources: boolean;
 
-  apply(state: IState): void;
+  apply(state: IState, time: number): void;
 }
 
 export interface IAge {
